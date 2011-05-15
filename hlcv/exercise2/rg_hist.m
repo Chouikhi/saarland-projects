@@ -34,6 +34,8 @@ function h = rg_hist(img_color, num_bins)
 
       brx = floor(brr * num_bins) + 1;
       bgx = floor(bgg * num_bins) + 1;
+      brx = bound(brx, 1, num_bins);
+      bgx = bound(bgx, 1, num_bins);
       h(brx, bgx) = h(brx, bgx) + 1;
     end
   end
@@ -43,4 +45,14 @@ function h = rg_hist(img_color, num_bins)
 
   h = h(:);
 
+end
+
+function y = bound(x, lb, ub)
+  if x < lb
+    y = lb;
+  elseif x > ub
+    y = ub;
+  else
+    y = x;
+  end
 end
