@@ -12,4 +12,14 @@ function show_neighbors(model_images, query_images, dist_type, hist_type, num_bi
 
   num_nearest = 5;
 
-  % ...
+  [best_match, D] = find_best_match(model_images, query_images, dist_type, hist_type, num_bins);
+  [vals, inds] = sort(D);
+  qsz = length(query_images);
+
+  for i = 1:qsz
+    for j = 1:num_nearest
+      subplot(qsz, num_nearest, (i - 1) * num_nearest + j);
+      imagesc(imread(model_images{inds(j, i)}));
+    end
+  end
+end
