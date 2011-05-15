@@ -1,6 +1,6 @@
 % 
 % compute intersection distance between x and y (slide 26 in the lecture)
-% return 1 - intersection, so that smaller values also correspond to more similart histograms
+% return 1 - intersection, so that smaller values also correspond to more similar histograms
 % 
 
 function d = dist_intersect(x, y)
