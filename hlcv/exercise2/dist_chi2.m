@@ -3,5 +3,5 @@
 % 
 
 function d = dist_chi2(x,y)
-  d = sum(((x - y) .^ 2) ./ (x + y));
+  d = sum(((x - y) .^ 2) ./ (x + y + 2));
 end

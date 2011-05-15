@@ -17,8 +17,10 @@ function show_neighbors(model_images, query_images, dist_type, hist_type, num_bi
   qsz = length(query_images);
 
   for i = 1:qsz
+    subplot(qsz, num_nearest + 1, (i - 1) * (num_nearest + 1) + 1);
+    imagesc(imread(query_images{i}));
     for j = 1:num_nearest
-      subplot(qsz, num_nearest, (i - 1) * num_nearest + j);
+      subplot(qsz, num_nearest + 1, (i - 1) * (num_nearest + 1) + j + 1);
       imagesc(imread(model_images{inds(j, i)}));
     end
   end

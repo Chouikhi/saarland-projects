@@ -21,7 +21,7 @@ function h=dxdy_hist(img_gray, num_bins)
   [imgDx, imgDy] = gaussderiv(img_gray, sigma);
 
   d_min = -34; d_max = 34;
-  d_c = double(num_bins) / (d_max - d_min) + eps;
+  d_c = double(num_bins) / (d_max - d_min + 1) + eps;
 
   % Prepare derivatives so they show the exact bin.
   imgDx = floor((imgDx - d_min) .* d_c) + 1;

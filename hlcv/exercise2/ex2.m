@@ -1,7 +1,7 @@
 
-show_part1 = true;
-show_part2 = true;
-show_part3 = true;
+show_part1 = false;
+show_part2 = false;
+show_part3 = false;
 show_part4 = true;
 
 if show_part1
@@ -115,16 +115,16 @@ if show_part3
   fprintf('loaded %d model images\n', length(model_images));
   fprintf('loaded %d query images\n', length(query_images));
 
-  eval_dist_type = 'intersect';
-  eval_hist_type = 'rg';
+  eval_dist_type = 'l2';
+  eval_hist_type = 'grayvalue';
   eval_num_bins = 30;
 
   %
   % visualize nearest neighbors
   %
 
-  query_images_vis = query_images([1, 5, 10]);
-  show_neighbors(model_images, query_images_vis, eval_dist_type, eval_hist_type, eval_num_bins);
+  % query_images_vis = query_images([1, 5, 10]);
+  % show_neighbors(model_images, query_images_vis, eval_dist_type, eval_hist_type, eval_num_bins);
 
 
   %
@@ -140,6 +140,14 @@ if show_part3
 end
 
 if show_part4
+  model_images = textread('model.txt', '%s');
+  query_images = textread('query.txt', '%s');
+
+  fprintf('loaded %d model images\n', length(model_images));
+  fprintf('loaded %d query images\n', length(query_images));
+
+  eval_num_bins = 30;
+
   % 
   % plot recall_precision curves
   % 

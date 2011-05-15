@@ -12,6 +12,36 @@
 
 function [best_match, D] = find_best_match(model_images, query_images, dist_type, hist_type, num_bins)
 
+  display('in find_best_match');
+  IMG_COUNT = 89;
+
+  fn = '';
+  loaded = 0;
+  if length(model_images) == IMG_COUNT && length(query_images) == IMG_COUNT
+    fn = sprintf('dist_ma3x_%s_%s_%d.mat', dist_type, hist_type, num_bins);
+    try
+      load(fn, 'D');
+      loaded = 1;
+      display(sprintf('loaded variable D from file %s', fn));
+    catch
+    end
+  end
+
+  if loaded == 0
+    D = compute_dist_ma3x(model_images, query_images, dist_type, hist_type, num_bins);
+    if length(fn) > 0
+      display(sprintf('saving to filename %s', fn));
+      save(fn, 'D');
+    end
+  end
+  
+  % find the best match for each query image
+  [a, best_match] = min(D);
+end
+
+function D = compute_dist_ma3x(model_images, query_images, dist_type, hist_type, num_bins)
+  
+  display('in compute_dist_ma3x');
   dist_func = get_dist_by_name(dist_type);
   hist_func = get_hist_by_name(hist_type);
   hist_isgray = is_grayvalue_hist(hist_type);
@@ -29,9 +59,7 @@ function [best_match, D] = find_best_match(model_images, query_images, dist_type
       D(i, j) = dist_func(model_hists{i}, query_hists{j});
     end
   end
-  
-  % find the best match for each query image
-  [a, best_match] = min(D);
+
 end
 
 function image_list = read_images_from_file_list(image_file_names)
