@@ -20,7 +20,8 @@ function h=dxdy_hist(img_gray, num_bins)
   imgDy = floor(imgDy*(num_bins/range))+1;
   
   %define a 2D histogram  with "num_bins^2" number of entries
-  h=zeros(num_bins+1,num_bins+1);
+  % NOTE: this was broken, used num_bins + 1 because of redundant +1 in for loop
+  h=zeros(num_bins, num_bins);
 
   %execute the loop for each pixel in the image, 
   for i=1:size(img_gray,1)
@@ -28,14 +29,15 @@ function h=dxdy_hist(img_gray, num_bins)
 
       %increment a histogram bin which corresponds to the value 
       %of pixel i,j; 
-      dx = imgDx(i,j)+1;
-      dy = imgDy(i,j)+1;
+      dx = imgDx(i,j);
+      dy = imgDy(i,j);
       
       h(dx,dy) = h(dx,dy)+1;
     end
   end
 
   %normalize the histogram such that its integral (sum) is equal 1
-  h=h/sum(sum(sum(h)));
-  h=reshape(h,(num_bins+1)^2,1);
+  h = h(:);
+  h = h ./ sum(h);
 
+end

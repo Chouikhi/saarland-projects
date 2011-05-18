@@ -9,4 +9,12 @@
 
 function [px py, H] = hessian(img, sigma, thresh)
 
-   % ...
+  [imgDxx, imgDxy, imgDyy] = gaussderiv2(img, sigma);
+  
+  % NOTE: maybe put abs here
+  H = sigma .^ 4 .* (imgDxx .* imgDyy - imgDxy .^ 2);
+  Hm = nonmaxsup2d(H);
+  
+  [py, px] = find(Hm > thresh);
+
+end

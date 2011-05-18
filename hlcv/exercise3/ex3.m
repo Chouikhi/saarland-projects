@@ -15,7 +15,8 @@ if show_q1
   clf;
 
   hessian_sigma = 2.0;
-  hessian_threshold = 300;
+  % NOTE: if we multiply gaussdx by 2 (gaussdxx by 4) we can use 300
+  hessian_threshold = 300 / 4;
 
   for idx = 1:3
     subplot(2, 3, idx);
@@ -32,6 +33,7 @@ if show_q1
     imagesc(I1);
     hold on;
     plot(px1, py1, 'xy');
+    fprintf('sigma %d # points %d\n', hessian_sigma ^ idx, length(px1));
   end
 
 end

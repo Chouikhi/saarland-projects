@@ -31,10 +31,14 @@ function show_point_matches(point_func, hist_type, img_name1, img_name2, match_p
 
   if is_grayvalue_hist(hist_type);
     D1 = compute_descriptors(hist_func, I1_grayscale, px1, py1, match_params.feature_window_size, match_params.num_bins);
+    fprintf('computed 1\n');
     D2 = compute_descriptors(hist_func, I2_grayscale, px2, py2, match_params.feature_window_size, match_params.num_bins);
+    fprintf('computed 2\n');
   else
     D1 = compute_descriptors(hist_func, double(I1), px1, py1, match_params.feature_window_size, match_params.num_bins);
+    fprintf('computed 1\n');
     D2 = compute_descriptors(hist_func, double(I2), px2, py2, match_params.feature_window_size, match_params.num_bins);
+    fprintf('computed 2\n');
   end
 
   % find and visualize point matches
