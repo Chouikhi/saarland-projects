@@ -2,7 +2,7 @@
 
 module Main where
 import Char (isSpace, isAlpha, isDigit)
-import List (isPrefixOf)
+import List (isPrefixOf, find)
 import qualified Program
 
 }
@@ -26,17 +26,6 @@ import qualified Program
       'Neg'           { TokenNeg }
 
       op              { TokenOp $$ }
---      '<'             { TokenLT }
---      '>'             { TokenGT }
---      '<='            { TokenLE }
---      '>='            { TokenGE }
---      '=='            { TokenEq }
---      '!='            { TokenNeq }
---
---      '+'             { TokenPlus }
---      '-'             { TokenMinus }
---      '*'             { TokenTimes }
---      '/'             { TokenDiv }
 
       '('             { TokenOB }
       ')'             { TokenCB }
@@ -109,23 +98,12 @@ data Token
 
       | TokenStr String
       | TokenInt Int
+      | TokenOp String
 
       | TokenAssign
 
       | TokenPos
       | TokenNeg
-      | TokenOp String
---       | TokenLT
---       | TokenGT
---       | TokenLE
---       | TokenGE
---       | TokenEq
---       | TokenNeq
--- 
---       | TokenPlus
---       | TokenMinus
---       | TokenTimes
---       | TokenDiv
 
       | TokenOB
       | TokenCB
@@ -136,71 +114,41 @@ data Token
       | TokenSc
       deriving Show
 
--- lexer :: String -> [Token]
--- lexer [] = []
--- lexer (css@(c:cs))
---       | isSpace c = lexer cs
---       | isAlpha c = lexStr css
---       | isDigit c = lexNum css
---       | "==" `isPrefixOf` css = TokenEq  : lexer (drop 2 css)
---       | "!=" `isPrefixOf` css = TokenNeq : lexer (drop 2 css)
---       | "<=" `isPrefixOf` css = TokenLE  : lexer (drop 2 css)
---       | ">=" `isPrefixOf` css = TokenGE  : lexer (drop 2 css)
--- 
--- lexer ('<':cs) = TokenLT : lexer cs
--- lexer ('>':cs) = TokenGT : lexer cs
--- lexer ('=':cs) = TokenAssign : lexer cs
--- lexer ('+':cs) = TokenPlus : lexer cs
--- lexer ('-':cs) = TokenMinus : lexer cs
--- lexer ('*':cs) = TokenTimes : lexer cs
--- lexer ('/':cs) = TokenDiv : lexer cs
--- lexer ('(':cs) = TokenOB : lexer cs
--- lexer (')':cs) = TokenCB : lexer cs
--- lexer ('[':cs) = TokenOSB : lexer cs
--- lexer (']':cs) = TokenCSB : lexer cs
--- lexer (';':cs) = TokenSc : lexer cs
-
-lexer :: String -> [Token]
 lexer [] = []
 lexer (css@(c:cs))
       | isSpace c = lexer cs
-      | isAlpha c = lexStr css
-      | isDigit c = lexNum css
-      | "==" `isPrefixOf` css = TokenOp "=="  : lexer (drop 2 css)
-      | "!=" `isPrefixOf` css = TokenOp "!=" : lexer (drop 2 css)
-      | "<=" `isPrefixOf` css = TokenOp "<=" : lexer (drop 2 css)
-      | ">=" `isPrefixOf` css = TokenOp ">=" : lexer (drop 2 css)
+      | isDigit c = TokenInt (read num) : lexer restn
+      | something fixed_str = case fixed_str of Just (fixed, tok) -> tok : lexer (drop (length fixed) css)
+      | something op_pair   = case op_pair of Just ops -> TokenOp ops : lexer (drop (length ops) css)
+      | otherwise = TokenStr word : lexer rest
+  where
+      fixed_str = find (\(fixed, tok) -> fixed `isPrefixOf` css) fixed_strs
+      op_pair = find (\op -> op `isPrefixOf` css) ops
 
-lexer ('<':cs) = TokenOp "<" : lexer cs
-lexer ('>':cs) = TokenOp ">" : lexer cs
-lexer ('=':cs) = TokenAssign : lexer cs
-lexer ('+':cs) = TokenOp "+" : lexer cs
-lexer ('-':cs) = TokenOp "-" : lexer cs
-lexer ('*':cs) = TokenOp "*" : lexer cs
-lexer ('/':cs) = TokenOp "/" : lexer cs
-lexer ('(':cs) = TokenOB : lexer cs
-lexer (')':cs) = TokenCB : lexer cs
-lexer ('[':cs) = TokenOSB : lexer cs
-lexer (']':cs) = TokenCSB : lexer cs
-lexer (';':cs) = TokenSc : lexer cs
+      fixed_strs = [ ("ANALYSIS", TokenAnalysis)
+                   , ("ALGORITHM", TokenAlgorithm)
+                   , ("OUTPUT", TokenOutput)
+                   , ("PROGRAM", TokenProgram)
+                   , ("Pos", TokenPos)
+                   , ("Neg", TokenNeg)
+                   , ("M", TokenMem)
+                   , ("=", TokenAssign)
+                   , ("(", TokenOB)
+                   , (")", TokenCB)
+                   , ("[", TokenOSB)
+                   , ("]", TokenCSB)
+                   , (";", TokenSc)
+                   ]
+      ops = [ "+", "-", "*", "/"
+            , "<", ">" , "<=", ">=", "==", "!=" ]
 
-lexNum cs = TokenInt (read num) : lexer rest
-      where (num,rest) = span isDigit cs
+      (num, restn) = span isDigit css
+      (word, rest) = span isIdentifierChar css
 
-lexStr cs =
-   case span isIdentifierChar cs of
-      ("ANALYSIS", rest)    -> TokenAnalysis : lexer rest
-      ("ALGORITHM", rest)   -> TokenAlgorithm : lexer rest
-      ("OUTPUT", rest)      -> TokenOutput : lexer rest
-      ("PROGRAM", rest)     -> TokenProgram : lexer rest
-      ("Pos", rest)         -> TokenPos : lexer rest
-      ("Neg", rest)         -> TokenNeg : lexer rest
-      ("M", rest)           -> TokenMem : lexer rest
-
-      (str, rest)           -> TokenStr str : lexer rest
-
-isIdentifierChar :: Char -> Bool
-isIdentifierChar c = isAlpha c || isDigit c || c == '_'
+      isIdentifierChar c = isAlpha c || isDigit c || c == '_'
+      something maybe = case maybe of
+                             Just z -> True
+                             Nothing -> False
 
 main = getContents >>= print . calc . lexer
 -- main = getContents >>= print . lexer
