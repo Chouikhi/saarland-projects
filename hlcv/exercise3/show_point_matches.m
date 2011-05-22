@@ -28,6 +28,7 @@ function show_point_matches(point_func, hist_type, img_name1, img_name2, match_p
 
   % compute descriptors
   fprintf('computing descriptors ... \n');
+  fprintf('hist is %s\n', hist_type);
 
   if is_grayvalue_hist(hist_type);
     D1 = compute_descriptors(hist_func, I1_grayscale, px1, py1, match_params.feature_window_size, match_params.num_bins);

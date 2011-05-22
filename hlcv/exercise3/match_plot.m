@@ -47,7 +47,7 @@ end
 
 hold on;
 
-% this was colormap, breaked matlab
+% this was `colormap'; broke matlab
 cmap = {'b','r','m','y','g','c'};
 for i=1:size(points1,1)
    plot([points1(i,2) points2(i,2)+size(img1,2)], [points1(i,1) points2(i,1)], ['x-', cmap{mod(i,6)+1}]);

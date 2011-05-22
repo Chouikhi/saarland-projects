@@ -9,7 +9,6 @@
 
 function h = maglap_hist(img_gray, num_bins)
   
-  % TODO: assignment says to toggle these for better perf
   gradmax_range = [0 100]; % begin, size
   laplace_range = [-60 120]; % begin, size
 

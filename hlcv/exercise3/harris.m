@@ -15,7 +15,6 @@ function [px py M] = harris(img, sigma, thresh)
   [imgDx, imgDy] = gaussderiv(img, sigma);
   imgDxy = conv2(conv2(img, gaussdx(sigma), 'same'), gaussdx(sigma)', 'same');
 
-  Gsigma = sigma * 1.6;
   GimgDx2 = gaussianfilter(imgDx .^ 2, g_sigma);
   GimgDxy = gaussianfilter(imgDxy, g_sigma);
   GimgDy2 = gaussianfilter(imgDy .^ 2, g_sigma);
