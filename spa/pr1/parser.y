@@ -1,13 +1,17 @@
 {
 
-module Main where
+module Parser where
+
 import Char (isSpace, isAlpha, isDigit)
 import List (isPrefixOf, find)
 import qualified Program
 
 }
 
-%name calc
+%name parseAnalysis AnalysisData
+%name parseProgram Program
+%name parseLabel Label
+%name parseExpr Expr
 %tokentype { Token }
 %error { parseError }
 
@@ -150,7 +154,7 @@ lexer (css@(c:cs))
                              Just z -> True
                              Nothing -> False
 
-main = getContents >>= print . calc . lexer
+-- main = getContents >>= print . calc . lexer
 -- main = getContents >>= print . lexer
 
 }

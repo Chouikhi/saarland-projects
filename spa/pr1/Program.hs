@@ -5,13 +5,35 @@ module Program ( Program
                , Expr(..)
                , Var(..)
                , Atom(..)
-               , UOp
-               , BOp
+               , Direction(..)  -- move this out of here
+               , UOp(..)
+               , BOp(..)
+               , programVars
+               , labelVars
+               , evalDependantEdges
+               , programPoints
+               , prettyVar
+               , prettyPoint
+               , exprVars
                ) where
 
-import Data.List (isPrefixOf, find)
+import Data.List (isPrefixOf, find, union, sort, nub)
+import Data.Maybe (maybeToList)
+
+data Direction = Forward | Backward deriving (Show, Eq)
 
 type Program = [ Edge ]
+
+programPoints :: Program -> [Point]
+programPoints prog = nub . sort $ (map start prog) ++ (map end prog)
+
+programVars :: Program -> [Var]
+programVars es = foldr union [] lvs
+    where
+      lv :: [([Var], Maybe Var)]
+      lv = map labelVars $ map label es
+      lvs :: [[Var]]
+      lvs = map (\(vs, mv) -> vs `union` maybeToList mv) lv
 
 data Edge = Edge
         { start :: Point
@@ -20,6 +42,20 @@ data Edge = Edge
         deriving Show
 
 newtype Point = Point String deriving (Show, Eq)
+
+instance Ord Point where
+  compare (Point p1) (Point p2)
+    | p1 == p2                       = EQ
+    | p1 == "START" || p2 == "END"   = LT
+    | p1 == "END" || p2 == "START"   = GT
+    | otherwise                      = compare p1 p2
+
+startPoint = Point "START"
+endPoint = Point "END"
+
+prettyPoint :: Point -> String
+prettyPoint (Point name) = name
+
 data Label
         = Nop
         | Pos     Expr
@@ -27,26 +63,48 @@ data Label
         | Assign  Var Expr
         | Load    Var Expr
         | Store   Expr Expr
-      deriving Show
+  deriving (Show, Eq, Ord)
+
+labelVars :: Label -> ([Var], Maybe Var)
+labelVars Nop = ([], Nothing)
+labelVars (Pos e) = (exprVars e, Nothing)
+labelVars (Neg e) = (exprVars e, Nothing)
+labelVars (Assign v e) = (exprVars e, Just v)
+labelVars (Load v e) = (exprVars e, Just v)
+labelVars (Store e1 e2) = (exprVars e1 `union` exprVars e2, Nothing)
+
+evalDependantEdges :: Program -> Direction -> Point -> [(Label, Point)]
+evalDependantEdges prog dir point = map (\(Edge u lbl v) -> if dir == Forward then (lbl, u) else (lbl, v)) edges
+  where
+    edges = filter (\(Edge u lbl v) -> if dir == Forward then v == point else u == point) prog
 
 data Expr
         = AExpr Atom
         | UExpr UOp Expr
         | BExpr Expr BOp Expr
-      deriving Show
+  deriving (Show, Eq, Ord)
 
-newtype Var = Var String deriving (Show, Eq)
+exprVars :: Expr -> [Var]
+exprVars (AExpr (AtomVar v)) = [v]
+exprVars (AExpr (AtomConst _)) = []
+exprVars (UExpr _ e) = exprVars e
+exprVars (BExpr e1 _ e2) = exprVars e1 `union` exprVars e2
+
+newtype Var = Var String deriving (Show, Eq, Ord)
+
+prettyVar :: Var -> String
+prettyVar (Var name) = name
 
 data Atom
         = AtomVar Var
         | AtomConst Int
-      deriving (Show, Eq)
+      deriving (Show, Eq, Ord)
 
-data UOp = UPlus | UMinus deriving (Show, Eq)
+data UOp = UPlus | UMinus deriving (Show, Eq, Ord)
 data BOp = Plus | Minus | Times | Div
          | Equal | NotEqual
          | LessThan | GreaterThan | LessEqual | GreaterEqual
-        deriving (Show, Eq)
+        deriving (Show, Eq, Ord)
 
 instance Read UOp where
   readsPrec _ s = readsUOp s
@@ -60,26 +118,16 @@ instance Read BOp where
 readsBOp s = case (find prefix_matcher op_map) of
                   Just (ops, op) -> [(op, drop (length ops) s)]
                   Nothing        -> []
-    where
-      prefix_matcher = (\(ops, _) -> ops `isPrefixOf` s)
-      op_map = [ ("<=", LessEqual)
-               , (">=", GreaterEqual)
-               , ("==", Equal)
-               , ("!=", NotEqual)
-               , ("<",  LessThan)
-               , (">",  GreaterThan)
-               , ("+",  Plus)
-               , ("-",  Minus)
-               , ("*",  Times)
-               , ("/",  Div)
-               ]
---       | "<=" `isPrefixOf` s = [(LessEqual, drop 2 s)]
---       | ">=" `isPrefixOf` s = [(GreaterEqual, drop 2 s)]
---       | "==" `isPrefixOf` s = [(Equal, drop 2 s)]
---       | "!=" `isPrefixOf` s = [(NotEqual, drop 2 s)]
--- readsBOp ('<':cs) = [(LessThan, cs)]
--- readsBOp ('>':cs) = [(GreaterThan, cs)]
--- readsBOp ('+':cs) = [(Plus, cs)]
--- readsBOp ('-':cs) = [(Minus, cs)]
--- readsBOp ('*':cs) = [(Times, cs)]
--- readsBOp ('/':cs) = [(Div, cs)]
+  where
+    prefix_matcher = (\(ops, _) -> ops `isPrefixOf` s)
+    op_map = [ ("<=", LessEqual)
+             , (">=", GreaterEqual)
+             , ("==", Equal)
+             , ("!=", NotEqual)
+             , ("<",  LessThan)
+             , (">",  GreaterThan)
+             , ("+",  Plus)
+             , ("-",  Minus)
+             , ("*",  Times)
+             , ("/",  Div)
+             ]
