@@ -10,7 +10,7 @@ roundRobin :: Program -> TLVState
 roundRobin prog = step points init False
   where
     points = programPoints prog
-    init = [(p, vars) | p <- points]
+    init = [(p, []) | p <- points]
     vars = programVars prog
     step :: [Point] -> TLVState -> Bool -> TLVState
     step [] state False = state
