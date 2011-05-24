@@ -14,7 +14,9 @@ module Program ( Program
                , programPoints
                , prettyVar
                , prettyPoint
+               , labelExpr
                , exprVars
+               , subExpr
                ) where
 
 import Data.List (isPrefixOf, find, union, sort, nub)
@@ -73,6 +75,15 @@ labelVars (Assign v e) = (exprVars e, Just v)
 labelVars (Load v e) = (exprVars e, Just v)
 labelVars (Store e1 e2) = (exprVars e1 `union` exprVars e2, Nothing)
 
+labelExpr :: Label -> [Expr]
+labelExpr Nop = []
+labelExpr (Pos e) = [e]
+labelExpr (Neg e) = [e]
+labelExpr (Assign v e) = [e]
+labelExpr (Load v e) = [e]
+labelExpr (Store e1 e2) = [e1, e2]
+
+
 evalDependantEdges :: Program -> Direction -> Point -> [(Label, Point)]
 evalDependantEdges prog dir point = map (\(Edge u lbl v) -> if dir == Forward then (lbl, u) else (lbl, v)) edges
   where
@@ -89,6 +100,11 @@ exprVars (AExpr (AtomVar v)) = [v]
 exprVars (AExpr (AtomConst _)) = []
 exprVars (UExpr _ e) = exprVars e
 exprVars (BExpr e1 _ e2) = exprVars e1 `union` exprVars e2
+
+subExpr :: Expr -> [Expr]
+subExpr ae@(AExpr _) = [ae]
+subExpr ue@(UExpr _ e) = ue : subExpr e
+subExpr be@(BExpr e1 _ e2) = be : subExpr e1 ++ subExpr e2
 
 newtype Var = Var String deriving (Show, Eq, Ord)
 
