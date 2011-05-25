@@ -1,5 +1,6 @@
 module Program ( Program
                , Edge(..)
+               , PureEdge
                , Point(..)
                , Label(..)
                , Expr(..)
@@ -42,6 +43,9 @@ data Edge = Edge
         , label :: Label
         , end   :: Point }
         deriving Show
+
+-- holds only the information about the connected points
+type PureEdge = (Point, Point)
 
 newtype Point = Point String deriving (Show, Eq)
 

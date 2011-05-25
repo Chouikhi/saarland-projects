@@ -11,6 +11,7 @@ import qualified Program
 %name parseAnalysis AnalysisData
 %name parseProgram Program
 %name parseLabel Label
+%name parseEdge Edge
 %name parseExpr Expr
 %tokentype { Token }
 %error { parseError }
