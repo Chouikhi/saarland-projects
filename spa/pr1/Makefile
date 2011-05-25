@@ -1,10 +1,10 @@
 all: Main Tests
 
-Main: Main.o Parser.o RoundRobin.o TrulyLiveVariables.o Program.o
+Main: Main.o Parser.o RoundRobin.o TrulyLiveVariables.o Program.o AvailableExpressions.o AnalysisBase.o FixPointAlgorithmBase.o
 	ghc -o $@ $^
 
 Tests: Tests.hs Parser.hs RoundRobin.hs TrulyLiveVariables.hs \
-  Program.hs AvailableExpressions.hs
+  Program.hs AvailableExpressions.hs AnalysisBase.hs FixPointAlgorithmBase.hs
 	ghc --make -o $@ -main-is Tests $^
 
 Parser.hs: parser.y

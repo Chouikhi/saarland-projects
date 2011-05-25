@@ -119,18 +119,18 @@ root = TestList
                                  []
                                  (evalDependantEdges testProg1Parsed Backward (Point "END"))
         , TestCase $ assertEqSet "p1f"
-                                 [(sParseLabel "x = 2;", Point "START")]
+                                 [(sParseEdge "START x = 2; P1", Point "START")]
                                  (evalDependantEdges testProg1Parsed Forward (Point "P1"))
         , TestCase $ assertEqSet "p3f"
-                                 [ (sParseLabel "t = x * 21;", Point "P2")
-                                 , (sParseLabel ";", Point "P7")]
+                                 [ (sParseEdge "P2 t = x * 21; P3", Point "P2")
+                                 , (sParseEdge "P7 ; P3", Point "P7")]
                                  (evalDependantEdges testProg1Parsed Forward (Point "P3"))
         , TestCase $ assertEqSet "p1b"
-                                 [(sParseLabel "y = 36;", Point "P2")]
+                                 [(sParseEdge "P1 y = 36; P2", Point "P2")]
                                  (evalDependantEdges testProg1Parsed Backward (Point "P1"))
         , TestCase $ assertEqSet "p3b"
-                                 [ (sParseLabel "Pos(y > 0)", Point "P4")
-                                 , (sParseLabel "Neg(y > 0)", Point "P5")]
+                                 [ (sParseEdge "P3 Pos(y > 0) P4", Point "P4")
+                                 , (sParseEdge "P3 Neg(y > 0) P5", Point "P5")]
                                  (evalDependantEdges testProg1Parsed Backward (Point "P3"))
         , TestCase $ assertEqSet "all points"
                                  (map Point $ ["START", "END"] ++ map (("P" ++) . show) [1..8])

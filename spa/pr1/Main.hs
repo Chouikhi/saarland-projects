@@ -5,6 +5,6 @@ import Data.List (sort)
 import Parser
 import Program
 import RoundRobin
-import TrulyLiveVariables
+import qualified TrulyLiveVariables
 
-main = getContents >>= putStr . prettyState . sort . roundRobin . program . parseAnalysis . lexer
+main = getContents >>= putStr . TrulyLiveVariables.prettyState . sort . (TrulyLiveVariables.performAnalysis roundRobin) . program . parseAnalysis . lexer

@@ -1,24 +1,31 @@
-module TrulyLiveVariables where
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
+module TrulyLiveVariables ( performAnalysis
+                          , performOptimization
+                          , prettyState
+                          
+                         -- for testing purposes
+                          , edgeEffectTLV) where
 
+import AnalysisBase
+import FixPointAlgorithmBase
 import Program
 import Data.Maybe
 import Data.List ((\\), union, intersect, deleteBy, intersperse)
 
-type TLVCarrier = [Var]
-type TLVState = [(Point, TLVCarrier)]
+instance Carrier CarrierTLV where
 
-prettyState :: TLVState -> String
+type CarrierTLV = [Var]
+type StateTLV = State CarrierTLV
+
+prettyState :: StateTLV -> String
 prettyState plvs = unlines $ map prettyLV plvs
   where
-    prettyLV :: (Point, TLVCarrier) -> String
+    prettyLV :: (Point, CarrierTLV) -> String
     prettyLV (p, lvs) = "    " ++ prettyPoint p ++ " : {" ++ (foldr (++) "" (intersperse ", " $ map prettyVar lvs)) ++ "}"
-
-combineTLV = union  -- if a var is truly live on at least one path it is truly live at the top
-initTLV = []  -- no variables are live at the end
 
 fromJustX str m = if isJust m then fromJust m else error(str)
 
-edgeEffectTLV :: Label -> TLVCarrier -> TLVCarrier
+edgeEffectTLV :: Label -> CarrierTLV -> CarrierTLV
 edgeEffectTLV lbl inp = (inp \\ (maybeToList written)) `union`
                         if isNothing written || fromJustX "eetlv" written `elem` inp
                         then read
@@ -26,17 +33,17 @@ edgeEffectTLV lbl inp = (inp \\ (maybeToList written)) `union`
   where
     (read, written) = labelVars lbl
 
-evalTLV :: Program -> Point -> TLVState -> (TLVState, Bool)
-evalTLV prog point state = if oldd == newd then (state, False) else (newState, True)
-  where
-    edgeEffects = map (uncurry edgeEffectTLV) depData
-    depData = map (\(lbl, p) -> (lbl, fromJustX "etlv1" $ lookup p state)) depPts
-    depPts = evalDependantEdges prog Backward point
-    oldd = fromJustX "etlv2" $ lookup point state
-    newd = foldr combineTLV initTLV edgeEffects
-    newState = (point, newd) : filter ((/= point) . fst) state
-                    
--- evalTLV :: Program -> Point -> TLVState -> TLVCarrier
--- evalTLV prog point state =
---     where
---       label = lookup point prog
+initStateTLV prog = [(p, []) | p <- programPoints prog]
+
+analysis = Analysis
+  { combine = union
+  , AnalysisBase.init = []
+  , direction = Backward
+  , edgeEffect = labelToEdge edgeEffectTLV
+  }
+
+performAnalysis :: (FixPointAlgorithm CarrierTLV) -> Program -> StateTLV
+performAnalysis fpa prog = fpa analysis prog (initStateTLV prog)
+
+performOptimization :: Program -> (StateTLV) -> Program
+performOptimization = undefined

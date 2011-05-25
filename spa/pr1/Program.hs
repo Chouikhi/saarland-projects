@@ -42,7 +42,7 @@ data Edge = Edge
         { start :: Point
         , label :: Label
         , end   :: Point }
-        deriving Show
+        deriving (Show, Eq, Ord)
 
 -- holds only the information about the connected points
 type PureEdge = (Point, Point)
@@ -88,8 +88,8 @@ labelExpr (Load v e) = [e]
 labelExpr (Store e1 e2) = [e1, e2]
 
 
-evalDependantEdges :: Program -> Direction -> Point -> [(Label, Point)]
-evalDependantEdges prog dir point = map (\(Edge u lbl v) -> if dir == Forward then (lbl, u) else (lbl, v)) edges
+evalDependantEdges :: Program -> Direction -> Point -> [(Edge, Point)]
+evalDependantEdges prog dir point = map (\e@(Edge u lbl v) -> if dir == Forward then (e, u) else (e, v)) edges
   where
     edges = filter (\(Edge u lbl v) -> if dir == Forward then v == point else u == point) prog
 
