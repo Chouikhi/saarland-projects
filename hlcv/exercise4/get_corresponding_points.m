@@ -1,0 +1,56 @@
+%
+% computes the coordinates of potential matching points between two images
+% 
+% img1 : image 1
+% img2 : image 2
+%
+% px1 the x coordinates of the potential matching points in image 1
+% py1 the y coordinates of the potential matching points in image 1
+% px2 the x coordinates of the potential matching points in image 2
+% py2 the y coordinates of the potential matching points in image 2
+%
+function [px1, py1, px2, py2] = get_corresponding_points(img1, img2)
+    
+   %  parameters, tested and working for the example images
+
+   % Harris detector 
+   sigma = 2;
+   threshold = 3000;
+
+   % dxdy descriptor
+   feature_window_size = 50;
+   num_bins = 8;
+   distanceThreshold = 0.025;
+
+   % a) detection and description
+   % Harris detection
+
+   % ... 
+   
+   % discarding points too close to the border
+   % consider feature_window_size for determining how much to discard
+
+   % ... 
+
+
+   % computing descriptors
+
+   % ...
+
+
+  % b) distance computation
+
+   D = get_point_dist(D1, D2);
+
+   % c) best matches, fill function bestMatches
+   [id1, id2, matchedScores] = match_points(D, distanceThreshold, 1);
+
+   % extract pairs from ids
+ 
+   % ... 
+
+
+
+
+   
+
