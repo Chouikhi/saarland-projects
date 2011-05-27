@@ -5,7 +5,9 @@ import Test.HUnit
 import Data.List (sort)
 
 import TrulyLiveVariables
+import AnalysisBase
 import AvailableExpressions
+import RoundRobin
 import Program
 import Parser
 
@@ -18,7 +20,7 @@ p = Point
 
 assertEqSet str e1 e2 = assertEqual str (sort e1) (sort e2)
 
-testProg1 = unlines[
+testProg1 = unlines [
     "START  x = 2;           P1",
     "P1     y = 36;          P2",
     "P2     t = x * 21;      P3",
@@ -31,6 +33,14 @@ testProg1 = unlines[
     "P8     M[0] = x + t;    END"]
 
 testProg1Parsed = sParseProgram testProg1
+
+testProg2 = unlines [
+  "START x = y + 1; END"]
+
+testProg2Parsed = sParseProgram testProg2
+
+
+-- testProg1NTExprs = map sParseExpr [ "x * 21", "y > 0", "y - 1", "x + t" ]
 
 
 root = TestList
@@ -67,48 +77,169 @@ root = TestList
 
       , TestLabel "AvailableExpressions Edge effects" $ TestList
         [ TestCase $ assertEqual "nop"
-                                 [ ((p "P1", p "P2"), sParseExpr "x + 3") ]
+                                 [ (Just (p "P1", p "P2"), sParseExpr "x + 3") ]
                                  (edgeEffectAE (sParseEdge "P2 ; P3")
-                                               [((p "P1", p "P2"), sParseExpr "x + 3")])
+                                               [(Just (p "P1", p "P2"), sParseExpr "x + 3")])
+        , TestCase $ assertEqSet "compute already available expr"
+                                 [ (Just (p "P1", p "P2"), sParseExpr "y + 1")
+                                 ]
+                                 (edgeEffectAE (sParseEdge "P3 x = y + 1; P4")
+                                               [(Just (p "P1", p "P2"), sParseExpr "y + 1")
+                                               ])
+        , TestCase $ assertEqSet "compute already available expr with unknown point"
+                                 [ (Just (p "P3", p "P4"), sParseExpr "y + 1")
+                                 ]
+                                 (edgeEffectAE (sParseEdge "P3 x = y + 1; P4")
+                                               [(Nothing, sParseExpr "y + 1")
+                                               ])
+        , TestCase $ assertEqSet "assign on empty set of AE"
+                                 [ (Just (p "START", p "END"), sParseExpr "y + 1")
+                                 ]
+                                 (edgeEffectAE (sParseEdge "START x = y + 1; END")
+                                               [])
         , TestCase $ assertEqSet "assign new expr to new var"
-                                 [ ((p "P1", p "P2"), sParseExpr "z + 5")
-                                 , ((p "P2", p "P3"), sParseExpr "y + 3")
+                                 [ (Just (p "P1", p "P2"), sParseExpr "z + 5")
+                                 , (Just (p "P2", p "P3"), sParseExpr "y + 3")
                                  ]
                                  (edgeEffectAE (sParseEdge "P2 x = y + 3; P3")
-                                               [((p "P1", p "P2"), sParseExpr "z + 5")])
+                                               [(Just (p "P1", p "P2"), sParseExpr "z + 5")])
         , TestCase $ assertEqSet "assign new expr to used var"
-                                 [ ((p "P1", p "P2"), sParseExpr "z + 5")
-                                 , ((p "P3", p "P4"), sParseExpr "y + 5")
-                                 , ((p "P4", p "P5"), sParseExpr "y + 10")
+                                 [ (Just (p "P1", p "P2"), sParseExpr "z + 5")
+                                 , (Just (p "P3", p "P4"), sParseExpr "y + 5")
+                                 , (Just (p "P4", p "P5"), sParseExpr "y + 10")
                                  ]
                                  (edgeEffectAE (sParseEdge "P4 x = y + 10; P5")
-                                               [ ((p "P1", p "P2"), sParseExpr "z + 5")
-                                               , ((p "P2", p "P3"), sParseExpr "x + y")
-                                               , ((p "P3", p "P4"), sParseExpr "y + 5")
+                                               [ (Just (p "P1", p "P2"), sParseExpr "z + 5")
+                                               , (Just (p "P6", p "P7"), sParseExpr "x + y")
+                                               , (Just (p "P2", p "P3"), sParseExpr "x + y")
+                                               , (Just (p "P3", p "P4"), sParseExpr "y + 5")
                                                ])
         , TestCase $ assertEqSet "update variable"
-                                 [ ((p "P1", p "P2"), sParseExpr "z + 5") ]
+                                 [ (Just (p "P1", p "P2"), sParseExpr "z + 5") ]
                                  (edgeEffectAE (sParseEdge "P4 y = y + 10; P5")
-                                               [ ((p "P1", p "P2"), sParseExpr "z + 5")
-                                               , ((p "P2", p "P3"), sParseExpr "x + y")
-                                               , ((p "P3", p "P4"), sParseExpr "y + 5")
+                                               [ (Just (p "P1", p "P2"), sParseExpr "z + 5")
+                                               , (Just (p "P2", p "P3"), sParseExpr "x + y")
+                                               , (Just (p "P3", p "P4"), sParseExpr "y + 5")
                                                ])
         , TestCase $ assertEqSet "multiple expr"
-                                 [ ((p "P1", p "P2"), sParseExpr "z + 5")
-                                 , ((p "P4", p "P5"), sParseExpr "z > 3")
+                                 [ (Just (p "P1", p "P2"), sParseExpr "z + 5")
+                                 , (Just (p "P4", p "P5"), sParseExpr "z > 3")
                                  ]
                                  (edgeEffectAE (sParseEdge "P4 Pos(z > 3) P5")
-                                               [ ((p "P1", p "P2"), sParseExpr "z + 5") ])
+                                               [ (Just (p "P1", p "P2"), sParseExpr "z + 5") ])
         , TestCase $ assertEqSet "load new expr to used var"
-                                 [ ((p "P1", p "P2"), sParseExpr "z + 5")
-                                 , ((p "P3", p "P4"), sParseExpr "y + 5")
-                                 , ((p "P4", p "P5"), sParseExpr "y + 10")
+                                 [ (Just (p "P1", p "P2"), sParseExpr "z + 5")
+                                 , (Just (p "P3", p "P4"), sParseExpr "y + 5")
+                                 , (Just (p "P4", p "P5"), sParseExpr "y + 10")
                                  ]
                                  (edgeEffectAE (sParseEdge "P4 x = M[y + 10]; P5")
-                                               [ ((p "P1", p "P2"), sParseExpr "z + 5")
-                                               , ((p "P2", p "P3"), sParseExpr "x + y")
-                                               , ((p "P3", p "P4"), sParseExpr "y + 5")
+                                               [ (Just (p "P1", p "P2"), sParseExpr "z + 5")
+                                               , (Just (p "P2", p "P3"), sParseExpr "x + y")
+                                               , (Just (p "P3", p "P4"), sParseExpr "y + 5")
                                                ])
+        ]
+
+      , TestLabel "AvailableExpressions smiley_intersection" $ TestList
+        [ TestCase $ assertEqSet "no common exprs"
+                                 []
+                                 (smiley_intersection [ (Just (p "P1", p "P2"), sParseExpr "x + 5")
+                                                      ]
+                                                      [ (Just (p "P5", p "p6"), sParseExpr "y + 5")
+                                                      ])
+        , TestCase $ assertEqSet "one common expr"
+                                 [ (Just (p "P1", p "P2"), sParseExpr "x + 5")
+                                 , (Just (p "P5", p "P6"), sParseExpr "x + 5")
+                                 ]
+                                 (smiley_intersection [ (Just (p "P1", p "P2"), sParseExpr "x + 5")
+                                                      , (Just (p "P2", p "P3"), sParseExpr "z + 5")
+                                                      ]
+                                                      [ (Just (p "P5", p "P6"), sParseExpr "x + 5")
+                                                      , (Just (p "P4", p "P7"), sParseExpr "x + y")
+                                                      ])
+        , TestCase $ assertEqSet "several common expr"
+                                 [ (Just (p "P1", p "P2"), sParseExpr "x + 5")
+                                 , (Just (p "P1", p "P4"), sParseExpr "x + 5")
+                                 , (Just (p "P1", p "P9"), sParseExpr "x + 5")
+                                 , (Just (p "P5", p "P6"), sParseExpr "x + 5")
+                                 , (Just (p "P2", p "P8"), sParseExpr "x + 5")
+                                 , (Just (p "P7", p "P6"), sParseExpr "z + 5")
+                                 , (Just (p "P2", p "P3"), sParseExpr "z + 5")
+                                 ]
+                                 (smiley_intersection [ (Just (p "P1", p "P2"), sParseExpr "x + 5")
+                                                      , (Just (p "P1", p "P4"), sParseExpr "x + 5")
+                                                      , (Just (p "P2", p "P3"), sParseExpr "z + 5")
+                                                      ]
+                                                      [ (Just (p "P5", p "P6"), sParseExpr "x + 5")
+                                                      , (Just (p "P1", p "P9"), sParseExpr "x + 5")
+                                                      , (Just (p "P2", p "P8"), sParseExpr "x + 5")
+                                                      , (Just (p "P4", p "P7"), sParseExpr "x + y")
+                                                      , (Just (p "P7", p "P6"), sParseExpr "z + 5")
+                                                      ])
+        , TestCase $ assertEqSet "something eats nothing"
+                                 [ (Just (p "P1", p "P2"), sParseExpr "x + 5")
+                                 ]
+                                 (smiley_intersection [ (Just (p "P1", p "P2"), sParseExpr "x + 5")
+                                                      ]
+                                                      [ (Nothing,               sParseExpr "x + 5")
+                                                      ])
+        , TestCase $ assertEqSet "2 x nothing == nothing"
+                                 [ (Nothing, sParseExpr "x + 5")
+                                 ]
+                                 (smiley_intersection [ (Nothing, sParseExpr "x + 5")
+                                                      ]
+                                                      [ (Nothing, sParseExpr "x + 5")
+                                                      ])
+        ]
+
+      , TestLabel "AvailableExpressions Analysis" $ TestList
+        [ TestCase $ assertEqSet "AE prog2"
+                                 [ (p "START", [])
+                                 , (p "END", [(Just (p "START", p "END"), sParseExpr "y + 1")])
+                                 ]
+                                 (AvailableExpressions.performAnalysis roundRobin testProg2Parsed)
+        ]
+
+      , TestLabel "program eval" $ TestList
+        [
+        --  TestCase $ assertEqual "eval 1"
+        --                         ( [ (p "START", [])
+        --                           , (p "END",   [(Nothing, sParseExpr "y + 1")])
+        --                           ]
+        --                         , False)
+        --                         (AnalysisBase.eval
+        --                               AvailableExpressions.analysis
+        --                               testProg2Parsed
+        --                               (p "START")
+        --                               (AvailableExpressions.initStateAE testProg2Parsed))
+        --                               -- [ (p "START", [((p "START", p "END"), sParseExpr "y + 1")])
+        --                               -- , (p "END", [((p "START", p "END"), sParseExpr "y + 1")])
+        --                               -- ]
+        --, TestCase $ assertEqual "eval 2"
+        --                         (sort $
+        --                           [ (p "START", [])
+        --                           , (p "END",   [(Just (p "START", p "END"), sParseExpr "y + 1")])
+        --                           ]
+        --                         , False)
+        --                         (sort $
+        --                          AnalysisBase.eval
+        --                               AvailableExpressions.analysis
+        --                               testProg2Parsed
+        --                               (p "END")
+        --                               [ (p "START", [])
+        --                               , (p "END",   [(Nothing, sParseExpr "y + 1")])
+        --                               ])
+          TestCase $ assertEqual "depEdges"
+                                 [ (sParseEdge "START x = y + 1; END", p "START")
+                                 ]
+                                 (evalDependantEdges testProg2Parsed
+                                                     (direction AvailableExpressions.analysis)
+                                                     (p "END"))
+        , TestCase $ assertEqSet "initStateAE"
+                                 [ (p "START", [])
+                                 , (p "END",   [(Nothing, sParseExpr "y + 1")])
+                                 ]
+                                 (AvailableExpressions.initStateAE testProg2Parsed)
+                                 
         ]
 
       , TestLabel "program" $ TestList

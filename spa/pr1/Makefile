@@ -14,4 +14,4 @@ Parser.hs: parser.y
 	ghc --make $^
 
 clean:
-	rm -rf *.o *.hi
+	rm -rf *.o *.hi Main Tests

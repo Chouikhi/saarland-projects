@@ -21,7 +21,9 @@ prettyState :: StateTLV -> String
 prettyState plvs = unlines $ map prettyLV plvs
   where
     prettyLV :: (Point, CarrierTLV) -> String
-    prettyLV (p, lvs) = "    " ++ prettyPoint p ++ " : {" ++ (foldr (++) "" (intersperse ", " $ map prettyVar lvs)) ++ "}"
+    prettyLV (p, lvs) = "    " ++ prettyPoint p ++ " : {"
+                    ++ (foldr (++) "" (intersperse ", " $ map prettyVar lvs))
+                    ++ "}"
 
 fromJustX str m = if isJust m then fromJust m else error(str)
 
@@ -37,7 +39,6 @@ initStateTLV prog = [(p, []) | p <- programPoints prog]
 
 analysis = Analysis
   { combine = union
-  , AnalysisBase.init = []
   , direction = Backward
   , edgeEffect = labelToEdge edgeEffectTLV
   }
