@@ -1,3 +1,6 @@
+% Implement a function gaussdx.m for creating a Gaussian derivative filter in 1D according to the following
+% equation
+
 function D = gaussdx(x, sigma)
-  D = - x .* 2 .* exp(- (x .* x) ./ sigma ^ 2) ./ (sqrt(2 * pi) * sigma ^ 3);
+  D = -2.*x.*exp(-(x.*x) ./ (sigma^2)) ./ (sqrt(2*pi)*sigma.^3);
 end
