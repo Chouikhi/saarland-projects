@@ -2,6 +2,7 @@ module Program ( Program
                , Edge(..)
                , PureEdge
                , Point(..)
+               , startPoint, endPoint
                , Label(..)
                , Expr(..)
                , Var(..)
@@ -13,6 +14,7 @@ module Program ( Program
                , labelVars
                , evalDependantEdges
                , programPoints
+               , prettyExpr
                , prettyVar
                , prettyPoint
                , labelExpr
@@ -21,7 +23,7 @@ module Program ( Program
                ) where
 
 import Data.List (isPrefixOf, find, union, sort, nub)
-import Data.Maybe (maybeToList)
+import Data.Maybe (maybeToList, fromJust)
 
 data Direction = Forward | Backward deriving (Show, Eq)
 
@@ -110,6 +112,12 @@ subExpr ae@(AExpr _) = [ae]
 subExpr ue@(UExpr _ e) = ue : subExpr e
 subExpr be@(BExpr e1 _ e2) = be : subExpr e1 ++ subExpr e2
 
+prettyExpr :: Expr -> String
+prettyExpr (AExpr (AtomVar v)) = prettyVar v
+prettyExpr (AExpr (AtomConst c)) = show c
+prettyExpr (UExpr uop expr) = prettyUOp uop ++ prettyExpr expr
+prettyExpr (BExpr e1 bop e2) = prettyExpr e1 ++ " " ++ prettyBOp bop ++ " " ++ prettyExpr e2
+
 newtype Var = Var String deriving (Show, Eq, Ord)
 
 prettyVar :: Var -> String
@@ -125,6 +133,23 @@ data BOp = Plus | Minus | Times | Div
          | Equal | NotEqual
          | LessThan | GreaterThan | LessEqual | GreaterEqual
         deriving (Show, Eq, Ord)
+
+prettyUOp uop = fromJust $ lookup uop uop2string
+  where uop2string = [ (UPlus, "+")
+                     , (UMinus, "-")
+                     ]
+prettyBOp bop = fromJust $ lookup bop bop2string
+  where bop2string = [ (Plus, "+")
+                     , (Minus, "-")
+                     , (Times, "*")
+                     , (Div, "/")
+                     , (Equal, "==")
+                     , (NotEqual, "!=")
+                     , (LessThan, "<")
+                     , (GreaterThan, ">")
+                     , (LessEqual, "<=")
+                     , (GreaterEqual, ">=")
+                     ]
 
 instance Read UOp where
   readsPrec _ s = readsUOp s
