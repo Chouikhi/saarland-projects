@@ -14,21 +14,33 @@
 % matchedScores: the distance of the returned matches
 %
 
-% XXX: nMatches is not honored for both dimensions.
-function [id1, id2, matchedScores] = match_points(D, thresh, nMatches)
-  mask = (D < thresh);
-  [vals, inds] = sort(D.*mask);
-  
-  id1 = [];
-  id2 = [];
-  matchedScores = [];
+function [id1, id2, ms] = match_points2(D, thresh, nMatches)
 
-  for col = 1:size(D,2)
-    [i j v] = find(vals(:,col), nMatches);
-    row_ix = inds(:,col)';
-    id1 = [id1 row_ix(i)];
-    col_ix = ones(1, length(i)) .* col;
-    id2 = [id2 col_ix];
-    matchedScores = [matchedScores v'];
+  mask1 = thresh_mask(D, thresh, nMatches);
+  mask2 = thresh_mask(D', thresh, nMatches);
+
+  mask = mask1 & mask2';
+  
+  % linear indexes
+  lid = find(mask);
+  % row/col indexes
+  [id1, id2] = ind2sub(size(mask), lid);
+  ms = D(lid);
+
+end
+
+% the mask represents the elements in D, which are less than thresh and also
+% no more than nMatches per column (if more than nMatches are less than thresh
+% then the smallest nMatches are picked)
+function mask = thresh_mask(D, thresh, nMatches)
+
+  Ds = sort(D);
+
+  mask = [];
+  for col = 1:size(D, 2)
+    % pick either the the worst point or the threshold for cutoff
+    cutoff = min(Ds(nMatches, col), thresh);
+    mask = [mask (D(:, col) <= cutoff)];
   end
+
 end
