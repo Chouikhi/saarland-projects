@@ -1,3 +1,6 @@
+%  img_gray - input grayvalue image
+%  num_bins - number of bins used to discretize each dimension, total number of bins in the histogram should be num_bins^2
+%
 function h=dxdy_hist(img_gray, num_bins)
 
   assert(length(size(img_gray)) == 2, 'image dimension mismatch');
@@ -36,6 +39,10 @@ function h=dxdy_hist(img_gray, num_bins)
   end
 
   %normalize the histogram such that its integral (sum) is equal 1
-  h=h/sum(sum(sum(h)));
-  h=reshape(h,(num_bins+1)^2,1);
+  %h=h/sum(sum(sum(h)));
+  %h=reshape(h,(num_bins+1)^2,1);
+  h = h(:);
+  h = h ./ sum(h);
+
+end
 

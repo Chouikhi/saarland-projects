@@ -1,6 +1,6 @@
 show_q1 = true;
 show_q2 = false;
-show_q3 = true; 
+show_q3 = false; 
 
 %
 % Question 1: interest point detection and matching

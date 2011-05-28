@@ -4,7 +4,7 @@
 %% 
 %%%%%%%%%%%%
 %% img    : the image
-%% sigma  : the variance of the gaussian derivvative
+%% sigma  : the variance of the gaussian derivative
 %% thresh : threshold for determination of interest points
 %%
 %% px: the x coordinates of the interest points in the image

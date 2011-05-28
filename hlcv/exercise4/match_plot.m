@@ -8,7 +8,7 @@ function h = match_plot(img1,img2,points1,points2)
 %
 %   origin is the top left of the image
 %   x axis pointing right, y axis pointing down.
-%   points 2 has to be the same size as points 1
+%   points2 has to be the same size as points1
 %
 %   if 2 images have different size, the smaller one is rescaled.
 %
@@ -49,7 +49,8 @@ hold on;
 
 colors = {'b','r','m','y','g','c'};
 for i=1:size(points1,1)
-   plot([points1(i,2) points2(i,2)+size(img1,2)], [points1(i,1) points2(i,1)], ['x-', colors{mod(i,6)+1}]);
+   plot([points1(i,2) points2(i,2)+size(img1,2)], [points1(i,1) points2(i,1)], ['x ', colors{mod(i,6)+1}]);
+   %plot([points1(i,2) points2(i,2)+size(img1,2)], [points1(i,1) points2(i,1)], ['x-', colors{mod(i,6)+1}]);
 end
 
 hold off;
