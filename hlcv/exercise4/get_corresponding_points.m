@@ -24,32 +24,52 @@ function [px1, py1, px2, py2] = get_corresponding_points(img1, img2)
 
   % a) detection and description
   % Harris detection
+
   % We are not interested in the scores of the Harris operator at each pixel
   [x1 y1 ] = harris(img1, sigma, threshold);
   [x2 y2 ] = harris(img2, sigma, threshold);
 
   % discarding points too close to the border
   % consider feature_window_size for determining how much to discard
-  %TODO
+
+  % TODO(zori): trimming does not seem to work nicely; is it the scaling done
+  % before displaying that ruins the symmetry of point distribution?
+  % NOTE(zori): the maxx is the second dimension of the image and maxy - the first
+  [maxy1 maxx1] = size(img1);
+  [maxy2 maxx2] = size(img2);
+  [x1 y1] = trim_border(x1, y1, maxx1, maxy1, feature_window_size);
+  [x2 y2] = trim_border(x2, y2, maxx2, maxy2, feature_window_size);
 
   % To verify what you have done so far, plot the interest points into the respective images
-  figure(1);
-  set(gcf, 'Name', 'Interest points detection');
-  p1 = make_points(x1, y1);
-  p2 = make_points(x2, y2);
-  match_plot(img1, img2, p1, p2);
+  % figure(1);
+  % set(gcf, 'Name', 'Interest points detection');
+  % p1 = make_points(x1, y1);
+  % p2 = make_points(x2, y2);
+  % match_plot(img1, img2, p1, p2);
 
   % computing descriptors using dx-dy histogram
-  D1 = dxdy_hist(img1, num_bins);
-  D2 = dxdy_hist(img2, num_bins);
+  D1 = compute_descriptors(@dxdy_hist, img1, x1, y1, feature_window_size, num_bins);
+  D2 = compute_descriptors(@dxdy_hist, img2, x2, y2, feature_window_size, num_bins);
 
   % b) distance computation
   D = get_point_dist(D1, D2);
 
-  % c) best matches, fill function make_points
+  % c) best matches, fill function match_points
   [id1, id2, matchedScores] = match_points(D, distanceThreshold, 1);
 
   % extract pairs from ids
+  assert(isequal(size(id1), size(id2)));
+  px1 = x1(id1);
+  py1 = y1(id1);
+  px2 = x2(id2);
+  py2 = y2(id2);
+
+  figure(2);
+  set(gcf, 'Name', 'Correspondences found');
+  % NOTE: WTF am I supposed to come up with Idx and Dist?
+  Idx = 1:min(length(px1), length(px2));
+  Dist = matchedScores;
+  displaymatches(img1, px1, py1, img2, px2, py2, Idx, Dist, 15);
 end
 
 % helper routine to make matrix of pairs of (x y) point coordinates out
@@ -62,10 +82,26 @@ function points = make_points(x, y)
     points = [points; x(i) y(i)];
   end
 end
- 
 
+% helper routine to remove points in the border of the image
+% points matrix is of the form
+% [x1 x2 x3
+%  y1 y2 y3]
 
-
-
-   
-
+function [xx, yy] = trim_border(xs, ys, maxx, maxy, border_size)
+  assert(isequal(size(xs), size(ys)), 'points dimensions should agree');
+  fprintf('trim points near border; %d %d %d\n', maxx, maxy, border_size);
+  xx = [];
+  yy = [];
+  for i = 1:size(xs)
+    x = xs(i);
+    y = ys(i);
+    % TODO(zori): style issue: where should the sign be
+    % when using multiple lines for an expression?
+    if  border_size < x && x < maxx - border_size && ...
+        border_size < y && y < maxy - border_size
+      xx = [xx x];
+      yy = [yy y];
+    end
+  end
+end

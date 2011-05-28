@@ -8,7 +8,7 @@
 % nMatches  : the maximal amount of matches for each point. No point is
 %             allowed to occur in more than that value in the found pairs.
 %
-% id1 : array of indices of the matching pairs in image 1, a line index in D
+% id1 : array of indices of the matching pairs in image 1, a row index in D
 % id2 : array of indices of the matching pairs in image 2, a column index in D
 %
 % matchedScores: the distance of the returned matches

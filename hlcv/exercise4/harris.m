@@ -24,4 +24,7 @@ function [px py M] = harris( img, sigma, thresh )
   M = imgDet - 0.06*imgTrace.^2;
   nmsM = nonmaxsup2d( M );
 
+  % NOTE(zori): these are switched because
+  % y coordinate indexes into the rows, and x coordinate - into the columns
   [py px] = find(nmsM > thresh);
+end

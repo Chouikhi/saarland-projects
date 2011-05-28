@@ -1,5 +1,5 @@
 function d = dist_chi2(x,y)
-  assert(all(size(x) == size(y)), 'need 2 structures of equal dimensions');
+  assert(isequal(size(x), size(y)), 'need 2 structures of equal dimensions');
   
   d1 = (x-y).^2;
   d2 = x+y;
