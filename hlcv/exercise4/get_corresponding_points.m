@@ -24,20 +24,18 @@ function [px1, py1, px2, py2] = get_corresponding_points(img1, img2)
 
   % a) detection and description
   % Harris detection
-
+  %
   % We are not interested in the scores of the Harris operator at each pixel
-  fprintf('harris 1\n');
+  fprintf('harris . . .\n');
   [x1 y1 ] = harris(img1, sigma, threshold);
-  fprintf('harris 2\n');
   [x2 y2 ] = harris(img2, sigma, threshold);
-  fprintf('harris end\n');
+  fprintf('harris done\n');
 
   % discarding points too close to the border
   % consider feature_window_size for determining how much to discard
-
-  % TODO(zori): trimming does not seem to work nicely; is it the scaling done
-  % before displaying that ruins the symmetry of point distribution?
-  % NOTE(zori): the maxx is the second dimension of the image and maxy - the first
+  %
+  % NOTE(zori): the maxx is the second dimension of the image
+  % and maxy - the first
   [maxy1 maxx1] = size(img1);
   [maxy2 maxx2] = size(img2);
   fprintf('trimming borders . . .\n');
@@ -45,7 +43,7 @@ function [px1, py1, px2, py2] = get_corresponding_points(img1, img2)
   [x2 y2] = trim_border(x2, y2, maxx2, maxy2, floor(feature_window_size / 2));
   fprintf('trimming borders done\n');
 
-  % To verify what you have done so far, plot the interest points into the respective images
+  % to verify what we have done so far, plot the interest points on the images
   % figure(1);
   % set(gcf, 'Name', 'Interest points detection');
   % p1 = make_points(x1, y1);
@@ -97,10 +95,6 @@ function points = make_points(x, y)
 end
 
 % helper routine to remove points in the border of the image
-% points matrix is of the form
-% [x1 x2 x3
-%  y1 y2 y3]
-
 function [xx, yy] = trim_border(xs, ys, maxx, maxy, border_size)
   assert(isequal(size(xs), size(ys)), 'points dimensions should agree');
   fprintf('trim points near border; %d %d %d\n', maxx, maxy, border_size);
