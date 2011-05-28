@@ -13,8 +13,10 @@
 %
 % matchedScores: the distance of the returned matches
 %
+
+% XXX: nMatches is not honored for both dimensions.
 function [id1, id2, matchedScores] = match_points(D, thresh, nMatches)
-  mask = (D < thresh) - eye(size(D,1), size(D,2));
+  mask = (D < thresh);
   [vals, inds] = sort(D.*mask);
   
   id1 = [];
@@ -22,8 +24,7 @@ function [id1, id2, matchedScores] = match_points(D, thresh, nMatches)
   matchedScores = [];
 
   for col = 1:size(D,2)
-    [i j v] = find(vals(:,col).*(vals(:,col)>0), nMatches);
-    assert(all(j), 'column indexes should be (all) 1');
+    [i j v] = find(vals(:,col), nMatches);
     row_ix = inds(:,col)';
     id1 = [id1 row_ix(i)];
     col_ix = ones(1, length(i)) .* col;

@@ -23,6 +23,6 @@ function D = compute_descriptors(desc_func, img, px, py, m, bins)
     imgWin = img(miny:maxy, minx:maxx, :);  
 
     hist = desc_func(imgWin, bins);
-    D(i,:) = hist';
+    D(i, :) = hist';
   end
 end
