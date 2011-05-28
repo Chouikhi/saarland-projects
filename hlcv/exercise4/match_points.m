@@ -14,6 +14,20 @@
 % matchedScores: the distance of the returned matches
 %
 function [id1, id2, matchedScores] = match_points(D, thresh, nMatches)
- 
-  % ... 
+  mask = (D < thresh) - eye(size(D,1), size(D,2));
+  [vals, inds] = sort(D.*mask);
+  
+  id1 = [];
+  id2 = [];
+  matchedScores = [];
 
+  for col = 1:size(D,2)
+    [i j v] = find(vals(:,col).*(vals(:,col)>0), nMatches);
+    assert(all(j), 'column indexes should be (all) 1');
+    row_ix = inds(:,col)';
+    id1 = [id1 row_ix(i)];
+    col_ix = ones(1, length(i)) .* col;
+    id2 = [id2 col_ix];
+    matchedScores = [matchedScores v'];
+  end
+end
