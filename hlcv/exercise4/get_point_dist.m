@@ -9,5 +9,11 @@
 % D    : Distance matrix, each entry corresponds to a possible pair
 %
 function D = get_point_dist(D1,D2)
-
-  % ...
+  D = zeros(length(D1), length(D2));
+  for i = 1:length(D1)
+    for j = 1:length(D2)
+      % TODO: Get dimensions right
+      D(i,j) = dist_chi2(D1(i), D2(j));
+    end
+  end
+end
