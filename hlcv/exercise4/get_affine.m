@@ -6,4 +6,5 @@
 %
 
 function M = get_affine(p1, p2)
+  M = p2 / p1;
 end

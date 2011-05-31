@@ -5,8 +5,8 @@ function test_get_affine
   rand('seed', 1);
   randn('seed', 1);
 
-  x = rand(10, 1);
-  y = rand(10, 1);
+  x = rand(N, 1);
+  y = rand(N, 1);
 
   % 
   % transform points
@@ -65,5 +65,4 @@ function test_get_affine
  
   fprintf('recovered affine transformation: \n');
   disp(M2);
-
- 
+end
