@@ -1,6 +1,6 @@
 %
 % estimates the homography between two images by using potential 
-% matching points between the images. Ransac is used for computation of
+% matching points between the images. RANSAC is used for computation of
 % the homography. Use the function get_hom.m in order to estimate homography
 % from point correspondences.
 % 
@@ -12,13 +12,13 @@
 % img1 : image 1
 % img2 : image 2
 %
-% H    : Best estimated homography relating both input images using ransac
+% H    : Best estimated homography relating both input images using RANSAC
 % 
 function H = get_ransac_hom(x1,y1,x2,y2,img1,img2)
 
   %% assume a conservative probability for picking a pair of corresponding 
   %% points and estimate the amount of iterations N necessary to pick four
-  %% true correspondances with, lets say 99 percent probability
+  %% true correspondances with, let's say, 99 percent probability
   
   % example: assume probability of true match : pInlier
   % -> all 4 sample pairs match: pInlier^4
