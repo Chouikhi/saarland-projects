@@ -98,17 +98,10 @@ end
 function [xx, yy] = trim_border(xs, ys, maxx, maxy, border_size)
   assert(isequal(size(xs), size(ys)), 'points dimensions should agree');
   fprintf('trim points near border; %d %d %d\n', maxx, maxy, border_size);
-  xx = [];
-  yy = [];
-  for i = 1:size(xs)
-    x = xs(i);
-    y = ys(i);
-    % TODO(zori): style issue: where should the sign be
-    % when using multiple lines for an expression?
-    if  border_size < x && x < maxx - border_size && ...
-        border_size < y && y < maxy - border_size
-      xx = [xx x];
-      yy = [yy y];
-    end
-  end
+  xm = (border_size < xs) & (xs < maxx - border_size);
+  ym = (border_size < ys) & (ys < maxy - border_size);
+  % linear ids of good points
+  lid = find(xm & ym);
+  xx = xs(lid)';
+  yy = ys(lid)';
 end
