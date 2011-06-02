@@ -14,7 +14,7 @@
 % matchedScores: the distance of the returned matches
 %
 
-function [id1, id2, ms] = match_points2(D, thresh, nMatches)
+function [id1, id2, ms] = match_points(D, thresh, nMatches)
 
   mask1 = thresh_mask(D, thresh, nMatches);
   mask2 = thresh_mask(D', thresh, nMatches);
