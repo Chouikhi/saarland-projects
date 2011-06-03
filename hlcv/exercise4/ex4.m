@@ -44,10 +44,10 @@ if show_q3
   %
 
   % contains a) and b)
-  imgRes = pan_sample(img1,img2,H,300,150);
+  %% imgRes = pan_sample(img1,img2,H,300,150);
 
-  % display result image
-  figure(5);
-  clf;
-  imshow(imgRes);
+  %% % display result image
+  %% figure(5);
+  %% clf;
+  %% imshow(imgRes);
 end 
