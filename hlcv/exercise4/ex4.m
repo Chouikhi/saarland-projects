@@ -1,6 +1,11 @@
-show_q1 = true;
+show_q1 = false;
 show_q2 = false;
-show_q3 = false; 
+show_q3 = true;
+
+x1 = [];
+y1 = [];
+x2 = [];
+y2 = [];
 
 %
 % Question 1: interest point detection and matching
@@ -13,7 +18,8 @@ if show_q1
   % detection, description and matching
   % contains a) b) c) and d)
   [x1,y1,x2,y2] = get_corresponding_points(img1, img2);
-end 
+  save interest_points x1 y1 x2 y2 img1 img2;
+end
 
 %
 % Question 2: fitting the affine transformation
@@ -25,10 +31,12 @@ end
 % Homography Estimation with ransac
 
 if show_q3
+  if length(x1) == 0
+    load interest_points;
+  end
 
   % contains a) and b)
   H = get_ransac_hom(x1,y1,x2,y2,img1,img2);
-
 
   %
   % Question 3
