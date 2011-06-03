@@ -44,10 +44,14 @@ if show_q3
   %
 
   % contains a) and b)
-  %% imgRes = pan_sample(img1,img2,H,300,150);
+  imgRes = pan_sample(img1,img2,H,300,150);
+  %imgRes = pan_sample(img1,img2,H,30,150);
 
-  %% % display result image
-  %% figure(5);
-  %% clf;
-  %% imshow(imgRes);
+  % display result image
+  figure(5);
+  clf;
+  % NOTE(zori): without this - no work :)
+  colormap gray;
+  imshow(uint8(imgRes));
+  % imagesc(uint8(imgRes));
 end 

@@ -62,13 +62,13 @@ function H = get_ransac_hom(x1,y1,x2,y2,img1,img2)
     if num_inliers > best_num_inliers
       best_num_inliers = num_inliers;
       best_H = H_est;
-      figure(3);
-      clf;
-      plot(x1, y1, 'b.', 'MarkerSize', 30);
-      hold on;
-      plot(x2, y2, 'r.', 'MarkerSize', 30);
-      plot(transformed_points(1, :), transformed_points(2, :), ...
-        'go', 'MarkerSize', 10, 'LineWidth', 3);
+      % figure(3);
+      % clf;
+      % plot(x1, y1, 'b.', 'MarkerSize', 30);
+      % hold on;
+      % plot(x2, y2, 'r.', 'MarkerSize', 30);
+      % plot(transformed_points(1, :), transformed_points(2, :), ...
+      %   'go', 'MarkerSize', 10, 'LineWidth', 3);
       % TODO(zori): Use all of the inlier points to re-estimate the amount
       % of iterations needed
     end
@@ -83,31 +83,31 @@ function H = get_ransac_hom(x1,y1,x2,y2,img1,img2)
   projection_error = dist_l2(transformed_points, p2);
   assert(size(projection_error, 2) == sz);
   mask = projection_error < threshold;
-  inliers1 = find_masked_points(p1, mask);
-  inliers2 = find_masked_points(transformed_points, mask);
+  [xi1 yi1] = find_masked_points(p1, mask);
+  [xi2 yi2] = find_masked_points(transformed_points, mask);
   
-  H = get_hom(inliers1(:,1), inliers1(:,2), inliers2(:,1), inliers2(:,2));
+  H = get_hom(xi1', yi1', xi2', yi2');
 
   % visualization of inliners (use displaymatches)
-  figure(4);
-  set(gcf, 'Name', 'Inliers');
-  clf;
-  plot(x1, y1, 'b.', 'MarkerSize', 30);
-  hold on;
-  plot(x2, y2, 'r.', 'MarkerSize', 30);
-  plot(transformed_points(1, :), transformed_points(2, :), ...
-    'go', 'MarkerSize', 10, 'LineWidth', 3);
+  % TODO(zori): maybe _really_ use displaymatches
+  % figure(4);
+  % set(gcf, 'Name', 'Inliers');
+  % clf;
+  % plot(x1, y1, 'b.', 'MarkerSize', 30);
+  % hold on;
+  % plot(x2, y2, 'r.', 'MarkerSize', 30);
+  % plot(transformed_points(1, :), transformed_points(2, :), ...
+  %   'go', 'MarkerSize', 10, 'LineWidth', 3);
 
 end
 
-function found = find_masked_points(points, mask)
+function [x y] = find_masked_points(points, mask)
   assert(size(points, 1) == 2);
   assert(size(mask, 1) == 1);
 
-  masked_points = [points(1,:) .* mask; ...
-                   points(2,:) .* mask];
-  assert(size(masked_points, 1) == 2);
+  x = points(1,:) .* mask; 
+  y = points(2,:) .* mask; 
 
-  [a, b] = find(masked_points);
-  found = [a, b];
+  x(x == 0) = [];
+  y(y == 0) = [];
 end
