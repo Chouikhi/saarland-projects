@@ -51,7 +51,7 @@ function H = get_ransac_hom(x1,y1,x2,y2,img1,img2)
     H_est = get_hom(x1(pos)', y1(pos)', x2(pos)', y2(pos)');
 
     % 4. Test the homography
-    transformed_points = calc_transformed_pnts(H_est, p1);
+    transformed_points = apply_homography(H_est, p1);
     projection_error = dist_l2(transformed_points, p2);
     assert(size(projection_error, 2) == sz);
 
@@ -79,7 +79,7 @@ function H = get_ransac_hom(x1,y1,x2,y2,img1,img2)
 
   % 6. Finally, find the optimal solution by re-estimating H with all inliers
   % of the best solution
-  transformed_points = calc_transformed_pnts(best_H, p1);
+  transformed_points = apply_homography(best_H, p1);
   projection_error = dist_l2(transformed_points, p2);
   assert(size(projection_error, 2) == sz);
   mask = projection_error < threshold;
@@ -98,17 +98,6 @@ function H = get_ransac_hom(x1,y1,x2,y2,img1,img2)
   plot(transformed_points(1, :), transformed_points(2, :), ...
     'go', 'MarkerSize', 10, 'LineWidth', 3);
 
-end
-
-function transformed_points = calc_transformed_pnts(H, pnts)
-    transformed_points_hom = H * cart2hom(pnts);
-
-    % The resulting points should be like
-    %   [ x1 x2 ..
-    %     y1 y2 ..
-    %     z1 z2 ..]
-    assert(size(transformed_points_hom, 1) == 3);
-    transformed_points = hom2cart(transformed_points_hom);
 end
 
 function found = find_masked_points(points, mask)
