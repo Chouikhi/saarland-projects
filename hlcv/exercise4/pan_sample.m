@@ -1,5 +1,5 @@
 %
-% This function stiches two images related by a homogrphy into one image. 
+% This function stiches two images related by a homography into one image. 
 % The image plane of image 1 is extended to fit the additional points of
 % image 2. Intensity values are looked up in image 2, using bilinear
 % interpolation (use the provided function interpolate_2d). 
