@@ -14,7 +14,7 @@
 %
 % img  : the final panorama image
 % 
-function img = pan_sample(img1,img2,H,sz,st)
+function img = pan_sample(img1, img2, H, sz, st)
   img = img1;
   [height, width] = size(img1);
   black_column = zeros(height, 1);
