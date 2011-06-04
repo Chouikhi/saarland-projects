@@ -15,14 +15,9 @@
 % img  : the final panorama image
 % 
 function img = pan_sample(img1, img2, H, sz, st)
-  img = img1;
   [height, width] = size(img1);
-  black_column = zeros(height, 1);
-
-  % append a sufficient number of black columns to the left image
-  for i = 1:sz
-    img = [img black_column];
-  end
+  img = zeros([height width + sz]);
+  img(1:end, 1:width) = img1;
 
   % loop over all newly appended pixels plus some overlap (`st')
   for x = width + 1:width + sz
@@ -30,9 +25,6 @@ function img = pan_sample(img1, img2, H, sz, st)
       p_H = apply_homography(H, [x; y]);
       grayval = interpolate_2d(img2, p_H(1), p_H(2));
       img(y, x) = grayval;
-      % if rem(x, 10) == 0 && rem(y, 10) == 0
-      %   x, y, grayval, p_H
-      % end
     end
   end
   %img = unit8(round(img - 1));
