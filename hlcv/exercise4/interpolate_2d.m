@@ -1,20 +1,21 @@
 %
 % compute a value at the position (x,y) using bilinear interpolation
-%
+% r -- floating point row
+% c -- floating point column
 
-function grayval = interpolate_2d(img,x,y)
+function grayval = interpolate_2d(img, r, c)
 
   [m,n] = size(img);
 
-  x1 = floor(x);
-  x2 = ceil(x);
-  y1 = floor(y);
-  y2 = ceil(y);
+  x1 = floor(r);
+  x2 = ceil(r);
+  y1 = floor(c);
+  y2 = ceil(c);
 
-  W11 = (x2-x)*(y2-y);
-  W21 = (x-x1)*(y2-y);
-  W12 = (x2-x)*(y-y1);
-  W22 = (x-x1)*(y-y1);
+  W11 = (x2-r)*(y2-c);
+  W21 = (r-x1)*(y2-c);
+  W12 = (x2-r)*(c-y1);
+  W22 = (r-x1)*(c-y1);
 
   W = 0;
   if (x1 > 0 && x1 <= m && y1 > 0 && y1 <= n)
@@ -46,7 +47,8 @@ function grayval = interpolate_2d(img,x,y)
   end
 
   if (W > 0)
-      grayval = (W11*I11+W21*I21+W12*I12+W22*I22) / W; 
+    grayval = (W11*I11+W21*I21+W12*I12+W22*I22) / W; 
   else
-      grayval = 0;
+    grayval = 0;
+  end
 end
