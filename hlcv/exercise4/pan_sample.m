@@ -20,6 +20,15 @@ function img = pan_sample(img1, img2, H, sz, st)
   img(1:end, 1:width) = img1;
 
   % loop over all newly appended pixels plus some overlap (`st')
+  for x = width - st:width
+    for y = 1:height
+      p_H = apply_homography(H, [x; y]);
+      grayval1 = img(y, x);
+      grayval2 = interpolate_2d(img2, p_H(2), p_H(1));
+      img(y, x) = (grayval1 * (width - x) + grayval2 * (x - width + st)) / st;
+    end
+  end
+
   for x = width + 1:width + sz
     for y = 1:height
       p_H = apply_homography(H, [x; y]);
