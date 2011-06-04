@@ -23,26 +23,17 @@ function H = get_ransac_hom(x1,y1,x2,y2,img1,img2)
   p1 = [x1; y1];
   p2 = [x2; y2];
 
-  %% assume a conservative probability for picking a pair of corresponding 
-  %% points and estimate the amount of iterations `k' necessary to pick four
-  %% true correspondances with, let's say, 99 percent probability
+  %% assume a conservative probability for picking a pair of corresponding
+  %% points and estimate the amount of iterations `ransac_iters' necessary to
+  %% pick four true correspondances with, let's say, 99 percent probability
   pInlier = 0.60;     % 60% inliers is a conservative guess
   pFail = 1 - 0.99;
   
-  % example: assume probability of true match : pInlier
-  % -> all 4 sample pairs match: pInlier^4
-  % find the amount of times k we have to draw in order to find a sample 
-  % without outliers.
-  % -> (1-pInlier^4)^k <= pFail (fail probability smaller than pFail)
-  % -> log (pFail) / log (1-pInlier^4) <= k
-  %
-  % 1. Estimate a number of iterations needed to draw an uncontaminated sample
-  % of four corresponding point pairs with a probability of 99%
-  real_k = log(pFail) / log(1 - pInlier^4);
-  k = ceil(real_k);
+  ransac_iters = estimate_ransac_iterations(pFail, pInlier, 4);
 
   best_num_inliers = 0;
-  for i=1:k
+  i = 0;
+  while i < ransac_iters
     % 2. Randomly draw a sample of four corresponding point pairs
     perm = randperm(sz);
     pos = perm(1:4);
@@ -69,12 +60,13 @@ function H = get_ransac_hom(x1,y1,x2,y2,img1,img2)
       % plot(x2, y2, 'r.', 'MarkerSize', 30);
       % plot(transformed_points(1, :), transformed_points(2, :), ...
       %   'go', 'MarkerSize', 10, 'LineWidth', 3);
-      % TODO(zori): Use all of the inlier points to re-estimate the amount
-      % of iterations needed
+
+      % 5. Use inlier percent to re-estimate the amount of iterations needed
+      pInlier = best_num_inliers / length(x1);
+      ransac_iters = estimate_ransac_iterations(pFail, pInlier, 4);
     end
 
-    % 5. Repeat steps 2-4 for an necessary number of iterations and remember
-    % the homography H which has the highest number of inliers ('good' points)
+    i = i + 1;
   end
 
   % 6. Finally, find the optimal solution by re-estimating H with all inliers
@@ -124,4 +116,14 @@ function [x y] = find_masked_points(points, mask)
 
   x(x == 0) = [];
   y(y == 0) = [];
+end
+
+% example: assume probability of true match : pInlier
+% -> all drawSize sample pairs match: pInlier ^ drawSize
+% find the amount of times k we have to draw in order to find a sample 
+% without outliers.
+% -> (1-pInlier^drawSize)^k <= pFail (fail probability smaller than pFail)
+% -> log (pFail) / log (1-pInlier^drawSize) <= k
+function k = estimate_ransac_iterations(pFail, pInlier, drawSize)
+  k = ceil(log(pFail) / log(1 - pInlier ^ drawSize));
 end
