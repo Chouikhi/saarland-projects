@@ -23,7 +23,7 @@ function img = pan_sample(img1, img2, H, sz, st)
   for x = width + 1:width + sz
     for y = 1:height
       p_H = apply_homography(H, [x; y]);
-      grayval = interpolate_2d(img2, p_H(1), p_H(2));
+      grayval = interpolate_2d(img2, p_H(2), p_H(1));
       img(y, x) = grayval;
     end
   end
