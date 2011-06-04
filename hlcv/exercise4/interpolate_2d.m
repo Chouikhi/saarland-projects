@@ -49,6 +49,19 @@ function grayval = interpolate_2d(img, r, c)
   if (W > 0)
     grayval = (W11*I11+W21*I21+W12*I12+W22*I22) / W; 
   else
-    grayval = 0;
+    % if r, c is outside return the nearest point to (r, c) inside the image.
+    r = round(r);
+    c = round(c);
+    if r < 1
+      r = 1;
+    elseif r > m
+      r = m;
+    end
+    if c < 1
+      c = 1;
+    elseif c > n
+      c = n;
+    end
+    grayval = img(r, c);
   end
 end
