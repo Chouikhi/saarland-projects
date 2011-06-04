@@ -85,19 +85,33 @@ function H = get_ransac_hom(x1,y1,x2,y2,img1,img2)
   mask = projection_error < threshold;
   [xi1 yi1] = find_masked_points(p1, mask);
   [xi2 yi2] = find_masked_points(transformed_points, mask);
+  [xi3 yi3] = find_masked_points(p2, mask);
   
   H = get_hom(xi1', yi1', xi2', yi2');
+
+  % transformed_points2 = apply_homography(H, p1);
+  % projection_error2 = dist_l2(transformed_points2, p2);
+  % mask2 = projection_error2 < threshold;
+  % [xi1 yi1] = find_masked_points(p1, mask2);
+  % [xi2 yi2] = find_masked_points(transformed_points2, mask2);
+  % [xi3 yi3] = find_masked_points(p2, mask2);
 
   % visualization of inliners (use displaymatches)
   % TODO(zori): maybe _really_ use displaymatches
   % figure(4);
   % set(gcf, 'Name', 'Inliers');
   % clf;
-  % plot(x1, y1, 'b.', 'MarkerSize', 30);
+  % imagesc(img1);
   % hold on;
-  % plot(x2, y2, 'r.', 'MarkerSize', 30);
-  % plot(transformed_points(1, :), transformed_points(2, :), ...
-  %   'go', 'MarkerSize', 10, 'LineWidth', 3);
+  % % plot(x1, y1, 'b.', 'MarkerSize', 30);
+  % % plot(x2, y2, 'r.', 'MarkerSize', 30);
+  % % plot(transformed_points(1, :), transformed_points(2, :), ...
+  % %   'go', 'MarkerSize', 10, 'LineWidth', 3);
+  % % Plot only the matched points
+  % plot(xi1, yi1, 'b.', 'MarkerSize', 30);
+  % plot(xi3, yi3, 'r.', 'MarkerSize', 30);
+  % plot(xi2, yi2, 'go', 'MarkerSize', 10, 'LineWidth', 3);
+  % hold off;
 
 end
 
