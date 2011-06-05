@@ -86,6 +86,20 @@ root = TestList
                                  (edgeEffectAE (sParseEdge "P3 x = y + 1; P4")
                                                [(Just (p "P1", p "P2"), sParseExpr "y + 1")
                                                ])
+        , TestCase $ assertEqSet "compute already available expr with same point 1"
+                                 [ (Just (p "P1", p "P2"), sParseExpr "y + 1")
+                                 ]
+                                 (edgeEffectAE (sParseEdge "P3 x = y + 1; P4")
+                                               [ (Just (p "P1", p "P2"), sParseExpr "y + 1")
+                                               , (Just (p "P3", p "P4"), sParseExpr "y + 1")
+                                               ])
+        , TestCase $ assertEqSet "compute already available expr with same point 2"
+                                 [ (Just (p "P1", p "P2"), sParseExpr "y + 1")
+                                 ]
+                                 (edgeEffectAE (sParseEdge "P3 x = y + 1; P4")
+                                               [ (Just (p "P3", p "P4"), sParseExpr "y + 1")
+                                               , (Just (p "P1", p "P2"), sParseExpr "y + 1")
+                                               ])
         , TestCase $ assertEqSet "compute already available expr with unknown point"
                                  [ (Just (p "P3", p "P4"), sParseExpr "y + 1")
                                  ]

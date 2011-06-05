@@ -5,7 +5,7 @@ import Program
 import FixPointAlgorithmBase
 import AnalysisBase
 import Data.Maybe
-import Data.List (union, intersect, sort, nub, intersperse)
+import Data.List (union, intersect, sort, nub, intersperse, (\\))
 
 type CarrierAE = [(Maybe PureEdge, Expr)]
 type StateAE = State CarrierAE
@@ -26,6 +26,7 @@ prettyState paes = unlines $ map prettyCarrier paes
 
 instance Carrier CarrierAE where
 
+-- TODO: This is getting hairy. Take a second look / add guards.
 edgeEffectAE :: Edge -> CarrierAE -> CarrierAE
 edgeEffectAE (Edge u lab v) inp = filterVar $ inp `addNewerExpr` ntSubExprsP
   where
@@ -39,14 +40,21 @@ edgeEffectAE (Edge u lab v) inp = filterVar $ inp `addNewerExpr` ntSubExprsP
     -- addNewerExpr
     -- -- [ .. (Just a, e1) .. ] [ .. (Just b, e1) .. ] = [ .. (Just a, e1) .. ]
     -- -- [ .. (Nothing, e1) .. ] [ .. (Just, e1) .. ] = [ .. (Just, e1) .. ]
+    -- -- [ .. (Just b, e1) .. ] [ .. (Just b, e1) .. ] = [ .. ]
+    --    if the new definition already existed, than it cannot be considered
+    --    available (nothing can be available to itself).
     -- there is never Nothing in the new expression list
     addNewerExpr :: CarrierAE -> CarrierAE -> CarrierAE
     -- remove those expr with unknown point, for which a known point exists
-    addNewerExpr old new = (filter (\(pe, e) -> isJust pe || e `notElem` map snd realNew) old) ++ realNew
+    addNewerExpr old new = (oldFilterNothing ++ realNew) \\ remove
       where
+        oldFilterNothing = filter (\(pe, e) -> isJust pe || e `notElem` map snd realNew) old
         realNew :: CarrierAE
         -- remove those new expression, which already appear with a fixed point in old
         realNew = filter (\(_, e) -> e `notElem` (map snd $ filter (isJust . fst) old)) new
+
+        filtJust cs = filter (\(pe, _) -> isJust pe) cs
+        remove = (nub $ sort $ filtJust oldFilterNothing) `intersect` (nub $ sort $ filtJust new)
 
     (_, mChangedVar) = labelVars lab
     filterVar = if isJust mChangedVar
@@ -77,13 +85,14 @@ initStateAE prog = (startPoint, []) : [(p, allExprs) | p <- programPoints prog, 
 smiley_intersection :: CarrierAE -> CarrierAE -> CarrierAE
 smiley_intersection c1 c2 = nub $ sort $ filteredNothing
   where
-    -- TODO: Remove Nothing when there is an expr with something
     uniqExpr c = nub $ sort $ map snd c
+    -- all common expressions, regardless of definition point
     exprs = uniqExpr c1 `intersect` uniqExpr c2
     sthExpr c = uniqExpr $ filter (isJust . fst) c
     sthExprs = sthExpr c1 ++ sthExpr c2
     goodExpr _ expr = expr `elem` exprs
     wNothingUnited = filter (uncurry goodExpr) (c1 ++ c2)
+    -- filter those nothings, that have corresponding somethings
     filteredNothing = filter (\(pe, e) -> isJust pe || e `notElem` sthExprs) wNothingUnited
 
 
