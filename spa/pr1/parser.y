@@ -117,14 +117,14 @@ data Token
       | TokenOSB
       | TokenCSB
       | TokenSc
-      deriving Show
+      deriving (Show, Eq)
 
 lexer [] = []
 lexer (css@(c:cs))
       | isSpace c = lexer cs
       | isDigit c = TokenInt (read num) : lexer restn
-      | something fixed_str = case fixed_str of Just (fixed, tok) -> tok : lexer (drop (length fixed) css)
       | something op_pair   = case op_pair of Just ops -> TokenOp ops : lexer (drop (length ops) css)
+      | something fixed_str = case fixed_str of Just (fixed, tok) -> tok : lexer (drop (length fixed) css)
       | otherwise = TokenStr word : lexer rest
   where
       fixed_str = find (\(fixed, tok) -> fixed `isPrefixOf` css) fixed_strs

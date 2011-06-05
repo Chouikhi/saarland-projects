@@ -6,6 +6,7 @@ import Data.List (sort)
 
 import TrulyLiveVariables
 import AnalysisBase
+import IntervalAnalysis
 import AvailableExpressions
 import RoundRobin
 import Program
@@ -44,7 +45,15 @@ testProg2Parsed = sParseProgram testProg2
 
 
 root = TestList
-      [ TestLabel "Parser" $ TestList
+      [ TestLabel "Lexer" $ TestList
+        [ TestCase $ assertEqual "lexer x == y"
+                                 [TokenStr "x", TokenOp "==", TokenStr "y"]
+                                 (lexer "x == y")
+        , TestCase $ assertEqual "lexer x != y"
+                                 [TokenStr "x", TokenOp "!=", TokenStr "y"]
+                                 (lexer "x != y")
+        ]
+      , TestLabel "Parser" $ TestList
         [ TestCase $ assertEqual "nop" Nop (sParseLabel ";")
         , TestCase $ assertEqual "assign"
                                  (Assign (Var "x") (AExpr $ AtomVar (Var "y")))
@@ -54,6 +63,11 @@ root = TestList
                                                         Times
                                                         (AExpr (AtomVar (Var "y")))))
                                  (sParseLabel "x = M[23*y];") 
+        , TestCase $ assertEqual "== expr"
+                                 (BExpr (AExpr (AtomVar (Var "x")))
+                                        Equal 
+                                        (AExpr (AtomVar (Var "y"))))
+                                 (sParseExpr "x == y")
         ]
 
       , TestLabel "TrulyLiveVariables Edge effects" $ TestList
@@ -212,7 +226,148 @@ root = TestList
                                  ]
                                  (AvailableExpressions.performAnalysis roundRobin testProg2Parsed)
         ]
-
+      , TestLabel "Interval Analysis interval operations" $ TestList
+        [ TestCase $ assertEqual "lub disjoint"
+                                 (finInt (-10) 10)
+                                 (intLub (finInt (-10) (-5))
+                                         (finInt 3   10))
+        , TestCase $ assertEqual "lub overlap"
+                                 (finInt 3 10)
+                                 (intLub (finInt 3 7)
+                                         (finInt 5 10))
+        , TestCase $ assertEqual "lub contained"
+                                 (finInt 3 10)
+                                 (intLub (finInt 3 10)
+                                         (finInt 4 8))
+        , TestCase $ assertEqual "glb overlap"
+                                 (finInt 3 10)
+                                 (intGlb (finInt (-5) 10)
+                                         (finInt 3 15))
+        , TestCase $ assertEqual "glb contained"
+                                 (finInt 4 8)
+                                 (intGlb (finInt 3 10)
+                                         (finInt 4 8))
+        , TestCase $ assertEqual "unary +"
+                                 (finInt 4 8)
+                                 (applyUOp UPlus (finInt 4 8))
+        , TestCase $ assertEqual "unary -"
+                                 (finInt (-4) 8)
+                                 (applyUOp UMinus (finInt (-8) 4))
+        , TestCase $ assertEqual "binary + finite"
+                                 (finInt (-10) 11)
+                                 (applyBOp Plus (finInt (-8) 4)
+                                                (finInt (-2) 7))
+        , TestCase $ assertEqual "binary + infinite"
+                                 (leInt  11)
+                                 (applyBOp Plus (leInt 4)
+                                                (finInt (-2) 7))
+        , TestCase $ assertEqual "binary - finite"
+                                 (finInt (-10) (-7))
+                                 (applyBOp Minus (finInt (-3) (-1))
+                                                 (finInt 6 7))
+        , TestCase $ assertEqual "binary - infinite"
+                                 fullInt
+                                 (applyBOp Minus (leInt 5)
+                                                 (leInt (-3)))
+        , TestCase $ assertEqual "binary * lecture example 1"
+                                 (finInt 0 8)
+                                 (applyBOp Times (finInt 0 2)
+                                                 (finInt 3 4))
+        , TestCase $ assertEqual "binary * lecture example 2"
+                                 (finInt (-4) 8)
+                                 (applyBOp Times (finInt (-1) 2)
+                                                 (finInt 3 4))
+        , TestCase $ assertEqual "binary * lecture example 3"
+                                 (finInt (-6) 8)
+                                 (applyBOp Times (finInt (-1) 2)
+                                                 (finInt (-3) 4))
+        , TestCase $ assertEqual "binary * lecture example 4"
+                                 (finInt (-8) 4)
+                                 (applyBOp Times (finInt (-1) 2)
+                                                 (finInt (-4) (-3)))
+        , TestCase $ assertEqual "binary * infinity 1"
+                                 fullInt
+                                 (applyBOp Times (leInt 3)
+                                                 (geInt (-3)))
+        , TestCase $ assertEqual "binary * infinity 2"
+                                 (geInt 15)
+                                 (applyBOp Times (geInt 3)
+                                                 (geInt 5))
+        , TestCase $ assertEqual "binary / ex 1"
+                                 (finInt 2 12)
+                                 (applyBOp Div (finInt 10 25)
+                                               (finInt 2 5))
+        , TestCase $ assertEqual "binary / ex 2"
+                                 (finInt 2 12)
+                                 (applyBOp Div (finInt (-10) (-25))
+                                               (finInt (-2) (-5)))
+        , TestCase $ assertEqual "binary / ex 3"
+                                 (finInt (-13) (-2))  -- (-25) / 2 is -13
+                                 (applyBOp Div (finInt (-10) (-25))
+                                               (finInt (2) (5)))
+        , TestCase $ assertEqual "binary / ex 4 (has 0)"
+                                 fullInt
+                                 (applyBOp Div (finInt (-10) (25))
+                                               (finInt (-2) (-5)))
+        , TestCase $ assertEqual "binary / ex 5"
+                                 (leInt (-5))
+                                 (applyBOp Div (leInt (-25))
+                                               (finInt 2 5))
+        , TestCase $ assertEqual "eval expr var"
+                                 (finInt 5 10)
+                                 (evalExpr (sParseExpr "x")
+                                           (Just [(Var "x", finInt 5 10)]))
+        , TestCase $ assertEqual "eval expr const"
+                                 (finInt 5 5)
+                                 (evalExpr (sParseExpr "5")
+                                           (Just [(Var "x", finInt 5 10)]))
+        , TestCase $ assertEqual "eval expr unary"
+                                 (finInt (-10) (-5))
+                                 (evalExpr (sParseExpr "-x")
+                                           (Just [(Var "x", finInt 5 10)]))
+        , TestCase $ assertEqual "eval expr binary"
+                                 (finInt 10 30)
+                                 (evalExpr (sParseExpr "x * y")
+                                           (Just [ (Var "x", finInt 5 10)
+                                                 , (Var "y", finInt 2 3)
+                                                 ]))
+        , TestCase $ assertEqual "eval expr binary <"
+                                 iTrue
+                                 (evalExpr (sParseExpr "x < y")
+                                           (Just [ (Var "x", finInt (-3) 5)
+                                                 , (Var "y", finInt 6 19)
+                                                 ]))
+        , TestCase $ assertEqual "eval expr binary <"
+                                 iUnknown
+                                 (evalExpr (sParseExpr "x < y")
+                                           (Just [ (Var "x", finInt (-3) 5)
+                                                 , (Var "y", finInt 5 19)
+                                                 ]))
+        , TestCase $ assertEqual "eval expr binary <"
+                                 iFalse
+                                 (evalExpr (sParseExpr "x < y")
+                                           (Just [ (Var "x", finInt 5 10)
+                                                 , (Var "y", finInt (-3) 5)
+                                                 ]))
+        , TestCase $ assertEqual "eval expr binary =="
+                                 iTrue
+                                 (evalExpr (sParseExpr "x == y")
+                                           (Just [ (Var "x", finInt 5 5)
+                                                 , (Var "y", finInt 5 5)
+                                                 ]))
+        , TestCase $ assertEqual "eval expr binary =="
+                                 iUnknown
+                                 (evalExpr (sParseExpr "x == y")
+                                           (Just [ (Var "x", finInt 5 6)
+                                                 , (Var "y", finInt 5 6)
+                                                 ]))
+        , TestCase $ assertEqual "eval expr binary =="
+                                 iFalse
+                                 (evalExpr (sParseExpr "x == y")
+                                           (Just [ (Var "x", finInt 5 6)
+                                                 , (Var "y", finInt 7 8)
+                                                 ]))
+        ]
       , TestLabel "program eval" $ TestList
         [
         --  TestCase $ assertEqual "eval 1"
