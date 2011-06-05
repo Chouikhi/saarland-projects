@@ -13,6 +13,7 @@ module Program ( Program
                , programVars
                , labelVars
                , evalDependantEdges
+               , resultDependantEdges
                , programPoints
                , prettyExpr
                , prettyVar
@@ -26,6 +27,10 @@ import Data.List (isPrefixOf, find, union, sort, nub)
 import Data.Maybe (maybeToList, fromJust)
 
 data Direction = Forward | Backward deriving (Show, Eq)
+
+opposite :: Direction -> Direction
+opposite Forward = Backward
+opposite Backward = Forward
 
 type Program = [ Edge ]
 
@@ -94,6 +99,9 @@ evalDependantEdges :: Program -> Direction -> Point -> [(Edge, Point)]
 evalDependantEdges prog dir point = map (\e@(Edge u lbl v) -> if dir == Forward then (e, u) else (e, v)) edges
   where
     edges = filter (\(Edge u lbl v) -> if dir == Forward then v == point else u == point) prog
+
+resultDependantEdges :: Program -> Direction -> Point -> [(Edge, Point)]
+resultDependantEdges prog dir point = evalDependantEdges prog (opposite dir) point
 
 data Expr
         = AExpr Atom
