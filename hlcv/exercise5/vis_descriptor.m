@@ -8,6 +8,7 @@ function vis_descriptor(PARAMS, CELLS)
       i = i + 1;
     end
   end
+end
 
 function cell_hist_vis(PARAMS, h)
   h = h + 1e-6;
@@ -32,5 +33,6 @@ function cell_hist_vis(PARAMS, h)
   set(gca, 'YTick', []);
   axis ij;
 
+end
 
 
