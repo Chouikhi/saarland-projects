@@ -27,12 +27,12 @@ function [DESC, CELLS] = compute_descriptor(PARAMS, img)
     for bx = 1:2:PARAMS.num_cells_width
       v = [CELLS{by, bx}; CELLS{by, bx+1}; CELLS{by+1, bx}; CELLS{by+1, bx+1}];
 
+      vl = v(:);
+      % compute norm
+      l2 = sqrt(sum(vl .^ 2) + eps);
 
-      %
-      % add L2 block normalization step here (see slide 73 in cv-ss11-0525-instance-categorization.pdf )
-      %
-
-      % ...
+      % normalize
+      v = v ./ l2;
 
       DESC = [DESC; v];
     end
