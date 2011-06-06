@@ -8,7 +8,10 @@
 % img_cell_mag - matrix of gradient magnitudes for each pixel on the cell
 % img_cell_ori - matrix of gradient orientations for each pixel of the cell
 %
-% PARAMS.hist_binsize - number of bins in the gradient orientation histogram
+% PARAMS.hist_numbins - number of bins in the gradient orientation histogram --
+%                       that is how many directions do we recognize
+% PARAMS.hist_binsize - size of each gradient bin in radians -- that is how
+%                       big is one direction
 % PARAMS.hist_min - minimal orientation of the gradient vector
 % PARAMS.hist_max - maximal orientation of the gradient vector
 %
