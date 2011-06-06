@@ -4,7 +4,7 @@
 
 function [DESC, CELLS] = compute_descriptor(PARAMS, img)
 
-  [img_mag, img_ori] = image_grad(img);
+  [img_mag, img_ori] = image_grad(PARAMS, img);
 
   CELLS = cell(PARAMS.num_cells_height, PARAMS.num_cells_width);
   DESC = [];
