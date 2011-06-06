@@ -18,20 +18,22 @@ function vis_svm(figidx, X, y, model)
 
   neg_mask = y == -1;
   pos_mask = y ==  1;
-  plot(X(neg_mask, 1), X(neg_mask, 2), 'x');
+  plot(X(neg_mask, 1), X(neg_mask, 2), '.b');
   hold on;
-  plot(X(pos_mask, 1), X(pos_mask, 2), 'or');
+  plot(X(pos_mask, 1), X(pos_mask, 2), '.r');
   
-  % visualize support vectors (see slide 60 in cv-ss09-0603-hog-svm-v0.pdf)
-  % ...
-
-  % visualze decision boundary 
-  % ...
+  supp_mask = model.alpha > 1e-6;
+  plot(X(supp_mask, 1), X(supp_mask, 2), 'og');
 
   min_x1 = min(X(:, 1));
   max_x1 = max(X(:, 1));
   min_x2 = min(X(:, 2));
   max_x2 = max(X(:, 2));
+
+  % visualze decision boundary 
+  x = [1.5 * min_x1, 1.5 * max_x1];
+  yy = - (model.w0 + model.w(1) * x) / model.w(2);
+  plot(x, yy, '-r');
 
   axis equal;
   axis([1.5*min_x1, 1.5*max_x1, 1.5*min_x2, 1.5*max_x2]);
