@@ -1,8 +1,8 @@
 addpath('./svm');
 
-show_q1 = false;
+show_q1 = true;
 show_q2 = false;
-show_q3 = true;
+show_q3 = false;
 
 %
 % Question 1: Support Vector Machines
@@ -43,7 +43,6 @@ if show_q2
 
   figure(3);
   vis_descriptor(PARAMS, CELLS);
-
 end
 
 
