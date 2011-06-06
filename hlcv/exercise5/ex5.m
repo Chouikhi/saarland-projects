@@ -16,7 +16,13 @@ if show_q1
   [X, y] = get_train_dataset_2d(N1, N2, 1.5, 5);
   C = 1e4;
 
-  model = svmlearn(X, y, C);
+  % Store model to speed up execution.
+  if exist('svm_model.mat', 'file')
+    load svm_model;
+  else
+    model = svmlearn(X, y, C);
+    save svm_model model;
+  end
 
   figure(1);
   clf;

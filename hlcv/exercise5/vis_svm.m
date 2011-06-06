@@ -14,22 +14,30 @@
 function vis_svm(X, y, model)
   assert(size(X, 2) == 2, 'the points are said to be 2D');
 
-  figure(figidx);
+  %figure(figidx);
   clf;
 
-  keyboard;
   % visualize positive and negative points 
-  % plot(x1, y1, 'b.', 'MarkerSize', 30);
-  % hold on;
-  % plot(x2, y2, 'r.', 'MarkerSize', 30);
-  % plot(transformed_points(1, :), transformed_points(2, :), ...
-  %   'go', 'MarkerSize', 10, 'LineWidth', 3);
+  pos = X(y == 1, :);
+  neg = X(y == -1, :);
+  plot(pos(:, 1), pos(:, 2), 'r.', 'MarkerSize', 20);
+  hold on;
+  plot(neg(:, 1), neg(:, 2), 'b.', 'MarkerSize', 20);
   
-  % visualize support vectors (see slide 60 in cv-ss09-0603-hog-svm-v0.pdf)
-  % ...
+  % visualize support vectors
+  [vals inds] = sort(model.alpha, 'descend');
+  svi = inds(1:model.nsv);
+  plot(X(svi, 1), X(svi, 2), 'mo', 'MarkerSize', 7, 'LineWidth', 3); 
 
-  % visualze decision boundary 
-  % ...
+  % visualize decision boundary
+  assert(size(model.w, 1) == 2);
+  perp = [-model.w(2), model.w(1)];
+  % the decision boundary is line going through the base of the coordinate
+  % system along direction of vector perp
+  % TODO(zori)
+  bndx = [0 perp(1)];
+  bndy = [0 perp(2)];
+  plot(bndx, bndy, ['-', 'r'], 'LineWidth', 2);
 
   min_x1 = min(X(:, 1));
   max_x1 = max(X(:, 1));
