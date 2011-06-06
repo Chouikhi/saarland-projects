@@ -11,10 +11,10 @@
 % model.w and model.w0 are parameters of the decision function
 % model.alpha is a vector of Lagrange multipliers (see slides 32 - 38 in cv-ss11-0601-hog-part.pdf)
 
-function vis_svm(X, y, model)
+function vis_svm(figidx, X, y, model)
   assert(size(X, 2) == 2, 'the points are said to be 2D');
 
-  %figure(figidx);
+  figure(figidx);
   clf;
 
   % visualize positive and negative points 
@@ -29,20 +29,16 @@ function vis_svm(X, y, model)
   svi = inds(1:model.nsv);
   plot(X(svi, 1), X(svi, 2), 'mo', 'MarkerSize', 7, 'LineWidth', 3); 
 
-  % visualize decision boundary
-  assert(size(model.w, 1) == 2);
-  perp = [-model.w(2), model.w(1)];
-  % the decision boundary is line going through the base of the coordinate
-  % system along direction of vector perp
-  % TODO(zori)
-  bndx = [0 perp(1)];
-  bndy = [0 perp(2)];
-  plot(bndx, bndy, ['-', 'r'], 'LineWidth', 2);
-
   min_x1 = min(X(:, 1));
   max_x1 = max(X(:, 1));
   min_x2 = min(X(:, 2));
   max_x2 = max(X(:, 2));
+
+  % visualze decision boundary 
+  assert(size(model.w, 1) == 2);
+  x = [1.5 * min_x1, 1.5 * max_x1];
+  yy = - (model.w0 + model.w(1) * x) / model.w(2);
+  plot(x, yy, '-r');
 
   axis equal;
   axis([1.5 * min_x1, 1.5 * max_x1, 1.5 * min_x2, 1.5 * max_x2]);

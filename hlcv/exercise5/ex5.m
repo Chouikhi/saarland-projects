@@ -24,9 +24,7 @@ if show_q1
     save svm_model model;
   end
 
-  figure(1);
-  clf;
-  vis_svm(X, y, model);
+  vis_svm(1, X, y, model);
 end
 
 %
