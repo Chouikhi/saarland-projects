@@ -1,8 +1,8 @@
 addpath('./svm');
 
-show_q1 = false;
+show_q1 = true;
 show_q2 = false;
-show_q3 = true;
+show_q3 = false;
 
 %
 % Question 1: Support Vector Machines
@@ -18,9 +18,7 @@ if show_q1
 
   model = svmlearn(X, y, C);
 
-  figure(1);
-  clf;
-  vis_svm(X, y, model);
+  vis_svm(1, X, y, model);
 end
 
 %

@@ -11,13 +11,16 @@
 % model.w and model.w0 are parameters of the decision function
 % model.alpha is a vector of Lagrange multipliers ( see slides 32 - 38 in cv-ss11-0601-hog-part.pdf )
 
-function vis_svm(X, y, model)
+function vis_svm(figidx, X, y, model)
 
   figure(figidx);
   clf;
 
-  % visualize positive and nevative points 
-  % ...
+  neg_mask = y == -1;
+  pos_mask = y ==  1;
+  plot(X(neg_mask, 1), X(neg_mask, 2), 'x');
+  hold on;
+  plot(X(pos_mask, 1), X(pos_mask, 2), 'or');
   
   % visualize support vectors (see slide 60 in cv-ss09-0603-hog-svm-v0.pdf)
   % ...
