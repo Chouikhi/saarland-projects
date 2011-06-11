@@ -29,18 +29,27 @@ function vis_svm(figidx, X, y, model)
   svi = inds(1:model.nsv);
   plot(X(svi, 1), X(svi, 2), 'mo', 'MarkerSize', 7, 'LineWidth', 3); 
 
-  min_x1 = min(X(:, 1));
-  max_x1 = max(X(:, 1));
-  min_x2 = min(X(:, 2));
-  max_x2 = max(X(:, 2));
+  min_x1 = min(X(:, 1)) .* 1.5;
+  max_x1 = max(X(:, 1)) .* 1.5;
+  min_x2 = min(X(:, 2)) .* 1.5;
+  max_x2 = max(X(:, 2)) .* 1.5;
 
   % visualze decision boundary 
   assert(size(model.w, 1) == 2);
-  x = [1.5 * min_x1, 1.5 * max_x1];
-  yy = - (model.w0 + model.w(1) * x) / model.w(2);
-  plot(x, yy, '-r');
+  x = [min_x1, max_x1];
+  d = 1 / sqrt(sum(model.w .^ 2));
+  if abs(model.w(2)) > 1e-6
+    y1 =  (1 - model.w0 - model.w(1) * x) / model.w(2);
+    y2 = (-1 - model.w0 - model.w(1) * x) / model.w(2);
+    plot(x, y1, '-r', x, y2, '-r');
+  else
+    x1 =   (1 - model.w0) / model.w(1);
+    x2 = (- 1 - model.w0) / model.w(1);
+    plot([x1 x1], [min_x2, max_x2], '-r', ...
+        [x2 x2], [min_x2, max_x2], '-r');
+  end
 
   axis equal;
-  axis([1.5 * min_x1, 1.5 * max_x1, 1.5 * min_x2, 1.5 * max_x2]);
+  axis([min_x1, max_x1, min_x2, max_x2]);
   hold off;
 end

@@ -10,18 +10,22 @@ show_q3 = false;
 
 if show_q1
 
+  use_cache = 1;
   N1 = 80;
   N2 = 80;
-
-  [X, y] = get_train_dataset_2d(N1, N2, 1.5, 5);
+  sigma1 = 5.0;
+  sigma2 = 5.0;
   C = 1e4;
+  data_file = sprintf('svm_model_%.0f_%.0f_%.0f.mat', sigma1 * 10, sigma2 * 10, C);
 
-  % Store model to speed up execution.
-  if exist('svm_model.mat', 'file')
-    load svm_model;
+  [X, y] = get_train_dataset_2d(N1, N2, sigma1, sigma2);
+
+  % Store/load model to speed up execution.
+  if use_cache && exist(data_file, 'file')
+    load(data_file);
   else
     model = svmlearn(X, y, C);
-    save svm_model model;
+    save(data_file, 'model');
   end
 
   vis_svm(1, X, y, model);
