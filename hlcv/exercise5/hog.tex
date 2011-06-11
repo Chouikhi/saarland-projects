@@ -1,6 +1,8 @@
 \documentclass[a4paper]{article}
 \usepackage{ucs}  % unicode
 \usepackage[utf8x]{inputenc}
+\usepackage{multirow}
+\usepackage{array}
 % \usepackage[T2A]{fontenc}
 % \usepackage[bulgarian]{babel}
 \usepackage{graphicx}
@@ -63,5 +65,22 @@ $ 10^6 $ & $ 0.061729 $ \\ \hline
 \end{tabular}
 
 It is clear that the margin decreases exponentially as the constant $ C $ increases.
+
+\section*{Question 3}
+\begin{tabular}{ccc}
+        & cell size 8                              & cell size 16 \\
+no norm & \includegraphics[scale=0.4]{rpc_b8.png} & \includegraphics[scale=0.4]{rpc_b16.png} \\
+norm    & \includegraphics[scale=0.4]{rpc_b8_l2.png} & \includegraphics[scale=0.4]{rpc_b16_l2.png} \\
+\end{tabular}
+
+Cell size of 8 gives slightly better results than cell size 16, in both with and without normalization. Also the normalization itself adds between 10 and 15 percent recall.
+
+\subsection*{d}
+
+We need a sliding window on different scales of the image. To make things
+faster we can compute the cells (and even blocks) for each scale before the
+actual classification step, so the descriptor computations will be reused. The
+classification is pretty fast already, because it only does one multiplication
+and one addition, so the overall performance will be good.
 
 \end{document}

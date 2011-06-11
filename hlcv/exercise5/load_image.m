@@ -7,3 +7,4 @@ function img = load_image(image_name)
 
   img = double(img);
   img = img / 255;
+end

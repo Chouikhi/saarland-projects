@@ -1,8 +1,8 @@
 addpath('./svm');
 
-show_q1 = true;
+show_q1 = false;
 show_q2 = false;
-show_q3 = false;
+show_q3 = true;
 
 %
 % Question 1: Support Vector Machines
@@ -16,7 +16,7 @@ if show_q1
   sigma1 = 5.0;
   sigma2 = 5.0;
   C = 1e4;
-  data_file = sprintf('svm_model_%.0f_%.0f_%.0f.mat', sigma1 * 10, sigma2 * 10, C);
+  data_file = sprintf('cache/svm_model_%.0f_%.0f_%.0f.mat', sigma1 * 10, sigma2 * 10, C);
 
   [X, y] = get_train_dataset_2d(N1, N2, sigma1, sigma2);
 
@@ -40,7 +40,7 @@ if show_q2
   PARAMS = detector_param();
 
   img = load_image(pos_train_list{85});
-  [DESC, CELLS] = compute_descriptor(PARAMS, img);
+  [DESC, CELLS] = compute_descriptor(PARAMS, pos_train_list{85});
 
   figure(2);
   clf;
@@ -64,10 +64,15 @@ if show_q3
   [pos_train_list, neg_train_list, pos_test_list, neg_test_list] = load_data();
   PARAMS = detector_param();
 
+  q3_use_cache = true;
+  fn = sprintf('cache/q3_%s.mat', PARAMS.summary_str);
+
+  from_cache = q3_use_cache && exist(fn, 'file');
+  to_cache = q3_use_cache && not(exist(fn, 'file'));
   do_train = true;
   do_test = true;
 
-  if do_train
+  if do_train && not(from_cache)
     N1 = 200;
     N2 = 200;
 
@@ -83,9 +88,17 @@ if show_q3
     N1 = 100;
     N2 = 400;
 
-    [test_X, test_y] = get_dataset_descriptors(PARAMS, pos_test_list, neg_test_list, N1, N2);
+    if from_cache
+      load(fn)
+    else
+      [test_X, test_y] = get_dataset_descriptors(PARAMS, pos_test_list, neg_test_list, N1, N2);
 
-    class_score = test_X*model.w + model.w0;
+      class_score = test_X*model.w + model.w0;
+    end
+
+    if to_cache
+      save(fn, 'test_y', 'class_score');
+    end
     %[err, class_score] = svmclassify(test_X, test_y, model);
     
     figure(5);
@@ -94,7 +107,7 @@ if show_q3
     class_rpc_plot(class_score, test_y, 'b');
 
     show_false_detections(6, pos_test_list, class_score(1:N1), ...
-                          neg_test_list, class_score((N1+1):end));
+                          neg_test_list, class_score((N1+1):end), 5);
   end
 
 end

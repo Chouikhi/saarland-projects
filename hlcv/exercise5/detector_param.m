@@ -2,8 +2,13 @@ function PARAMS = detector_param()
   PARAMS.obj_width = 64;
   PARAMS.obj_heigth = 128;
   
-  %PARAMS.cellsize = 8;
+  PARAMS.descriptor_caching = true;
+  PARAMS.normalize = false;
+  % PARAMS.cellsize = 8;
   PARAMS.cellsize = 16;
+
+  PARAMS.summary_str = sprintf('cs_%d_norm_%d', ...
+      int32(PARAMS.cellsize), int32(PARAMS.normalize));
 
   PARAMS.num_cells_width = floor(PARAMS.obj_width / PARAMS.cellsize);
   PARAMS.num_cells_height = floor(PARAMS.obj_heigth / PARAMS.cellsize);
