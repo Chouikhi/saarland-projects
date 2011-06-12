@@ -70,6 +70,8 @@ analysis = Analysis
   { combine = smiley_intersection
   , direction = Forward
   , edgeEffect = edgeEffectAE
+  -- TODO: Add check for monotonicity here.
+  , fix = curry snd
   }
 
 initStateAE :: Program -> StateAE

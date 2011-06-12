@@ -3,9 +3,10 @@ module Recursive( recursive
                 ) where
 
 import AnalysisBase
-import Program
 import Data.List (union, (\\))
 import Data.Maybe (fromJust)
+import Program
+import Util
 
 type DepList = [(Point, [Point])]
 type StableList = [Point]
@@ -32,7 +33,7 @@ recursive asys prog initState = third $ foldr solve
                                     (map snd (evalDependantEdges prog (direction asys) p))
         (ns, change) = eval asys prog p st'
         rs2 = if change
-              then ( upd p [] is'
+              then ( aeUpd p [] is'
                    , ss' \\ (fromJust (lookup p is'))
                    , ns)
               else rs'
@@ -42,11 +43,11 @@ recursive asys prog initState = third $ foldr solve
 
     depEval :: Point -> Point -> (RecState c) -> (RecState c)
     depEval p neededFor rs@(is, ss, st) = let (is', ss', st') = solve p rs
-                                          in  (upd2 p (union [neededFor]) is', ss', st')
+                                          in  (aeUpdF p (union [neededFor]) is', ss', st')
 
     third (_, _, z) = z
-    upd a b al = upd2 a (\_ -> b) al
-    upd2 :: (Eq a) => a -> (b -> b) -> [(a, b)] -> [(a, b)]
-    upd2 a f al = let b = fromJust $ lookup a al
-                      tal = filter (\(ax, _) -> ax /= a) al
-                  in  (a, f b) : tal
+    -- upd a b al = upd2 a (\_ -> b) al
+    -- upd2 :: (Eq a) => a -> (b -> b) -> [(a, b)] -> [(a, b)]
+    -- upd2 a f al = let b = fromJust $ lookup a al
+    --                   tal = filter (\(ax, _) -> ax /= a) al
+    --               in  (a, f b) : tal

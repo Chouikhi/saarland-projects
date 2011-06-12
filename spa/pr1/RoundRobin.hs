@@ -10,7 +10,7 @@ roundRobin asys prog initState = step points initState False 0
   where
     points = programPoints prog
     step [] state False _ = state
-    -- step [] state True 1 = state
+    -- step [] state True 2 = state
     step [] state True iter  = step points state False (iter + 1)
     step (p:ps) state changed iter = step ps state' changed' iter
       where

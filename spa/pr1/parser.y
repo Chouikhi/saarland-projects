@@ -5,6 +5,7 @@ module Parser where
 import Char (isSpace, isAlpha, isDigit)
 import List (isPrefixOf, find)
 import qualified Program
+import GHC.Exts (sortWith)
 
 }
 
@@ -69,7 +70,7 @@ Label
     : ';'                            { Program.Nop }
     | str '=' Expr ';'               { Program.Assign (Program.Var $1) $3 }
     | 'Pos' '(' Expr ')'             { Program.Pos $3 }
-    | 'Neg' '(' Expr ')'             { Program.Pos $3 }
+    | 'Neg' '(' Expr ')'             { Program.Neg $3 }
     | str '=' 'M' '[' Expr ']' ';'   { Program.Load (Program.Var $1) $5 }
     | 'M' '[' Expr ']' '=' Expr ';'  { Program.Store $3 $6 }
 
@@ -144,8 +145,8 @@ lexer (css@(c:cs))
                    , ("]", TokenCSB)
                    , (";", TokenSc)
                    ]
-      ops = [ "+", "-", "*", "/"
-            , "<", ">" , "<=", ">=", "==", "!=" ]
+      ops = sortWith (negate . length)
+                     [ "+", "-", "*", "/" , "<", ">" , "<=", ">=", "==", "!=" ]
 
       (num, restn) = span isDigit css
       (word, rest) = span isIdentifierChar css

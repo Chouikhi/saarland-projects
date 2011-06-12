@@ -1,0 +1,20 @@
+ANALYSIS
+    Interval_Analysis
+ALGORITHM
+    Round_Robin
+OUTPUT
+    Analysis
+PROGRAM
+    START   i = 0;        P1
+    P1      Pos(i < 42)   P2
+    P2      Pos(i >= 0)   P3
+    P3      Pos(i < 42)   P4
+    P4      ai = a + i;   P5
+    P5      M[ai] = i;    P6
+    P6      i = i + 1;    P7
+    P7      ;             P1
+    P1      Neg(i < 42)   P8
+    P2      Neg(i >= 0)   P9
+    P3      Neg(i < 42)   P9
+    P8      res = i;      END
+    P9      res = -1;      END

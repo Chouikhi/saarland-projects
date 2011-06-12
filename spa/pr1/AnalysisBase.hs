@@ -9,6 +9,7 @@ data (Carrier carrier) => Analysis carrier = Analysis
   { combine :: carrier -> carrier -> carrier
   , direction :: Direction
   , edgeEffect :: Edge -> carrier -> carrier
+  , fix :: carrier -> carrier -> carrier
   }
 
 type {- (Carrier carrier) => -} State carrier = [(Point, carrier)]
@@ -20,7 +21,7 @@ labelToEdge labelEffect (Edge _ lbl _) = labelEffect lbl
 
 eval :: (Carrier carrier) => Analysis carrier -> Program -> Point
                           -> State carrier -> (State carrier, Bool)
-eval asys prog point state = if oldd == newd then (state, False) else (newState, True)
+eval asys prog point state = if oldd == fixedNew then (state, False) else (newState, True)
   where
     edgeEffects = map (uncurry $ edgeEffect asys) depData
     depData = map (\(e, p) -> (e, fromJust $ lookup p state)) depPts
@@ -29,4 +30,5 @@ eval asys prog point state = if oldd == newd then (state, False) else (newState,
     newd = if edgeEffects == []
            then fromJust $ lookup point state
            else foldr1 (combine asys) edgeEffects
-    newState = (point, newd) : filter ((/= point) . fst) state
+    fixedNew = fix asys oldd newd
+    newState = (point, fixedNew) : filter ((/= point) . fst) state

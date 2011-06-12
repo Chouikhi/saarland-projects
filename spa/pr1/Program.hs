@@ -12,19 +12,22 @@ module Program ( Program
                , BOp(..)
                , programVars
                , labelVars
+               , isCond
                , evalDependantEdges
                , resultDependantEdges
                , programPoints
                , prettyExpr
                , prettyVar
                , prettyPoint
+               , prettyProgram
                , labelExpr
+               , labelSub
                , exprVars
                , subExpr
                ) where
 
 import Data.List (isPrefixOf, find, union, sort, nub)
-import Data.Maybe (maybeToList, fromJust)
+import Data.Maybe (maybeToList, fromJust, isJust)
 
 data Direction = Forward | Backward deriving (Show, Eq)
 
@@ -33,6 +36,9 @@ opposite Forward = Backward
 opposite Backward = Forward
 
 type Program = [ Edge ]
+
+prettyProgram :: Program -> String
+prettyProgram es = unlines $ map prettyEdge (sort es)
 
 programPoints :: Program -> [Point]
 programPoints prog = nub . sort $ (map start prog) ++ (map end prog)
@@ -50,6 +56,11 @@ data Edge = Edge
         , label :: Label
         , end   :: Point }
         deriving (Show, Eq, Ord)
+
+prettyEdge :: Edge -> String
+prettyEdge (Edge p1 lbl p2) = "    " ++ prettyPoint p1 ++ " "
+                                     ++ prettyLabel lbl ++ " "
+                                     ++ prettyPoint p2
 
 -- holds only the information about the connected points
 type PureEdge = (Point, Point)
@@ -78,6 +89,33 @@ data Label
         | Store   Expr Expr
   deriving (Show, Eq, Ord)
 
+-- instance Functor Label where
+--   fmap _ Nop = Nop
+--   fmap f (Pos e) = Pos (fmap f e)
+--   fmap f (Neg e) = Neg (fmap f e)
+--   fmap f (Assign v e) = Assign
+
+isCond :: Label -> Bool
+isCond (Pos _) = True
+isCond (Neg _) = True
+isCond _ = False
+
+prettyLabel :: Label -> String
+prettyLabel Nop = ";"
+prettyLabel (Pos e) = "Pos(" ++ prettyExpr e ++ ")"
+prettyLabel (Neg e) = "Neg(" ++ prettyExpr e ++ ")"
+prettyLabel (Assign v e) = prettyVar v ++ " = " ++ prettyExpr e ++ ";"
+prettyLabel (Load v e) = prettyVar v ++ " = M[" ++ prettyExpr e ++ "];"
+prettyLabel (Store e1 e2) = "M[" ++ prettyExpr e1 ++ "] = " ++ prettyExpr e2 ++ ";"
+
+labelSub :: Label -> [(Var, Int)] -> Label
+labelSub Nop c = Nop
+labelSub (Pos e) c = Pos (exprSub e c)
+labelSub (Neg e) c = Neg (exprSub e c)
+labelSub (Assign v e) c = Assign v (exprSub e c)
+labelSub (Load v e) c = Load v (exprSub e c)
+labelSub (Store e1 e2) c = Store (exprSub e1 c) (exprSub e2 c)
+
 labelVars :: Label -> ([Var], Maybe Var)
 labelVars Nop = ([], Nothing)
 labelVars (Pos e) = (exprVars e, Nothing)
@@ -94,7 +132,6 @@ labelExpr (Assign v e) = [e]
 labelExpr (Load v e) = [e]
 labelExpr (Store e1 e2) = [e1, e2]
 
-
 evalDependantEdges :: Program -> Direction -> Point -> [(Edge, Point)]
 evalDependantEdges prog dir point = map (\e@(Edge u lbl v) -> if dir == Forward then (e, u) else (e, v)) edges
   where
@@ -108,6 +145,15 @@ data Expr
         | UExpr UOp Expr
         | BExpr Expr BOp Expr
   deriving (Show, Eq, Ord)
+
+exprSub :: Expr -> [(Var, Int)] -> Expr
+exprSub a@(AExpr (AtomVar v)) cs = let lu = lookup v cs
+                                   in  if isJust lu
+                                       then AExpr $ AtomConst $ fromJust lu
+                                       else a
+exprSub a@(AExpr _) c = a
+exprSub (UExpr op e) c = UExpr op (exprSub e c)
+exprSub (BExpr e1 op e2) c = BExpr (exprSub e1 c) op (exprSub e2 c)
 
 exprVars :: Expr -> [Var]
 exprVars (AExpr (AtomVar v)) = [v]

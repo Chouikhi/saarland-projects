@@ -63,11 +63,29 @@ root = TestList
                                                         Times
                                                         (AExpr (AtomVar (Var "y")))))
                                  (sParseLabel "x = M[23*y];") 
+        , TestCase $ assertEqual "Pos(i >= 0)"
+                                 (Pos (BExpr (AExpr (AtomVar (Var "i")))
+                                             GreaterEqual
+                                             (AExpr (AtomConst 0))))
+                                 (sParseLabel "Pos(i >= 0)")
+        , TestCase $ assertEqual "Neg(x < 42)"
+                                 (Neg (BExpr (AExpr (AtomVar (Var "x")))
+                                             LessThan
+                                             (AExpr (AtomConst 42))))
+                                 (sParseLabel "Neg(x < 42)")
         , TestCase $ assertEqual "== expr"
                                  (BExpr (AExpr (AtomVar (Var "x")))
                                         Equal 
                                         (AExpr (AtomVar (Var "y"))))
                                  (sParseExpr "x == y")
+        , TestCase $ assertEqual "edge x = y + z"
+                                 (Edge (Point "P1")
+                                       (Assign (Var "x")
+                                               (BExpr (AExpr (AtomVar (Var "y")))
+                                                      Plus
+                                                      (AExpr (AtomVar (Var "z")))))
+                                       (Point "P2"))
+                                 (sParseEdge "P1 x = y + z; P2")
         ]
 
       , TestLabel "TrulyLiveVariables Edge effects" $ TestList
@@ -316,57 +334,109 @@ root = TestList
         , TestCase $ assertEqual "eval expr var"
                                  (finInt 5 10)
                                  (evalExpr (sParseExpr "x")
-                                           (Just [(Var "x", finInt 5 10)]))
+                                           ( [(Var "x", finInt 5 10)]))
         , TestCase $ assertEqual "eval expr const"
                                  (finInt 5 5)
                                  (evalExpr (sParseExpr "5")
-                                           (Just [(Var "x", finInt 5 10)]))
+                                           ( [(Var "x", finInt 5 10)]))
         , TestCase $ assertEqual "eval expr unary"
                                  (finInt (-10) (-5))
                                  (evalExpr (sParseExpr "-x")
-                                           (Just [(Var "x", finInt 5 10)]))
+                                           ( [(Var "x", finInt 5 10)]))
         , TestCase $ assertEqual "eval expr binary"
                                  (finInt 10 30)
                                  (evalExpr (sParseExpr "x * y")
-                                           (Just [ (Var "x", finInt 5 10)
-                                                 , (Var "y", finInt 2 3)
-                                                 ]))
+                                           ( [ (Var "x", finInt 5 10)
+                                             , (Var "y", finInt 2 3)
+                                             ]))
         , TestCase $ assertEqual "eval expr binary <"
                                  iTrue
                                  (evalExpr (sParseExpr "x < y")
-                                           (Just [ (Var "x", finInt (-3) 5)
-                                                 , (Var "y", finInt 6 19)
-                                                 ]))
+                                           ( [ (Var "x", finInt (-3) 5)
+                                             , (Var "y", finInt 6 19)
+                                             ]))
         , TestCase $ assertEqual "eval expr binary <"
                                  iUnknown
                                  (evalExpr (sParseExpr "x < y")
-                                           (Just [ (Var "x", finInt (-3) 5)
-                                                 , (Var "y", finInt 5 19)
-                                                 ]))
+                                           ( [ (Var "x", finInt (-3) 5)
+                                             , (Var "y", finInt 5 19)
+                                             ]))
         , TestCase $ assertEqual "eval expr binary <"
                                  iFalse
                                  (evalExpr (sParseExpr "x < y")
-                                           (Just [ (Var "x", finInt 5 10)
-                                                 , (Var "y", finInt (-3) 5)
-                                                 ]))
+                                           ( [ (Var "x", finInt 5 10)
+                                             , (Var "y", finInt (-3) 5)
+                                             ]))
         , TestCase $ assertEqual "eval expr binary =="
                                  iTrue
                                  (evalExpr (sParseExpr "x == y")
-                                           (Just [ (Var "x", finInt 5 5)
-                                                 , (Var "y", finInt 5 5)
-                                                 ]))
+                                           ( [ (Var "x", finInt 5 5)
+                                             , (Var "y", finInt 5 5)
+                                             ]))
         , TestCase $ assertEqual "eval expr binary =="
                                  iUnknown
                                  (evalExpr (sParseExpr "x == y")
-                                           (Just [ (Var "x", finInt 5 6)
-                                                 , (Var "y", finInt 5 6)
-                                                 ]))
+                                           ( [ (Var "x", finInt 5 6)
+                                             , (Var "y", finInt 5 6)
+                                             ]))
         , TestCase $ assertEqual "eval expr binary =="
                                  iFalse
                                  (evalExpr (sParseExpr "x == y")
-                                           (Just [ (Var "x", finInt 5 6)
+                                           ( [ (Var "x", finInt 5 6)
                                                  , (Var "y", finInt 7 8)
                                                  ]))
+        , TestCase $ assertEqual "+ int"
+                                 (Just [ (Var "x", finInt 5 10)
+                                       ])
+                                 (edgeEffectIA (sParseLabel "x = x + 1;")
+                                               (Just [ (Var "x", finInt 4 9)
+                                                     ]))
+        , TestCase $ assertEqual "evalExr x < 42"
+                                 iTrue
+                                 (evalExpr (sParseExpr "x < 42")
+                                           ( [ (Var "x", finInt 0 41) ]))
+        -- , TestCase $ assertEqual "Neg(x < 42) for x in [0, 41]"
+        --                          (botIA)
+        --                          (edgeEffectIA (sParseLabel "Neg(x < 42)")
+        --                                        (Just [ (Var "x", finInt 0 41) ]))
+        , TestCase $ assertEqual "exploiting Pos(x < 42)"
+                                 (Just [ (Var "x", finInt 0 41) ])
+                                 (edgeEffectIA (sParseLabel "Pos(x < 42)")
+                                               (Just [ (Var "x", finInt 0 42) ]))
+        , TestCase $ assertEqual "maybeTrue"
+                                 False
+                                 (maybeTrue iFalse)
+        , TestCase $ assertEqual "maybeTrue"
+                                 True
+                                 (maybeTrue iTrue)
+        , TestCase $ assertEqual "maybeTrue"
+                                 True
+                                 (maybeTrue iUnknown)
+        , TestCase $ assertEqual "maybeFalse"
+                                 False
+                                 (maybeFalse iTrue)
+        , TestCase $ assertEqual "edgeEffectIA Neg(x < 42)"
+                                 botIA
+                                 (edgeEffectIA (sParseLabel "Neg(x < 42)")
+                                               (Just [ (Var "x", finInt 0 41) ]))
+        , TestCase $ assertEqual "edge effect Neg(x >= 0) for x = [0, 41]"
+                                 botIA
+                                 (edgeEffectIA (sParseLabel "Neg(x >= 0)")
+                                               (Just [ (Var "x", finInt 0 41) ]))
+        , TestCase $ assertEqual "edgeEffectIA Pos(x < 42)"
+                                 (Just [ (Var "x", finInt 0 41) ])
+                                 (edgeEffectIA (sParseLabel "Pos(x < 42)")
+                                               (Just [ (Var "x", finInt 0 41) ]))
+        , TestCase $ assertEqSet "eval Neg(x >= 0) for  x = [0, 41]"
+                                 [ (Point "START", Just [ (Var "x", finInt 0 41) ])
+                                 , (Point "END", Nothing)
+                                 ]
+                                 (fst $ (eval narrowingAnalysis
+                                              (sParseProgram "START Neg(x >= 0) END")
+                                              (Point "END")
+                                              ([ (Point "START", Just [ (Var "x", finInt 0 41) ])
+                                               , (Point "END", Just [ (Var "x", geInt 0) ])
+                                               ])))
         ]
       , TestLabel "program eval" $ TestList
         [
@@ -438,6 +508,12 @@ root = TestList
         , TestCase $ assertEqSet "all vars"
                                  (map Var ["x", "y", "t"])
                                  (programVars testProg1Parsed)
+        , TestCase $ assertEqual "labelSub"
+                                 (sParseLabel "x = 3 + z;")
+                                 (labelSub (sParseLabel "x = y + z;")
+                                           [ (Var "y", 3)
+                                           , (Var "v", 100)
+                                           ])
         ]
       ]
 
