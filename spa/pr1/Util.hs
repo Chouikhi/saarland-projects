@@ -1,6 +1,6 @@
 module Util where
 
-import Data.Maybe (fromJust, isJust)
+import Data.Maybe (fromJust, isJust, maybe)
 
 -- associative array update
 aeUpd :: (Eq a) => a -> b -> [(a, b)] -> [(a, b)]
@@ -11,13 +11,9 @@ aeUpdF a f ae = let b = fromJust $ lookup a ae
                     fae = filter (\(ax, _) -> ax /= a) ae
                 in  (a, f b) : fae
 
-fromJustX str m = if isJust m then fromJust m else error(str)
+fromJustX str m = maybe (error str) id m
 
 jLookup :: (Eq a) => a -> [(a, b)] -> b
-jLookup a ae = if isJust lu
-               then fromJust lu
-               else error "jLookup"
-  where
-    lu = lookup a ae
+jLookup a ae = maybe (error "jLookup") id $ lookup a ae
 
 sndMap f = map (\(a, b) -> (a, f b))

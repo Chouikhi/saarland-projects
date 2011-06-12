@@ -57,10 +57,8 @@ edgeEffectAE (Edge u lab v) inp = filterVar $ inp `addNewerExpr` ntSubExprsP
         remove = (nub $ sort $ filtJust oldFilterNothing) `intersect` (nub $ sort $ filtJust new)
 
     (_, mChangedVar) = labelVars lab
-    filterVar = if isJust mChangedVar
-                -- remove expressions that have the variable which is written
-                then filter (\(_, e) -> fromJust mChangedVar `notElem` exprVars e)
-                else id
+    -- remove expressions that have the variable which is written
+    filterVar = maybe id (\cv -> filter (\(_, e) -> cv `notElem` exprVars e)) mChangedVar
 
 isNTSubExpr :: Expr -> Bool
 isNTSubExpr (AExpr _) = False

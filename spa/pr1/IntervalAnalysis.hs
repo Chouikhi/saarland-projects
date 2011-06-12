@@ -45,8 +45,8 @@ fromEnds as = Interval (infToNothing zmin, infToNothing zmax)
     zmax = maximum as
     infToNothing ii = if isInf ii then Nothing else Just (getInt ii)
 
-intToInfInt (Interval (ma, mb)) = [ if isJust ma then AInt $ fromJust ma else MinusInfinity
-                                  , if isJust mb then AInt $ fromJust mb else PlusInfinity
+intToInfInt (Interval (ma, mb)) = [ maybe MinusInfinity AInt ma
+                                  , maybe PlusInfinity AInt mb
                                   ]
 
 fullInt = Interval (Nothing, Nothing)
@@ -77,17 +77,9 @@ hasZero int = sa <= 0 && 0 <= sb
 intLub :: Interval -> Interval -> Interval
 intLub int1@(Interval (ma1, mb1)) int2@(Interval (ma2, mb2)) = Interval (a1, a2)
   where
-    a1 = if isJust ma1 && isJust ma2 then Just $ min (fromJust ma1) (fromJust ma2) else Nothing
-    a2 = if isJust mb1 && isJust mb2 then Just $ max (fromJust mb1) (fromJust mb2) else Nothing
+    a1 = ma1 >>= (\a1 -> ma2 >>= (\a2 -> return $ min a1 a2))
+    a2 = mb1 >>= (\b1 -> mb2 >>= (\b2 -> return $ max b1 b2))
 
--- intGlb :: Interval -> Interval -> Interval
--- intGlb int1@(Interval (ma1, mb1)) int2@(Interval (ma2, mb2)) = res
---   where
---     a1 = if isJust ma1 && isJust ma2 then Just $ max (fromJust ma1) (fromJust ma2) else Nothing
---     a2 = if isJust mb1 && isJust mb2 then Just $ min (fromJust mb1) (fromJust mb2) else Nothing
---     res = if isNothing a1 || isNothing a2 || fromJust a1 <= fromJust a2
---           then Interval (a1, a2)
---           else error $ "GLB failed " ++ show int1 ++ " " ++ show int2
 intGlbM :: Interval -> Interval -> Maybe Interval
 intGlbM int1 int2 = if lb <= ub then Just $ fromEnds [lb, ub] else Nothing
   where
@@ -135,9 +127,7 @@ getInt (AInt i) = i
 getInt _ = error "Cannot extract integer from infinity"
 
 mplus :: Maybe Int -> Maybe Int -> Maybe Int
-mplus ma mb = if isJust ma && isJust mb
-              then Just $ fromJust ma + fromJust mb
-              else Nothing
+mplus ma mb = ma >>= (\a -> mb >>= (\b -> return (a + b)))
 
 mtimes :: InfinityInt -> InfinityInt -> InfinityInt
 mtimes a b
