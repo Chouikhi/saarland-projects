@@ -35,7 +35,7 @@ main = getContents >>= (\inp ->
           let prog = (program . parseAnalysis . lexer) inp
               asysRes = AvailableExpressions.performAnalysis worklist prog
               optRes = AvailableExpressions.performOptimization prog asysRes
----          in  putStr $ show optRes)
+--           in  putStr $ show optRes)
           in  putStr (prettyProgram optRes))
 
 -- >>= putStr . TrulyLiveVariables.prettyState . sort . (TrulyLiveVariables.performAnalysis worklist) . program . parseAnalysis . lexer

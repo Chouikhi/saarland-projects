@@ -1,0 +1,13 @@
+ANALYSIS
+    Available_Expressions
+ALGORITHM
+    Worklist
+OUTPUT
+    Transformation
+PROGRAM
+    START  x = 3;   P1
+    P1     y = 1;   P2
+    P2     Pos(y < x + 5) P3
+    P3     z = x + 5;     P4
+    P2     Neg(y < x + 5) P4
+    P4     v = x + 5;     END
