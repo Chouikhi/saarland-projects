@@ -24,10 +24,18 @@ import qualified IntervalAnalysis
 --               optRes = TrulyLiveVariables.performOptimization prog asysRes
 --           in  putStr (prettyProgram optRes))
 
+-- main = getContents >>= (\inp ->
+--           let prog = (program . parseAnalysis . lexer) inp
+--               asysRes = IntervalAnalysis.performAnalysis worklist prog
+--               optRes = IntervalAnalysis.performOptimization prog asysRes
+--           in  putStr (prettyProgram optRes))
+
+-- XXX: Call appropriate stuff based on input.
 main = getContents >>= (\inp ->
           let prog = (program . parseAnalysis . lexer) inp
-              asysRes = IntervalAnalysis.performAnalysis worklist prog
-              optRes = IntervalAnalysis.performOptimization prog asysRes
+              asysRes = AvailableExpressions.performAnalysis worklist prog
+              optRes = AvailableExpressions.performOptimization prog asysRes
+---          in  putStr $ show optRes)
           in  putStr (prettyProgram optRes))
 
 -- >>= putStr . TrulyLiveVariables.prettyState . sort . (TrulyLiveVariables.performAnalysis worklist) . program . parseAnalysis . lexer

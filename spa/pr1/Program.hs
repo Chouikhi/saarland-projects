@@ -11,6 +11,7 @@ module Program ( Program
                , UOp(..)
                , BOp(..)
                , programVars
+               , programExprs
                , labelVars
                , isCond
                , evalDependantEdges
@@ -50,6 +51,9 @@ programVars es = foldr union [] lvs
       lv = map labelVars $ map label es
       lvs :: [[Var]]
       lvs = map (\(vs, mv) -> vs `union` maybeToList mv) lv
+
+programExprs :: Program -> [Expr]
+programExprs es = nub $ sort $ foldr (++) [] $ map (labelExpr . label) es
 
 data Edge = Edge
         { start :: Point
