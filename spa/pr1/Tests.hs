@@ -508,12 +508,12 @@ root = TestList
         , TestCase $ assertEqSet "all vars"
                                  (map Var ["x", "y", "t"])
                                  (programVars testProg1Parsed)
-        , TestCase $ assertEqual "labelSub"
-                                 (sParseLabel "x = 3 + z;")
-                                 (labelSub (sParseLabel "x = y + z;")
-                                           [ (Var "y", 3)
-                                           , (Var "v", 100)
-                                           ])
+        -- , TestCase $ assertEqual "labelSub"
+        --                          (sParseLabel "x = 3 + z;")
+        --                          (labelSub (sParseLabel "x = y + z;")
+        --                                    [ (Var "y", 3)
+        --                                    , (Var "v", 100)
+        --                                    ])
         ]
       ]
 

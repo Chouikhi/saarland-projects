@@ -77,11 +77,6 @@ initStateAE :: Program -> StateAE
 initStateAE prog = (startPoint, []) : [(p, allExprs) | p <- programPoints prog, p /= startPoint]
   where
     allExprs = map (\e -> (Nothing, e)) $ nub $ sort $ foldr (++) [] $ map (labelExpr . label) prog
-    -- compact = map (\(Edge u lbl v) -> ((u, v), filter isNTSubExpr $ labelExpr lbl)) prog
-    -- explode pe [] = []
-    -- explode pe (e:es) = (pe, e) : explode pe es
-    -- allExprs = foldr (++) [] $ map (uncurry explode) compact
-    -- exprs = foldr union [] $ map (\(Edge _ lbl _) -> labelExpr lbl) prog
 
 smiley_intersection :: CarrierAE -> CarrierAE -> CarrierAE
 smiley_intersection c1 c2 = nub $ sort $ filteredNothing
@@ -100,39 +95,8 @@ smiley_intersection c1 c2 = nub $ sort $ filteredNothing
 performAnalysis :: (FixPointAlgorithm CarrierAE) -> Program -> StateAE
 performAnalysis fpa prog = fpa analysis prog (initStateAE prog)
 
--- TODO: Use this function for labelSub
--- TODO: Rename X ending functions
--- Given an expression and a function that maps expressions return the resulting expression
-exprSubX :: Expr -> (Expr -> Expr) -> Expr
-exprSubX e f = if ne /= e
-               then ne
-               else se 
-  where 
-    ne = f e
-    se = case e of
-      (AExpr _) -> e
-      (UExpr op ex) -> UExpr op (exprSubX ex f)
-      (BExpr ex1 op ex2) -> BExpr (exprSubX ex1 f) op (exprSubX ex2 f)
-
--- Given a label and a function that maps expressions return the resulting label
-labelExprSubX :: Label -> (Expr -> Expr) -> Label
-labelExprSubX Nop _ = Nop
-labelExprSubX (Pos e) f = Pos (exprSubX e f)
-labelExprSubX (Neg e) f = Neg (exprSubX e f)
-labelExprSubX (Assign v e) f = Assign v (exprSubX e f)
-labelExprSubX (Load v e) f = Load v (exprSubX e f)
-labelExprSubX (Store e1 e2) f = Store (exprSubX e1 f) (exprSubX e2 f)
-
-labelExprSub :: Label -> [Expr] -> [(Expr, Var)] -> Label
-labelExprSub lbl es esm = labelExprSubX lbl f
-  where
-    f :: Expr -> Expr
-    f e = if e `elem` es
-          then AExpr $ AtomVar $ jLookup e esm
-          else e
-
 performOptimization :: Program -> StateAE -> Program
-performOptimization prog apes = prog2 ++ nedges
+performOptimization prog apes = prog3 ++ nedges
   where
     -- choose a unique new variable for each non trivial expression
     expr2uvars :: [(Expr, Var)]
@@ -140,10 +104,19 @@ performOptimization prog apes = prog2 ++ nedges
                          $ map (Var . ("t_" ++) . show) [0..]
                      es = filter isNTSubExpr $ programExprs prog
                  in zip es uniq_vars
+    -- given a label, set of expressions and a mapping to variables replace all
+    -- expressions in label from the set with the corresponding variable
+    labelExprSubEV :: Label -> [Expr] -> [(Expr, Var)] -> Label
+    labelExprSubEV lbl es esm = labelExprSub lbl f where
+      f e = if e `elem` es
+            then AExpr $ AtomVar $ jLookup e esm
+            else e
+
     -- stage1 modifies the program to use the expression variable whenever it
-    -- is available and tell which expression locations need to be exploited
-    -- (i.e not all expressions are going to be used later so only the used
-    -- ones will be extractd in an assignment)
+    -- is available (but not where it becomes available) and tells which
+    -- expression locations need to be exploited (i.e not all expressions are
+    -- going to be used later so only the used ones will be extractd in an
+    -- assignment)
     (prog1, exprs) = foldr stage1 ([], []) prog where
       stage1 :: Edge -> (Program, [(Point, Expr)])
                      -> (Program, [(Point, Expr)])
@@ -156,23 +129,35 @@ performOptimization prog apes = prog2 ++ nedges
         -- substitute expressions
         sexprs = filter (`elem` caes) nexprs
         npe = filter ((`elem` sexprs) . snd) capes
-        ne = e { label = labelExprSub lbl sexprs expr2uvars }
-    -- stage2 determines the new program points for the expressions that need
+        ne = e { label = labelExprSubEV lbl sexprs expr2uvars }
+
+    -- stage2 substitute the available expressions with the corresponding
+    -- variables in the place where the expression becomes available
+    prog2 = map stage2 prog1 where
+      stage2 e@(Edge u lbl v) = e { label = new_lbl } where
+        fexprs = map snd $ filter ((u ==) . fst) exprs
+        new_lbl = labelExprSubEV lbl fexprs expr2uvars
+        
+    -- stage3 determines the new program points for the expressions that need
     -- to be added to the program and also information specifying how existing
     -- program points in the program should be renamed
-    (exprs2, moves, _) = foldr stage2 ([], moves0, upb_init) exprs where
+    (exprs2, moves, _) = foldr stage3 ([], moves0, upb_init) exprs where
       moves0 = map (\(u, _) -> (u, u)) exprs
-      stage2 :: (Point, Expr)
+      stage3 :: (Point, Expr)
              -> ( [(PureEdge, Expr)], [(Point, Point)]
                 , ([Point], [(Point, [Point])]))
              -> ( [(PureEdge, Expr)], [(Point, Point)]
                 , ([Point], [(Point, [Point])]))
-      stage2 (u, e) (es,    ms,             upts_st) =
+      stage3 (u, e) (es,    ms,             upts_st) =
                     (ne:es, aeUpd u u'' ms, nupts_st) where
         u' = jLookup u ms
         (u'', nupts_st) = uniq_pnt_after u upts_st
         ne = ((u', u''), e)
       upb_init = ([], [])
+      -- given a point return a unique point with similar name. The second arg
+      -- is the state, which should be looked after by the caller. It manages
+      -- an infinite sequence of similar point names for each program point and
+      -- a set of returned points, to ensure uniqueness.
       uniq_pnt_after :: Point -> ([Point], [(Point, [Point])])
                      -> (Point,  ([Point], [(Point, [Point])]))
       uniq_pnt_after u cs@(ret, fut) = (r, (r:ret, aeUpd u rseq nfut)) where
@@ -183,10 +168,12 @@ performOptimization prog apes = prog2 ++ nedges
         pnt_is_existing p = p `elem` ret || p `elem` programPoints prog
         add fut pp = (pp, new_seq pp):fut
         new_seq (Point pn) = map (Point . ((pn ++ "_") ++) . show) [0..]
-    -- stage3 changes existing program points according to information computed
-    -- in stage2
-    prog2 = map stage3 prog1 where
-      stage3 e@(Edge u _ v) = maybe e (\u' -> e { start = u' }) $ lookup u moves
+
+    -- stage4 changes existing program points according to information computed
+    -- in stage3
+    prog3 = map stage4 prog2 where
+      stage4 e@(Edge u _ v) = maybe e (\u' -> e { start = u' }) $ lookup u moves
+
     -- convert expressions to actual edges -- we have point information so just
     -- create appropriate labels
     nedges = map pnt_expr_to_edge exprs2 where

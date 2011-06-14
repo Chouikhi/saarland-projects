@@ -22,7 +22,7 @@ module Program ( Program
                , prettyPoint
                , prettyProgram
                , labelExpr
-               , labelSub
+               , labelExprSub
                , exprVars
                , subExpr
                ) where
@@ -112,13 +112,25 @@ prettyLabel (Assign v e) = prettyVar v ++ " = " ++ prettyExpr e ++ ";"
 prettyLabel (Load v e) = prettyVar v ++ " = M[" ++ prettyExpr e ++ "];"
 prettyLabel (Store e1 e2) = "M[" ++ prettyExpr e1 ++ "] = " ++ prettyExpr e2 ++ ";"
 
-labelSub :: Label -> [(Var, Int)] -> Label
-labelSub Nop c = Nop
-labelSub (Pos e) c = Pos (exprSub e c)
-labelSub (Neg e) c = Neg (exprSub e c)
-labelSub (Assign v e) c = Assign v (exprSub e c)
-labelSub (Load v e) c = Load v (exprSub e c)
-labelSub (Store e1 e2) c = Store (exprSub e1 c) (exprSub e2 c)
+-- Given an expression and a function that maps expressions return the resulting expression
+exprSub :: Expr -> (Expr -> Expr) -> Expr
+exprSub e f = if ne /= e then ne else se 
+  where 
+    ne = f e
+    se = case e of
+      (AExpr _) -> e
+      (UExpr op ex) -> UExpr op (exprSub ex f)
+      (BExpr ex1 op ex2) -> BExpr (exprSub ex1 f) op (exprSub ex2 f)
+
+-- Given a label and a function that maps expressions return the resulting label
+labelExprSub :: Label -> (Expr -> Expr) -> Label
+labelExprSub Nop _ = Nop
+labelExprSub (Pos e) f = Pos (exprSub e f)
+labelExprSub (Neg e) f = Neg (exprSub e f)
+labelExprSub (Assign v e) f = Assign v (exprSub e f)
+labelExprSub (Load v e) f = Load v (exprSub e f)
+labelExprSub (Store e1 e2) f = Store (exprSub e1 f) (exprSub e2 f)
+
 
 labelVars :: Label -> ([Var], Maybe Var)
 labelVars Nop = ([], Nothing)
@@ -150,14 +162,14 @@ data Expr
         | BExpr Expr BOp Expr
   deriving (Show, Eq, Ord)
 
-exprSub :: Expr -> [(Var, Int)] -> Expr
-exprSub a@(AExpr (AtomVar v)) cs = let lu = lookup v cs
-                                   in  if isJust lu
-                                       then AExpr $ AtomConst $ fromJust lu
-                                       else a
-exprSub a@(AExpr _) c = a
-exprSub (UExpr op e) c = UExpr op (exprSub e c)
-exprSub (BExpr e1 op e2) c = BExpr (exprSub e1 c) op (exprSub e2 c)
+-- exprSub :: Expr -> [(Var, Int)] -> Expr
+-- exprSub a@(AExpr (AtomVar v)) cs = let lu = lookup v cs
+--                                    in  if isJust lu
+--                                        then AExpr $ AtomConst $ fromJust lu
+--                                        else a
+-- exprSub a@(AExpr _) c = a
+-- exprSub (UExpr op e) c = UExpr op (exprSub e c)
+-- exprSub (BExpr e1 op e2) c = BExpr (exprSub e1 c) op (exprSub e2 c)
 
 exprVars :: Expr -> [Var]
 exprVars (AExpr (AtomVar v)) = [v]

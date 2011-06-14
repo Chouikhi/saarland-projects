@@ -317,7 +317,11 @@ performOptimization prog ints = optConst
                                        else e)
                    prog
     optPoints = filter (\(Edge u _ v) -> not (isBot u || isBot v)) optEdges
-    optConst = map (\e -> e { label = labelSub (label e) (consts (start e)) }) optPoints
+    optConst = map (\e -> e { label = labelExprSub (label e) (varToConst (consts (start e))) }) optPoints
+    varToConst vcs (AExpr (AtomVar v)) = maybe (AExpr (AtomVar v))
+                                               (\c -> AExpr (AtomConst c))
+                                               (lookup v vcs)
+    varToConst vcs e = e
     consts :: Point -> [(Var, Int)]
     consts p = sndMap (getInt . the)
              $ filter (\(_, [lb, ub]) -> lb == ub)
