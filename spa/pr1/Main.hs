@@ -12,9 +12,9 @@ import Util
 import qualified RoundRobin
 import qualified Worklist
 import qualified Recursive
-import qualified TrulyLiveVariables
-import qualified AvailableExpressions
-import qualified IntervalAnalysis
+import qualified TrulyLiveVariables as TLV
+import qualified AvailableExpressions as AE
+import qualified IntervalAnalysis as IA
 
 fixpointMap :: [(String, AnyFixPointAlgorithm)]
 fixpointMap = [ ("Round_Robin", WrapFixPointAlgorithm RoundRobin.roundRobin)
@@ -23,28 +23,22 @@ fixpointMap = [ ("Round_Robin", WrapFixPointAlgorithm RoundRobin.roundRobin)
               ]
 data AnalyzerOptimizerPair where
   WrapAnalyzerOptimizerPair :: forall c. Carrier c
-                            => ( FixPointAlgorithm c -> Program -> State c
-                               , Program -> State c -> Program
-                               ) -> AnalyzerOptimizerPair
+                            => (FixPointAlgorithm c -> Program -> State c)
+                            -> (Program -> State c -> Program)
+                            -> AnalyzerOptimizerPair
 
 analysisMap :: [(String, AnalyzerOptimizerPair)]
 analysisMap = [ ( "Available_Expressions"
-                , WrapAnalyzerOptimizerPair 
-                  ( AvailableExpressions.performAnalysis
-                  , AvailableExpressions.performOptimization
-                  )
+                , WrapAnalyzerOptimizerPair AE.performAnalysis
+                                            AE.performOptimization
                 )
               , ( "Truly_Live_Variables"
-                , WrapAnalyzerOptimizerPair
-                  ( TrulyLiveVariables.performAnalysis
-                  , TrulyLiveVariables.performOptimization
-                  )
+                , WrapAnalyzerOptimizerPair TLV.performAnalysis
+                                            TLV.performOptimization
                 )
               , ( "Interval_Analysis"
-                , WrapAnalyzerOptimizerPair
-                  ( IntervalAnalysis.performAnalysis
-                  , IntervalAnalysis.performOptimization
-                  )
+                , WrapAnalyzerOptimizerPair IA.performAnalysis
+                                            IA.performOptimization
                 )
               ]
 
@@ -55,7 +49,7 @@ main = getContents >>= (\inp ->
               fpalgName = getName $ algorithm parsedInp
               action = getName $ output parsedInp
               strRes = case jLookup analysisName analysisMap of
-                         WrapAnalyzerOptimizerPair (analyzer, optimizer) ->
+                         (WrapAnalyzerOptimizerPair analyzer optimizer) ->
                            let
                              fpalg = case jLookup fpalgName fixpointMap of
                                        (WrapFixPointAlgorithm a) -> a
