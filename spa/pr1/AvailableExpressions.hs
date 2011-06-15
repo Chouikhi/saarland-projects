@@ -11,6 +11,9 @@ import Util
 type CarrierAE = [(Maybe PureEdge, Expr)]
 type StateAE = State CarrierAE
 
+instance StateCls StateAE where
+  pretty = prettyState
+
 prettyState :: StateAE -> String
 prettyState paes = unlines $ map prettyCarrier paes
   where

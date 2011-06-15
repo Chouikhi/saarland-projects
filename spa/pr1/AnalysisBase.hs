@@ -14,6 +14,8 @@ data (Carrier carrier) => Analysis carrier = Analysis
 
 type {- (Carrier carrier) => -} State carrier = [(Point, carrier)]
 
+class StateCls st where
+  pretty :: st -> String
 
 labelToEdge :: (Carrier carrier) => (Label -> carrier -> carrier) -> Edge
                                  -> carrier -> carrier
@@ -32,3 +34,4 @@ eval asys prog point state = if oldd == fixedNew then (state, False) else (newSt
            else foldr1 (combine asys) edgeEffects
     fixedNew = fix asys oldd newd
     newState = (point, fixedNew) : filter ((/= point) . fst) state
+

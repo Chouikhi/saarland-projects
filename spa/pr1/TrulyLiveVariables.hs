@@ -18,6 +18,9 @@ instance Carrier CarrierTLV where
 type CarrierTLV = [Var]
 type StateTLV = State CarrierTLV
 
+instance StateCls StateTLV where
+  pretty = prettyState
+
 prettyState :: StateTLV -> String
 prettyState plvs = unlines $ map prettyLV plvs
   where

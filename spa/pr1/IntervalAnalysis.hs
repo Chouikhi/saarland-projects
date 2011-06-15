@@ -21,6 +21,9 @@ type BareCarrierIA = [(Var, Interval)]
 type CarrierIA = Maybe BareCarrierIA
 type StateIA = State CarrierIA
 
+instance StateCls StateIA where
+  pretty = prettyState
+
 instance Carrier CarrierIA where
 
 prettyState :: StateIA -> String
