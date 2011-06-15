@@ -42,7 +42,7 @@ analysisMap = [ ( "Available_Expressions"
                 )
               ]
 
-main = getContents >>= (\inp ->
+main = do inp <- getContents
           let parsedInp = (parseAnalysis . lexer) inp
               prog = program parsedInp
               analysisName = getName $ analysis parsedInp
@@ -58,4 +58,4 @@ main = getContents >>= (\inp ->
                                       then pretty asysRes
                                       else prettyProgram optRes
                            in strRes
-          in  putStr strRes)
+          putStr strRes
