@@ -21,27 +21,27 @@ fixpointMap = [ ("Round_Robin", WrapFixPointAlgorithm RoundRobin.roundRobin)
               , ("Worklist", WrapFixPointAlgorithm Worklist.worklist)
               , ("Recursive", WrapFixPointAlgorithm Recursive.recursive)
               ]
-data AnalizerOptimizerPair where
-  WrapAnalizerOptimizerPair :: forall c. Carrier c
+data AnalyzerOptimizerPair where
+  WrapAnalyzerOptimizerPair :: forall c. Carrier c
                             => ( FixPointAlgorithm c -> Program -> State c
                                , Program -> State c -> Program
-                               ) -> AnalizerOptimizerPair
+                               ) -> AnalyzerOptimizerPair
 
-analysisMap :: [(String, AnalizerOptimizerPair)]
+analysisMap :: [(String, AnalyzerOptimizerPair)]
 analysisMap = [ ( "Available_Expressions"
-                , WrapAnalizerOptimizerPair 
+                , WrapAnalyzerOptimizerPair 
                   ( AvailableExpressions.performAnalysis
                   , AvailableExpressions.performOptimization
                   )
                 )
               , ( "Truly_Live_Variables"
-                , WrapAnalizerOptimizerPair
+                , WrapAnalyzerOptimizerPair
                   ( TrulyLiveVariables.performAnalysis
                   , TrulyLiveVariables.performOptimization
                   )
                 )
               , ( "Interval_Analysis"
-                , WrapAnalizerOptimizerPair
+                , WrapAnalyzerOptimizerPair
                   ( IntervalAnalysis.performAnalysis
                   , IntervalAnalysis.performOptimization
                   )
@@ -55,7 +55,7 @@ main = getContents >>= (\inp ->
               fpalgName = getName $ algorithm parsedInp
               action = getName $ output parsedInp
               strRes = case jLookup analysisName analysisMap of
-                         WrapAnalizerOptimizerPair (analyzer, optimizer) ->
+                         WrapAnalyzerOptimizerPair (analyzer, optimizer) ->
                            let
                              fpalg = case jLookup fpalgName fixpointMap of
                                        (WrapFixPointAlgorithm a) -> a
