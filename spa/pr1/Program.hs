@@ -93,12 +93,6 @@ data Label
         | Store   Expr Expr
   deriving (Show, Eq, Ord)
 
--- instance Functor Label where
---   fmap _ Nop = Nop
---   fmap f (Pos e) = Pos (fmap f e)
---   fmap f (Neg e) = Neg (fmap f e)
---   fmap f (Assign v e) = Assign
-
 isCond :: Label -> Bool
 isCond (Pos _) = True
 isCond (Neg _) = True

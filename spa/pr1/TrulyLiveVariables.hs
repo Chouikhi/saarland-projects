@@ -14,12 +14,10 @@ import Util
 import Data.List ((\\), union, intersect, deleteBy, intersperse)
 
 instance Carrier CarrierTLV where
+  pretty = prettyState
 
 type CarrierTLV = [Var]
 type StateTLV = State CarrierTLV
-
-instance StateCls StateTLV where
-  pretty = prettyState
 
 prettyState :: StateTLV -> String
 prettyState plvs = unlines $ map prettyLV plvs
