@@ -45,7 +45,7 @@ analysis = Analysis
   , fix = curry snd
   }
 
-performAnalysis :: (FixPointAlgorithm CarrierTLV) -> Program -> StateTLV
+performAnalysis :: FixPointAlgorithm CarrierTLV -> Program -> StateTLV
 performAnalysis fpa prog = fpa analysis prog (initStateTLV prog)
 
 performOptimization :: Program -> StateTLV -> Program

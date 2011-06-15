@@ -5,7 +5,7 @@ import AnalysisBase
 import Program
 import Data.List(union)
 
-worklist :: (Carrier c) => (Analysis c) -> Program -> (State c) -> (State c)
+worklist :: (Carrier c) => Analysis c -> Program -> State c -> State c
 worklist asys prog initState = step allPoints initState
   where
     allPoints = programPoints prog

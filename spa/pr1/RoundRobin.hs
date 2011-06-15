@@ -5,7 +5,7 @@ import AnalysisBase
 import Program
 import Data.List
 
-roundRobin :: (Carrier c) => (Analysis c) -> Program -> (State c) -> (State c)
+roundRobin :: (Carrier c) => Analysis c -> Program -> State c -> State c
 roundRobin asys prog initState = step points initState False 0
   where
     points = programPoints prog

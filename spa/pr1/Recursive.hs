@@ -10,12 +10,12 @@ import Util
 
 type DepList = [(Point, [Point])]
 type StableList = [Point]
-type RecState c = (DepList, StableList, (State c))
+type RecState c = (DepList, StableList, State c)
 
 
 
-recursive :: forall c . Carrier c => (Analysis c) -> Program
-                                  -> (State c) -> (State c)
+recursive :: forall c . Carrier c => Analysis c -> Program
+                                  -> State c -> State c
 recursive asys prog initState = third $ foldr solve
                                               ( [(p, []) | p <- allPoints]
                                               , []
@@ -23,7 +23,7 @@ recursive asys prog initState = third $ foldr solve
                                               allPoints
   where
     allPoints = programPoints prog
-    solve :: Point -> (RecState c) -> (RecState c)
+    solve :: Point -> RecState c -> RecState c
     solve p rs@(is, ss, st) = if p `elem` ss
                               then rs
                               else nrs
@@ -41,7 +41,7 @@ recursive asys prog initState = third $ foldr solve
                     rs2
                     (fromJust $ lookup p is')
 
-    depEval :: Point -> Point -> (RecState c) -> (RecState c)
+    depEval :: Point -> Point -> RecState c -> RecState c
     depEval p neededFor rs@(is, ss, st) = let (is', ss', st') = solve p rs
                                           in  (aeUpdF p (union [neededFor]) is', ss', st')
 

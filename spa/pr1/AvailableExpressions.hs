@@ -94,7 +94,7 @@ smiley_intersection c1 c2 = nub $ sort $ filteredNothing
     filteredNothing = filter (\(pe, e) -> isJust pe || e `notElem` sthExprs) wNothingUnited
 
 
-performAnalysis :: (FixPointAlgorithm CarrierAE) -> Program -> StateAE
+performAnalysis :: FixPointAlgorithm CarrierAE -> Program -> StateAE
 performAnalysis fpa prog = fpa analysis prog (initStateAE prog)
 
 performOptimization :: Program -> StateAE -> Program

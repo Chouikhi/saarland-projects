@@ -297,7 +297,7 @@ stdAnalysis = Analysis
 wideningAnalysis = stdAnalysis { fix = fixCarrier widenInt True }
 narrowingAnalysis = stdAnalysis { fix = fixCarrier narrowInt False }
 
-performAnalysis :: (FixPointAlgorithm CarrierIA) -> Program -> StateIA
+performAnalysis :: FixPointAlgorithm CarrierIA -> Program -> StateIA
 performAnalysis fpa prog = afterNarrowing
   where
     initState = aeUpd startPoint (topIA $ programVars prog)

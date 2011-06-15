@@ -4,7 +4,7 @@ import Program
 import Data.Maybe
 
 class (Show c, Eq c, Ord c) => Carrier c where
-  pretty :: (State c) -> String
+  pretty :: State c -> String
 
 data (Carrier carrier) => Analysis carrier = Analysis
   { combine :: carrier -> carrier -> carrier
