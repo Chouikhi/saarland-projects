@@ -16,7 +16,7 @@ import qualified TrulyLiveVariables as TLV
 import qualified AvailableExpressions as AE
 import qualified IntervalAnalysis as IA
 
-fixpointMap :: [(String, AnyFixPointAlgorithm)]
+fixpointMap :: [(String, GenericFixPointAlgorithm)]
 fixpointMap = [ ("Round_Robin", WrapFixPointAlgorithm RoundRobin.roundRobin)
               , ("Worklist", WrapFixPointAlgorithm Worklist.worklist)
               , ("Recursive", WrapFixPointAlgorithm Recursive.recursive)
@@ -51,8 +51,7 @@ main = getContents >>= (\inp ->
               strRes = case jLookup analysisName analysisMap of
                          (WrapAnalyzerOptimizerPair analyzer optimizer) ->
                            let
-                             fpalg = case jLookup fpalgName fixpointMap of
-                                       (WrapFixPointAlgorithm a) -> a
+                             fpalg = instantiateFixPointAlgorithm $ jLookup fpalgName fixpointMap
                              asysRes = analyzer fpalg prog
                              optRes = optimizer prog asysRes
                              strRes = if action == "Analysis"
