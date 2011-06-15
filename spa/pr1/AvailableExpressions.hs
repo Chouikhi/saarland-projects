@@ -1,5 +1,12 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
-module AvailableExpressions where
+module AvailableExpressions ( performAnalysis
+                            , performOptimization
+
+                            -- for testing purposes
+                            , edgeEffectAE
+                            , smiley_intersection
+                            , analysis
+                            , initStateAE) where
 
 import Program
 import FixPointAlgorithmBase
@@ -12,23 +19,14 @@ type CarrierAE = [(Maybe PureEdge, Expr)]
 type StateAE = State CarrierAE
 
 instance Carrier CarrierAE where
-  pretty = prettyState
-
-prettyState :: StateAE -> String
-prettyState paes = unlines $ map prettyCarrier paes
-  where
-    prettyCarrier :: (Point, CarrierAE) -> String
-    prettyCarrier (p, aes) = "    " ++ prettyPoint p ++ " : {"
-                          ++ (foldr (++) "" (intersperse ", " (allPrettyAes aes)))
-                          ++ "}"
-    -- allPrettyAes aes = map prettyExpr (nub $ sort $ map snd aes)
-    allPrettyAes aes = map prettyAes aes
-    prettyAes (Nothing, expr) = "(?) " ++ prettyExpr expr
-    prettyAes (Just (p1, p2), expr) = "("
-                      ++ prettyPoint p1 ++ ", " ++ prettyPoint p2
-                      ++ ") " ++ prettyExpr expr
-
-
+  prettyCarrier aes = foldr (++) "" (intersperse ", " (allPrettyAes aes)) where
+    allPrettyAes aes = map prettyExpr (nub $ sort $ map snd aes)
+    -- allPrettyAes aes = map prettyAes aes
+    -- prettyAes (Nothing, expr) = "(?) " ++ prettyExpr expr
+    -- prettyAes (Just (p1, p2), expr) = "("
+    --                   ++ prettyPoint p1 ++ ", " ++ prettyPoint p2
+    --                   ++ ") " ++ prettyExpr expr
+    
 -- TODO: This is getting hairy. Take a second look / add guards.
 edgeEffectAE :: Edge -> CarrierAE -> CarrierAE
 edgeEffectAE (Edge u lab v) inp = filterVar $ inp `addNewerExpr` ntSubExprsP

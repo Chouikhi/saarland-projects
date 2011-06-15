@@ -1,7 +1,6 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
 module TrulyLiveVariables ( performAnalysis
                           , performOptimization
-                          , prettyState
                           
                          -- for testing purposes
                           , edgeEffectTLV) where
@@ -14,18 +13,10 @@ import Util
 import Data.List ((\\), union, intersect, deleteBy, intersperse)
 
 instance Carrier CarrierTLV where
-  pretty = prettyState
+  prettyCarrier lvs = foldr (++) "" (intersperse ", " $ map prettyVar lvs)
 
 type CarrierTLV = [Var]
 type StateTLV = State CarrierTLV
-
-prettyState :: StateTLV -> String
-prettyState plvs = unlines $ map prettyLV plvs
-  where
-    prettyLV :: (Point, CarrierTLV) -> String
-    prettyLV (p, lvs) = "    " ++ prettyPoint p ++ " : {"
-                    ++ (foldr (++) "" (intersperse ", " $ map prettyVar lvs))
-                    ++ "}"
 
 edgeEffectTLV :: Label -> CarrierTLV -> CarrierTLV
 edgeEffectTLV lbl inp = (inp \\ (maybeToList written)) `union`

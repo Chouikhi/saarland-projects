@@ -48,14 +48,14 @@ main = do inp <- getContents
               analysisName = getName $ analysis parsedInp
               fpalgName = getName $ algorithm parsedInp
               action = getName $ output parsedInp
-              strRes = case jLookup analysisName analysisMap of
-                         (WrapAnalyzerOptimizerPair analyzer optimizer) ->
-                           let
-                             fpalg = instantiateFixPointAlgorithm $ jLookup fpalgName fixpointMap
-                             asysRes = analyzer fpalg prog
-                             optRes = optimizer prog asysRes
-                             strRes = if action == "Analysis"
-                                      then pretty asysRes
-                                      else prettyProgram optRes
-                           in strRes
+              (header, strRes) = case jLookup analysisName analysisMap of
+                                   (WrapAnalyzerOptimizerPair analyzer optimizer) ->
+                                     let
+                                       fpalg = instantiateFixPointAlgorithm $ jLookup fpalgName fixpointMap
+                                       asysRes = analyzer fpalg prog
+                                       optRes = optimizer prog asysRes
+                                     in if action == "Analysis"
+                                        then ("ANALYSIS_RESULTS", prettyState asysRes)
+                                        else ("TRANSFORMATION_RESULT", prettyProgram optRes)
+          putStrLn header
           putStr strRes

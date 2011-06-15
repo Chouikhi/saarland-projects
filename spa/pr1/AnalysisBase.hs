@@ -2,9 +2,14 @@ module AnalysisBase where
 
 import Program
 import Data.Maybe
+import Data.List (sort)
 
 class (Show c, Eq c, Ord c) => Carrier c where
-  pretty :: State c -> String
+  prettyState :: State c -> String
+  prettyState s = unlines $ map prettyPC $ sort s
+    where prettyPC (p, c) = "    " ++ prettyPoint p ++ " : {"
+                          ++ prettyCarrier c ++ "}"
+  prettyCarrier :: c -> String
 
 data (Carrier carrier) => Analysis carrier = Analysis
   { combine :: carrier -> carrier -> carrier

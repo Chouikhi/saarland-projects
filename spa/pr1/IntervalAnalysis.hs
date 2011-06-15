@@ -1,5 +1,6 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
-module IntervalAnalysis where
+module IntervalAnalysis where -- this module is extensively tested, so export
+                              -- everything
 
 import Program
 import FixPointAlgorithmBase
@@ -22,19 +23,11 @@ type CarrierIA = Maybe BareCarrierIA
 type StateIA = State CarrierIA
 
 instance Carrier CarrierIA where
-  pretty = prettyState
-
-prettyState :: StateIA -> String
-prettyState paes = unlines $ map prettyCarrier paes
-  where
-    prettyCarrier :: (Point, CarrierIA) -> String
-    prettyCarrier (p, vis) = "    " ++ prettyPoint p ++ " : {"
-                          ++ (foldr (++) "" (intersperse ", " (allPrettyVIs vis)))
-                          ++ "}"
+  prettyCarrier vis = foldr (++) "" (intersperse ", " (allPrettyVIs vis)) where
     allPrettyVIs Nothing = [""]
     allPrettyVIs (Just vis) = map prettyVIs $ sort vis
     prettyVIs (v, int) = "(" ++ prettyVar v ++ ", " ++ show int ++ ")"
-
+      
 botIA = Nothing
 topVIA = fullInt
 topIA vars = Just $ map (\v -> (v, topVIA)) vars
