@@ -11,7 +11,7 @@ import Util
 type CarrierAE = [(Maybe PureEdge, Expr)]
 type StateAE = State CarrierAE
 
-instance StateCls StateAE where
+instance Carrier CarrierAE where
   pretty = prettyState
 
 prettyState :: StateAE -> String
@@ -28,7 +28,6 @@ prettyState paes = unlines $ map prettyCarrier paes
                       ++ prettyPoint p1 ++ ", " ++ prettyPoint p2
                       ++ ") " ++ prettyExpr expr
 
-instance Carrier CarrierAE where
 
 -- TODO: This is getting hairy. Take a second look / add guards.
 edgeEffectAE :: Edge -> CarrierAE -> CarrierAE

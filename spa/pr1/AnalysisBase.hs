@@ -4,6 +4,7 @@ import Program
 import Data.Maybe
 
 class (Show c, Eq c, Ord c) => Carrier c where
+  pretty :: (State c) -> String
 
 data (Carrier carrier) => Analysis carrier = Analysis
   { combine :: carrier -> carrier -> carrier
@@ -13,9 +14,6 @@ data (Carrier carrier) => Analysis carrier = Analysis
   }
 
 type {- (Carrier carrier) => -} State carrier = [(Point, carrier)]
-
-class StateCls st where
-  pretty :: st -> String
 
 labelToEdge :: (Carrier carrier) => (Label -> carrier -> carrier) -> Edge
                                  -> carrier -> carrier
