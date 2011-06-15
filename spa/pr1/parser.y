@@ -85,9 +85,19 @@ Expr
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
 
+class Named n where
+  getName :: n -> String
+
 newtype Analysis = Analysis String deriving Show
 newtype Algorithm = Algorithm String deriving Show
 newtype Output = Output String deriving Show
+
+instance Named Analysis where
+  getName (Analysis asys) = asys
+instance Named Algorithm where
+  getName (Algorithm alg) = alg
+instance Named Output where
+  getName (Output out) = out
 
 data AnalysisData = AnalysisData
         { analysis :: Analysis

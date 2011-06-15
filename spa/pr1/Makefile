@@ -13,8 +13,10 @@ Tests: Tests.hs Parser.hs RoundRobin.hs TrulyLiveVariables.hs \
 Parser.hs: parser.y
 	happy parser.y -o $@
 
+Main.o: Parser.hs
+
 %.o: %.hs
 	ghc --make $^
 
 clean:
-	rm -rf *.o *.hi Main Tests
+	rm -rf *.o *.hi Parser.hs Main Tests
