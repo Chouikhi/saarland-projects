@@ -1,0 +1,4 @@
+You'll need happy to build this (http://haskell.org/happy/).
+After build the executable Main is what you'll probably want to use.
+Executable Test runs some unit tests.
+In the folder test there is a shell script that runs all the end-to-end tests.
