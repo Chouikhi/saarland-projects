@@ -1,9 +1,12 @@
 ANALYSIS
     Truly_Live_Variables
+
 ALGORITHM
     Worklist
+
 OUTPUT
     Transformation
+
 PROGRAM
     START   x = y + 1;     P1
     P1      z = 2 * x;     P2

@@ -1,0 +1,4 @@
+TRANSFORMATION_RESULT
+    START ; P1
+    P1 ; P2
+    P2 M[R] = y; END

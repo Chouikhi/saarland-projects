@@ -1,9 +1,12 @@
 ANALYSIS
     Interval_Analysis
+
 ALGORITHM
     Round_Robin
+
 OUTPUT
     Analysis
+
 PROGRAM
     START   i = 0;        P1
     P1      Pos(i < 42)   P2

@@ -1,9 +1,12 @@
 ANALYSIS
     Truly_Live_Variables
+
 ALGORITHM
     Round_Robin
+
 OUTPUT
     Analysis
+
 PROGRAM
     START  x = M[I];        P1
     P1     y = 1;           P2

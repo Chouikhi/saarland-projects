@@ -1,9 +1,12 @@
 ANALYSIS
     Truly_Live_Variables
+
 ALGORITHM
     Round_Robin
+
 OUTPUT
     Analysis
+
 PROGRAM
     START   Pos(x > 0)   P1
     START   Neg(x > 0)   P2

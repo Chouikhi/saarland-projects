@@ -1,0 +1,17 @@
+ANALYSIS
+    Available_Expressions 
+
+ALGORITHM
+    Round_Robin 
+
+OUTPUT
+    Analysis
+ 
+PROGRAM 
+    START     c = 0;       P1
+    P1        t = a + b;   P2
+    P2        Pos(t)       P3
+    P3        a = 4;       P4
+    P4        x = a + b;   P5
+    P5        ;            END
+    P2        Neg(t)       END
