@@ -9,6 +9,7 @@ import Program
 import FixPointAlgorithmBase
 import AnalysisBase
 import Util
+import GHC.Exts (the)
 import qualified RoundRobin
 import qualified Worklist
 import qualified Recursive
@@ -41,6 +42,20 @@ analysisMap = [ ( "Available_Expressions"
                                             IA.performOptimization
                 )
               ]
+headerMap = [ ("Analysis", "ANALYSIS_RESULTS")
+            , ("Transformation", "TRANSFORMATION_RESULT")
+            ]
+
+-- weather to compare the results from all fix point algorithms to make sure
+-- everything is correct
+testAllAlgorithms = True
+
+analyze analyzer prefFpAlgName prog = the $ map normalizeState allStates
+  where
+    allStates = map (\alg -> analyzer (instantiateFixPointAlgorithm alg) prog) 
+              $ if testAllAlgorithms
+                then map snd fixpointMap
+                else [jLookup prefFpAlgName fixpointMap]
 
 main = do inp <- getContents
           let parsedInp = (parseAnalysis . lexer) inp
@@ -48,14 +63,13 @@ main = do inp <- getContents
               analysisName = getName $ analysis parsedInp
               fpalgName = getName $ algorithm parsedInp
               action = getName $ output parsedInp
-              (header, strRes) = case jLookup analysisName analysisMap of
-                                   (WrapAnalyzerOptimizerPair analyzer optimizer) ->
-                                     let
-                                       fpalg = instantiateFixPointAlgorithm $ jLookup fpalgName fixpointMap
-                                       asysRes = analyzer fpalg prog
-                                       optRes = optimizer prog asysRes
-                                     in if action == "Analysis"
-                                        then ("ANALYSIS_RESULTS", prettyState asysRes)
-                                        else ("TRANSFORMATION_RESULT", prettyProgram optRes)
-          putStrLn header
+              strRes = case jLookup analysisName analysisMap of
+                         (WrapAnalyzerOptimizerPair analyzer optimizer) ->
+                           let
+                             asysRes = analyze analyzer fpalgName prog
+                             optRes = optimizer prog asysRes
+                           in if action == "Analysis"
+                              then prettyState asysRes
+                              else prettyProgram optRes
+          putStrLn $ jLookup action headerMap
           putStr strRes

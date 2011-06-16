@@ -26,8 +26,8 @@ instance Carrier CarrierAE where
     -- prettyAes (Just (p1, p2), expr) = "("
     --                   ++ prettyPoint p1 ++ ", " ++ prettyPoint p2
     --                   ++ ") " ++ prettyExpr expr
-    
--- TODO: This is getting hairy. Take a second look / add guards.
+  normalizeCarrier = sort
+
 edgeEffectAE :: Edge -> CarrierAE -> CarrierAE
 edgeEffectAE (Edge u lab v) inp = filterVar $ inp `addNewerExpr` ntSubExprsP
   where

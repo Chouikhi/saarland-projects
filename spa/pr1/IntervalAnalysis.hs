@@ -27,6 +27,7 @@ instance Carrier CarrierIA where
     allPrettyVIs Nothing = [""]
     allPrettyVIs (Just vis) = map prettyVIs $ sort vis
     prettyVIs (v, int) = "(" ++ prettyVar v ++ ", " ++ show int ++ ")"
+  normalizeCarrier = maybe Nothing (Just . sort)
       
 botIA = Nothing
 topVIA = fullInt

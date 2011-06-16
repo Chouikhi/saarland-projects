@@ -10,13 +10,14 @@ import FixPointAlgorithmBase
 import Program
 import Data.Maybe
 import Util
-import Data.List ((\\), union, intersect, deleteBy, intersperse)
-
-instance Carrier CarrierTLV where
-  prettyCarrier lvs = foldr (++) "" (intersperse ", " $ map prettyVar lvs)
+import Data.List ((\\), union, intersect, deleteBy, intersperse, sort)
 
 type CarrierTLV = [Var]
 type StateTLV = State CarrierTLV
+
+instance Carrier CarrierTLV where
+  prettyCarrier lvs = foldr (++) "" (intersperse ", " $ map prettyVar lvs)
+  normalizeCarrier = sort
 
 edgeEffectTLV :: Label -> CarrierTLV -> CarrierTLV
 edgeEffectTLV lbl inp = (inp \\ (maybeToList written)) `union`
