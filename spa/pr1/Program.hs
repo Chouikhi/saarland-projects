@@ -42,7 +42,7 @@ prettyProgram :: Program -> String
 prettyProgram es = unlines $ map prettyEdge (sort es)
 
 programPoints :: Program -> [Point]
-programPoints prog = nub . sort $ (map start prog) ++ (map end prog)
+programPoints prog = nub $ (map start prog) ++ (map end prog)
 
 programVars :: Program -> [Var]
 programVars es = foldr union [] lvs
@@ -53,7 +53,7 @@ programVars es = foldr union [] lvs
       lvs = map (\(vs, mv) -> vs `union` maybeToList mv) lv
 
 programExprs :: Program -> [Expr]
-programExprs es = nub $ sort $ foldr (++) [] $ map (labelExpr . label) es
+programExprs es = nub $ foldr (++) [] $ map (labelExpr . label) es
 
 data Edge = Edge
         { start :: Point

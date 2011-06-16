@@ -20,7 +20,7 @@ type StateAE = State CarrierAE
 
 instance Carrier CarrierAE where
   prettyCarrier aes = foldr (++) "" (intersperse ", " (allPrettyAes aes)) where
-    allPrettyAes aes = map prettyExpr (nub $ sort $ map snd aes)
+    allPrettyAes aes = map prettyExpr (nub $ map snd aes)
     -- allPrettyAes aes = map prettyAes aes
     -- prettyAes (Nothing, expr) = "(?) " ++ prettyExpr expr
     -- prettyAes (Just (p1, p2), expr) = "("
@@ -32,7 +32,7 @@ edgeEffectAE :: Edge -> CarrierAE -> CarrierAE
 edgeEffectAE (Edge u lab v) inp = filterVar $ inp `addNewerExpr` ntSubExprsP
   where
     exprs = labelExpr lab
-    subExprs = nub $ sort $ foldr (++) [] $ map subExpr exprs
+    subExprs = nub $ foldr (++) [] $ map subExpr exprs
     ntSubExprs = filter isNTSubExpr subExprs
     -- ntSubExprsP - all expressions at this edge, with their edge information attached
     ntSubExprsP :: CarrierAE
@@ -55,7 +55,7 @@ edgeEffectAE (Edge u lab v) inp = filterVar $ inp `addNewerExpr` ntSubExprsP
         realNew = filter (\(_, e) -> e `notElem` (map snd $ filter (isJust . fst) old)) new
 
         filtJust cs = filter (\(pe, _) -> isJust pe) cs
-        remove = (nub $ sort $ filtJust oldFilterNothing) `intersect` (nub $ sort $ filtJust new)
+        remove = (nub $ filtJust oldFilterNothing) `intersect` (nub $ filtJust new)
 
     (_, mChangedVar) = labelVars lab
     -- remove expressions that have the variable which is written
@@ -76,12 +76,15 @@ analysis = Analysis
 initStateAE :: Program -> StateAE
 initStateAE prog = (startPoint, []) : [(p, allExprs) | p <- programPoints prog, p /= startPoint]
   where
-    allExprs = map (\e -> (Nothing, e)) $ nub $ sort $ foldr (++) [] $ map (labelExpr . label) prog
+    allExprs = map (\e -> (Nothing, e)) $ nub
+             $ filter isNTSubExpr
+             $ foldr (++) []
+             $ map (labelExpr . label) prog
 
 smiley_intersection :: CarrierAE -> CarrierAE -> CarrierAE
-smiley_intersection c1 c2 = nub $ sort $ filteredNothing
+smiley_intersection c1 c2 = nub $ filteredNothing
   where
-    uniqExpr c = nub $ sort $ map snd c
+    uniqExpr c = nub $ map snd c
     -- all common expressions, regardless of definition point
     exprs = uniqExpr c1 `intersect` uniqExpr c2
     sthExpr c = uniqExpr $ filter (isJust . fst) c
