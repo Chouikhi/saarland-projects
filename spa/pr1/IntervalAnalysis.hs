@@ -199,9 +199,12 @@ edgeEffectIA lbl minp = if minp == botIA
   where
     inp :: BareCarrierIA
     inp = fromJust minp
-    -- TODO: if both sides are variables, exploit for both
     exploitCond :: Expr -> BareCarrierIA -> BareCarrierIA
     exploitCond bexp inp = case bexp of
+                              -- in case of 2 variables -- exploit for both
+                              (BExpr ex1@(AExpr (AtomVar v1)) op ex2@(AExpr (AtomVar v2)))
+                                -> aeUpdF v2 (updV (revBOp op) ex1 inp) 
+                                 $ aeUpdF v1 (updV op ex2 inp) inp
                               (BExpr (AExpr (AtomVar v)) op ex2)
                                 -> aeUpdF v (updV op ex2 inp) inp
                               (BExpr ex1 op (AExpr (AtomVar v)))

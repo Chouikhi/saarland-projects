@@ -38,6 +38,8 @@ testProg1Parsed = sParseProgram testProg1
 testProg2 = unlines [
   "START x = y + 1; END"]
 
+msort a = maybe Nothing (Just . sort) a
+
 testProg2Parsed = sParseProgram testProg2
 
 
@@ -427,6 +429,22 @@ root = TestList
                                  (Just [ (Var "x", finInt 0 41) ])
                                  (edgeEffectIA (sParseLabel "Pos(x < 42)")
                                                (Just [ (Var "x", finInt 0 41) ]))
+        , TestCase $ assertEqual "edgeEffectIA Pos(x < y)"
+                                 (msort (Just [ (Var "x", finInt 0 6) 
+                                              , (Var "y", finInt 3 7)
+                                              ]))
+                                 (msort (edgeEffectIA (sParseLabel "Pos(x < y)")
+                                                      (Just [ (Var "x", finInt 0 10) 
+                                                            , (Var "y", finInt 3 7)
+                                                            ])))
+        , TestCase $ assertEqual "edgeEffectIA Neg(y < x)"
+                                 (msort (Just [ (Var "x", finInt 0 7) 
+                                              , (Var "y", finInt 3 7)
+                                              ]))
+                                 (msort (edgeEffectIA (sParseLabel "Neg(y < x)")
+                                                      (Just [ (Var "x", finInt 0 10)
+                                                            , (Var "y", finInt 3 7)
+                                                            ])))
         , TestCase $ assertEqSet "eval Neg(x >= 0) for  x = [0, 41]"
                                  [ (Point "START", Just [ (Var "x", finInt 0 41) ])
                                  , (Point "END", Nothing)
