@@ -17,3 +17,6 @@ jLookup :: (Eq a) => a -> [(a, b)] -> b
 jLookup a ae = maybe (error "jLookup") id $ lookup a ae
 
 sndMap f = map (\(a, b) -> (a, f b))
+
+subset a b = all (`elem` b) a
+supset a b = b `subset` a

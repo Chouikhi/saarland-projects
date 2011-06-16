@@ -33,8 +33,10 @@ analysis = Analysis
   { combine = union
   , direction = Backward
   , edgeEffect = labelToEdge edgeEffectTLV
-  -- TODO: Add check for monotonicity here.
-  , fix = curry snd
+  -- check for monotonicity
+  , fix = \o n -> if o `subset` n
+                  then n
+                  else error "not monotonic edge effect (TLV)"
   }
 
 performAnalysis :: FixPointAlgorithm CarrierTLV -> Program -> StateTLV

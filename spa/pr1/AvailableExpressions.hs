@@ -70,6 +70,7 @@ analysis = Analysis
   , direction = Forward
   , edgeEffect = edgeEffectAE
   -- TODO: Add check for monotonicity here.
+  -- NOTE: With this jumped-up carrier I wouldn't risk ;-)
   , fix = curry snd
   }
 
