@@ -46,7 +46,7 @@
     heap_shared[n](v) = heap_shared[n](v)
 
     freed(node) = freed(node) & !isNew(node)
-    needed(node) = needed(node) | isNew(node)
+    // needed(node) = needed(node) | isNew(node)
   }
   // xWrite
 }
@@ -66,9 +66,9 @@
     heap_shared[n](node) = heap_shared[n](node)
 
     freed(node) = freed(node) | lhs(node)
-    acc[n](node) = acc[n](node)
-    zombie(node) = zombie(node) | lhs(node)
-    needed(node) = needed(node)
+    // acc[n](node) = acc[n](node)
+    // zombie(node) = zombie(node) | lhs(node)
+    // needed(node) = needed(node)
   }
   // xRead
 }

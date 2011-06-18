@@ -37,13 +37,13 @@ foreach (pv in PVar) {
 
 // Accessible predicate -- weather we can reach the block from the variables
 // -- directly, or following some next fields.
-%i acc[n](node) = |/{ r[n,pv](node) : pv in PVar }
+// %i acc[n](node) = |/{ r[n,pv](node) : pv in PVar }
 
 // zombie predicate -- represents blocks that are freed, but still accessible
-%i zombie(node) = freed(node) & acc[n](node)
+// %i zombie(node) = freed(node) & acc[n](node)
 
 // needed nodes -- this is used for retaining nodes in actions
-%i needed(node) = !freed(node) | acc[n](node) nonabs
+// %i needed(node) = !freed(node) | acc[n](node) nonabs
 
 
 // Integrity constraints for transitive reachability
