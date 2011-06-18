@@ -136,8 +136,6 @@
   %t lhs + " != NULL"
   %f { lhs(v) } 
   %p (E(v) lhs(v))
-  %message (E(node) lhs(node) & freed(node)) ->
-           "Warning: Comparing freed pointer to NULL."
   // xRead
 }
 
@@ -145,9 +143,6 @@
   %t lhs + " == NULL"
   %f { lhs(v) } 
   %p !(E(v) lhs(v))
-  %message (E(node) lhs(node) & freed(node)) ->
-           "Warning: Comparing freed pointer to NULL."
-
   // xRead
 }
 
