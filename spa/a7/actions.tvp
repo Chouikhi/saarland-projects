@@ -15,6 +15,7 @@
   {
     lhs(v) = 0
   }
+  %retain needed(node)
 }
 
 %action Copy_Var_L(lhs, rhs) {
@@ -23,6 +24,7 @@
   {
     lhs(v) = rhs(v) 
   }
+  %retain needed(node)
 }
 
 %action Malloc_L(lhs) {
@@ -39,6 +41,7 @@
 
     freed(node) = freed(node)
   }
+  %retain needed(node)
 }
 
 %action Free_L(lhs) {
@@ -68,6 +71,7 @@
   {
     lhs(v) = E(v_1) rhs(v_1) & n(v_1, v)
   }
+  %retain needed(node)
 }
 
 %action Set_Next_Null_L(lhs) {
@@ -83,6 +87,8 @@
   {
     n(v_1, v_2) = n(v_1, v_2) & !lhs(v_1)
   }
+
+  %retain needed(node)
 }
 
 %action Set_Next_L(lhs, rhs) {
@@ -99,6 +105,8 @@
   {
     n(v_1, v_2) = n(v_1, v_2) | lhs(v_1) & rhs(v_2)
   }
+
+  %retain needed(node)
 }
 
 //////////////////////////////////////////////////////////////////
@@ -147,4 +155,10 @@
   %p E(v) !r[n,lhs](v)
   %message ( E(v) !r[n,lhs](v) ) -> 
            "There may be a list element not reachable from variable " + lhs + "!"
+}
+
+%action Assert_Only_Needed() {
+  %t "assertOnlyNeeded()"
+  %p E(node) !needed(node)
+  %message (E(node) !needed(node)) -> "GC failed!"
 }

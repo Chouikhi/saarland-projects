@@ -42,6 +42,10 @@ foreach (pv in PVar) {
 // zombie predicate -- represents blocks that are freed, but still accessible
 %i zombie(node) = freed(node) & acc[n](node)
 
+// needed nodes -- this is used for retaining nodes in actions
+%i needed(node) = !freed(node) | acc[n](node) nonabs
+
+
 // Integrity constraints for transitive reachability
 %r !t[n](v_1, v_2) ==> !n(v_1, v_2)
 %r !t[n](v_1, v_2) ==> v_1 != v_2
