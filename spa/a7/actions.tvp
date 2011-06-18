@@ -35,7 +35,9 @@
     foreach(z in PVar-{lhs}) {
       r[n,z](v) = r[n,z](v)
     }
-    is[n](v) = is[n](v)
+    heap_shared[n](v) = heap_shared[n](v)
+
+    freed(node) = freed(node)
   }
 }
 
@@ -49,9 +51,13 @@
     foreach(z in PVar) {
       r[n,z](v) = r[n,z](v)
     }
-    is[n](v) = is[n](v)  
+    heap_shared[n](node) = heap_shared[n](node)
+
+    freed(node) = freed(node) | lhs(node)
+    acc[n](node) = acc[n](node)
+    zombie(node) = zombie(node) | lhs(node)
   }
-  %retain !lhs(v)
+  // %retain !lhs(v)
 }
 
 %action Get_Next_L(lhs, rhs) {
@@ -130,8 +136,8 @@
 %action Assert_ListInvariants(lhs) {
   %t "assertListInvariants(" + lhs + ")"
   %f { lhs(v) }
-  %p E(v) r[n,lhs](v) & is[n](v)
-  %message ( E(v) r[n,lhs](v) & is[n](v) ) -> 
+  %p E(v) r[n,lhs](v) & heap_shared[n](v)
+  %message ( E(v) r[n,lhs](v) & heap_shared[n](v) ) -> 
            "The list pointed by " + lhs + " may be shared!"
 }
 
