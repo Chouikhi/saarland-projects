@@ -25,7 +25,7 @@ Main: Main.o $(OBJS)
 
 Tests: Tests.o $(OBJS)
 	rm -f $@
-	$(HC) -o $@ -package HUnit -main-is Tests $(HC_OPTS) $^
+	$(HC) -o $@ -package HUnit $(HC_OPTS) $^
 	
 # Standard suffix rules
 .o.hi:
@@ -48,6 +48,9 @@ Tests: Tests.o $(OBJS)
 
 Parser.hs: parser.y
 	happy parser.y -o $@
+
+Tests.o: Tests.hs
+	$(HC) -main-is Tests.main -c $< $(HC_OPTS)
 
 clean:
 	rm -rf *.o *.hi $(GEN_SRCS) $(EXECS)
