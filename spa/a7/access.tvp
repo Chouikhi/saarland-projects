@@ -21,4 +21,3 @@ L5 Is_Eq_Var(c, a) L6        // if (c == a)
 L5 Is_Not_Eq_Var(c, a) L6    // if (c != a)
 L6 Copy_Var_L(a, c) L7       // a = c
 L7 Copy_Var_L(b, a) L8       // b = a
-L8 Assert_Only_Needed() error

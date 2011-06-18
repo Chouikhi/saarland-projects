@@ -15,7 +15,7 @@
   {
     lhs(v) = 0
   }
-  %retain needed(node)
+  // %retain needed(node)
 }
 
 %action Copy_Var_L(lhs, rhs) {
@@ -24,7 +24,7 @@
   {
     lhs(v) = rhs(v) 
   }
-  %retain needed(node)
+  // xRW xRead xWrite
 }
 
 %action Malloc_L(lhs) {
@@ -39,9 +39,10 @@
     }
     heap_shared[n](v) = heap_shared[n](v)
 
-    freed(node) = freed(node)
+    freed(node) = freed(node) & !isNew(node)
+    needed(node) = needed(node) | isNew(node)
   }
-  %retain needed(node)
+  // xWrite
 }
 
 %action Free_L(lhs) {
@@ -59,8 +60,9 @@
     freed(node) = freed(node) | lhs(node)
     acc[n](node) = acc[n](node)
     zombie(node) = zombie(node) | lhs(node)
+    needed(node) = needed(node)
   }
-  // %retain !lhs(v)
+  // xRead
 }
 
 %action Get_Next_L(lhs, rhs) {
@@ -71,7 +73,7 @@
   {
     lhs(v) = E(v_1) rhs(v_1) & n(v_1, v)
   }
-  %retain needed(node)
+  // xRW xRead xWrite
 }
 
 %action Set_Next_Null_L(lhs) {
@@ -88,7 +90,7 @@
     n(v_1, v_2) = n(v_1, v_2) & !lhs(v_1)
   }
 
-  %retain needed(node)
+  // xRW xRead xWrite
 }
 
 %action Set_Next_L(lhs, rhs) {
@@ -106,7 +108,7 @@
     n(v_1, v_2) = n(v_1, v_2) | lhs(v_1) & rhs(v_2)
   }
 
-  %retain needed(node)
+  // xRW xRead x2 xWrite
 }
 
 //////////////////////////////////////////////////////////////////
@@ -117,24 +119,28 @@
   %t lhs + " != NULL"
   %f { lhs(v) } 
   %p E(v) lhs(v)
+  // xRead
 }
 
 %action Is_Null_Var(lhs) {
   %t lhs + " == NULL"
   %f { lhs(v) } 
   %p !(E(v) lhs(v))
+  // xRead
 }
 
 %action Is_Eq_Var(lhs, rhs) {
   %t lhs + " == " + rhs
   %f { lhs(v), rhs(v) } 
   %p A(v) lhs(v) <-> rhs(v)
+  // xRead
 }
 
 %action Is_Not_Eq_Var(lhs, rhs) {
   %t lhs + " != " + rhs
   %f { lhs(v), rhs(v) } 
   %p !A(v) lhs(v) <-> rhs(v)
+  // xRead
 }
 
 
@@ -157,8 +163,9 @@
            "There may be a list element not reachable from variable " + lhs + "!"
 }
 
-%action Assert_Only_Needed() {
-  %t "assertOnlyNeeded()"
-  %p E(node) !needed(node)
-  %message (E(node) !needed(node)) -> "GC failed!"
-}
+// We are not garbage collecting, so we'll have unneeded nodes.
+// %action Assert_Only_Needed() {
+//   %t "assertOnlyNeeded()"
+//   %p E(node) !needed(node)
+//   %message (E(node) !needed(node)) -> "GC failed!"
+// }
