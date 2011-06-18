@@ -154,16 +154,16 @@
 %action Is_Eq_Var(lhs, rhs) {
   %t lhs + " == " + rhs
   %f { lhs(v), rhs(v) } 
-  %p A(v) lhs(v) <-> rhs(v)
-  // %message (E(node) (rhs(node) | lhs(node)) & freed(node)) ->
-  //          "Warning: Comparing a freed pointer to another pointer"
+  %p (A(v) lhs(v) <-> rhs(v)) | (E(node) (lhs(node) | rhs(node)) & freed(node))
+  %message (E(node) (rhs(node) | lhs(node)) & freed(node)) ->
+           "Warning: Comparing a freed pointer to another pointer"
   // xRead
 }
 
 %action Is_Not_Eq_Var(lhs, rhs) {
   %t lhs + " != " + rhs
   %f { lhs(v), rhs(v) } 
-  %p !A(v) lhs(v) <-> rhs(v)
+  %p (!A(v) lhs(v) <-> rhs(v)) | (E(node) (lhs(node) | rhs(node)) & freed(node))
   %message (E(node) (rhs(node) | lhs(node)) & freed(node)) ->
            "Warning: Comparing a freed pointer to another pointer"
   // xRead
@@ -188,10 +188,3 @@
   %message ( E(v) !r[n,lhs](v) ) -> 
            "There may be a list element not reachable from variable " + lhs + "!"
 }
-
-// We are not garbage collecting, so we'll have unneeded nodes.
-// %action Assert_Only_Needed() {
-//   %t "assertOnlyNeeded()"
-//   %p E(node) !needed(node)
-//   %message (E(node) !needed(node)) -> "GC failed!"
-// }
