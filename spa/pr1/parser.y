@@ -2,8 +2,8 @@
 
 module Parser where
 
-import Char (isSpace, isAlpha, isDigit)
-import List (isPrefixOf, find)
+import Data.Char (isSpace, isAlpha, isDigit)
+import Data.List (isPrefixOf, find)
 import qualified Program
 import GHC.Exts (sortWith)
 
