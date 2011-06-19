@@ -136,14 +136,14 @@
   %t lhs + " != NULL"
   %f { lhs(v) } 
   %p (E(v) lhs(v))
-  // xRead
+  // xRead (safe read -- this is the only sane thing one can do with a freed pointer)
 }
 
 %action Is_Null_Var(lhs) {
   %t lhs + " == NULL"
   %f { lhs(v) } 
   %p !(E(v) lhs(v))
-  // xRead
+  // xRead (safe read -- this is the only sane thing one can do with a freed pointer)
 }
 
 %action Is_Eq_Var(lhs, rhs) {
