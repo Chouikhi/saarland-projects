@@ -1,0 +1,72 @@
+// list element
+%p le(e)
+
+// Every variable may points to something.
+foreach (z in PVar) {
+  %p z(v_1) unique pointer
+}
+
+// The predicate n represents the n field of the list data type.
+%p n(v_1, v_2) function acyclic
+
+// The t[n] predicate records transitive reflexive reachability between
+// list elements along the n field.
+%i t[n](v_1, v_2) = le(v_1) & le(v_2) & n*(v_1, v_2) transitive
+
+// Integrity constraints for transitive reachability
+%r le(v_1) & le(v_2) & !t[n](v_1, v_2) ==> !n(v_1, v_2)
+%r le(v_1) & le(v_2) & !t[n](v_1, v_2) ==> v_1 != v_2
+%r le(v_2) & le(v_3) & (E(v_1) (t[n](v_1, v_2) &
+                                t[n](v_1, v_3) & !t[n](v_2, v_3))) ==>
+   t[n](v_3, v_2)
+// t[n] reflexivity for list elements
+%r le(v_1) & le(v_2) & v_1 == v_2 ==> t[n](v_1, v_2)
+%r le(v_1) & le(v_2) & v_1 != v_2 & t[n](v_1, v_2) ==> !t[n](v_2, v_1)
+%r le(v_1) & le(v_2) & v_1 != v_2 & n(v_1, v_2) ==> !n(v_2, v_1)
+
+// Reachability of nodes from variables thru next pointer.
+foreach (z in PVar) {
+  %i r[n,z](v) = E(v_1) (z(v_1) & t[n](v_1, v))
+}
+
+//////////////////////////////////////////
+// Tutorial structure specific
+//////////////////////////////////////////
+
+// Tutorial structure. There are only list elements and tutorial strucures in
+// the analysis so tutorial structures are all non-list structures
+%i ts(e) = !le(e)
+
+// Pointers inside a tutorial structure.
+%s TutPtr {ga, gb}
+
+foreach (ptr in TutPtr) {
+  %p ptr(s, e) abs function
+  %i r[n,ptr](s, e) = E(e_0) (ptr(s, e_0) & t[n](e_0, e)) abs
+}
+
+%r E(s) ga(s, e_1) ==> !gb(s, e_1)
+%r E(s) gb(s, e_1) ==> !ga(s, e_1)
+%r E(s) (ga(s, e_1) & gb(s, e_2)) ==> e_1 != e_2
+
+%r E(s) ga(s, e_1) ==> !r[n,gb](s, e_1)
+%r E(s) gb(s, e_1) ==> !r[n,ga](s, e_1)
+%r E(s) r[n,ga](s, e_1) ==> !gb(s, e_1)
+%r E(s) r[n,gb](s, e_1) ==> !ga(s, e_1)
+
+%r E(s) r[n, ga](s, e_1) ==> !r[n, gb](s, e_1)
+%r E(s) r[n, gb](s, e_1) ==> !r[n, ga](s, e_1)
+%r E(s) (r[n,ga](s, e_1) & r[n,gb](s, e_2)) ==> e_1 != e_2
+
+//////////////////////////////////////////
+// Depth related
+//////////////////////////////////////////
+
+// TODO: Implement me!
+
+//////////////////////////////////////////
+// Other
+//////////////////////////////////////////
+
+// List element e has the searched student_id.
+%p stud_id(e)

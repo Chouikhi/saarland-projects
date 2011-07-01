@@ -1,0 +1,83 @@
+//////////////////////////////////////////////////
+// Accessing tutorial structure pointers
+//////////////////////////////////////////////////
+
+// %action Get_Tut_Ptrs(av, bv, sv) {
+//   %t "(" + av + ", " + bv + ") = (" + sv + "->tut_A, " + sv + "->tut_B)"
+//   %f { E(s) (sv(s) & ga(s, v)), E(s) (sv(s) & gb(s, v)) }
+//   %message !(E(s) sv(s)) ->
+//            "" + sv + " points to NULL"
+//   {
+//     av(e) = (E(s) sv(s) & ga(s, e))
+//     bv(e) = (E(s) sv(s) & gb(s, e))
+//     // TODO: Get depth information from sv.
+//   }
+// }
+
+%action Get_Tut_Ptr_A(v, sv) {
+  %t v + " = " + sv + "->tut_A"
+  %f { E(s, v_1) (sv(s) & ga(s, v_1) & t[n](v_1, v)) }
+  %message !(E(s) sv(s)) ->
+           "" + sv + " points to NULL"
+  // %message (E(s) sv(s)) & !(E(s, e) sv(s) & ga(s, e)) ->
+  //          s + "->tut_A is NULL"
+  {
+    v(e) = (E(s) sv(s) & ga(s, e))
+  }
+}
+
+%action Get_Tut_Ptr_B(v, sv) {
+  %t v + " = " + s + "->tut_B"
+  %f { E(s) sv(s) & gb(s, v) }
+  %message !(E(s) sv(s)) ->
+           "" + sv + " points to NULL"
+  {
+    v(e) = (E(s) sv(s) & gb(ss, e))
+  }
+}
+
+//////////////////////////////////////////////////
+// Variable NULL checks
+//////////////////////////////////////////////////
+
+%action Is_Not_Null_Var(var) {
+  %t var + " != NULL"
+  %f { var(v) } 
+  %p E(v) var(v)
+}
+
+%action Is_Null_Var(var) {
+  %t var + " == NULL"
+  %f { var(v) } 
+  %p !(E(v) var(v))
+}
+
+%action Set_Null(var) {
+  %t var + " = NULL"
+  {
+    var(v) = 0
+  }
+}
+
+//////////////////////////////////////////////////
+// student_id related
+//////////////////////////////////////////////////
+
+%action Is_Student_Id(var) {
+  %p (E(e) var(e) & stud_id(e))
+}
+
+%action Is_Not_Student_Id(var) {
+  %p !(E(e) var(e) & stud_id(e))
+}
+
+//////////////////////////////////////////////////
+// next pointer related
+//////////////////////////////////////////////////
+
+%action Advance_Next(var) {
+  {
+    var(e) = E(e_1) var(e_1) & n(e_1, e)
+    // TODO: Change depth.
+  }
+}
