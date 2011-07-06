@@ -22,17 +22,19 @@
   // %message (E(s) sv(s)) & !(E(s, e) sv(s) & ga(s, e)) ->
   //          s + "->tut_A is NULL"
   {
-    v(e) = (E(s) sv(s) & ga(s, e))
+    v(e) = E(s) (sv(s) & ga(s, e))
   }
 }
 
 %action Get_Tut_Ptr_B(v, sv) {
-  %t v + " = " + s + "->tut_B"
-  %f { E(s) sv(s) & gb(s, v) }
+  %t v + " = " + sv + "->tut_B"
+  %f { E(s, v_1) (sv(s) & gb(s, v_1) & t[n](v_1, v)) }
   %message !(E(s) sv(s)) ->
            "" + sv + " points to NULL"
+  // %message (E(s) sv(s)) & !(E(s, e) sv(s) & gb(s, e)) ->
+  //          s + "->tut_A is NULL"
   {
-    v(e) = (E(s) sv(s) & gb(ss, e))
+    v(e) = E(s) (sv(s) & gb(s, e))
   }
 }
 
@@ -64,11 +66,15 @@
 //////////////////////////////////////////////////
 
 %action Is_Student_Id(var) {
-  %p (E(e) var(e) & stud_id(e))
+  %t var + "->studentID == studentID"
+  %f { E(e) (var(e) & stud_id(e)) }
+  %p (E(e) (var(e) & stud_id(e)))
 }
 
 %action Is_Not_Student_Id(var) {
-  %p !(E(e) var(e) & stud_id(e))
+  %t var + "->studentID != studentID"
+  %f { E(e) (var(e) & stud_id(e)) }
+  %p !(E(e) (var(e) & stud_id(e)))
 }
 
 //////////////////////////////////////////////////
@@ -76,8 +82,30 @@
 //////////////////////////////////////////////////
 
 %action Advance_Next(var) {
+  %t var + " = " + var + "->next"
+  %f { E(e_1, e_2) (var(e_1) & n(e_1, e_2) & t[n](e_2, v)) }
   {
     var(e) = E(e_1) var(e_1) & n(e_1, e)
     // TODO: Change depth.
   }
+}
+
+//////////////////////////////////////////////////
+// Auxiliary
+//////////////////////////////////////////////////
+
+%action skip() {
+  %t "skip"
+}
+
+//////////////////////////////////////////////////
+// search related assertions
+//////////////////////////////////////////////////
+
+%action Assert_Correct_Search(v, sv) {
+  %t "Assert_Correct_Search(" + v + ", " + sv + ")"
+  %p (E(n) res(n)) &
+     !(E(s, n1, n2) (v(n1) & sv(s) & res(n2) &
+                     ((ga(s, n1) & r[n,ga](s, n2)) |
+                      (gb(s, n1) & r[n,gb](s, n2)))))
 }

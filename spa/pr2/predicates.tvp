@@ -45,18 +45,18 @@ foreach (ptr in TutPtr) {
   %i r[n,ptr](s, e) = E(e_0) (ptr(s, e_0) & t[n](e_0, e)) abs
 }
 
-%r E(s) ga(s, e_1) ==> !gb(s, e_1)
-%r E(s) gb(s, e_1) ==> !ga(s, e_1)
-%r E(s) (ga(s, e_1) & gb(s, e_2)) ==> e_1 != e_2
+%r ga(s, e_1) ==> !gb(s, e_1)
+%r gb(s, e_1) ==> !ga(s, e_1)
+%r (ga(s, e_1) & gb(s, e_2)) ==> e_1 != e_2
 
-%r E(s) ga(s, e_1) ==> !r[n,gb](s, e_1)
-%r E(s) gb(s, e_1) ==> !r[n,ga](s, e_1)
-%r E(s) r[n,ga](s, e_1) ==> !gb(s, e_1)
-%r E(s) r[n,gb](s, e_1) ==> !ga(s, e_1)
+%r ga(s, e_1) ==> !r[n,gb](s, e_1)
+%r gb(s, e_1) ==> !r[n,ga](s, e_1)
+%r r[n,ga](s, e_1) ==> !gb(s, e_1)
+%r r[n,gb](s, e_1) ==> !ga(s, e_1)
 
-%r E(s) r[n, ga](s, e_1) ==> !r[n, gb](s, e_1)
-%r E(s) r[n, gb](s, e_1) ==> !r[n, ga](s, e_1)
-%r E(s) (r[n,ga](s, e_1) & r[n,gb](s, e_2)) ==> e_1 != e_2
+%r r[n, ga](s, e_1) ==> !r[n, gb](s, e_1)
+%r r[n, gb](s, e_1) ==> !r[n, ga](s, e_1)
+%r (r[n,ga](s, e_1) & r[n,gb](s, e_2)) ==> e_1 != e_2
 
 //////////////////////////////////////////
 // Depth related

@@ -5,37 +5,39 @@
 #include "actions.tvp"
 %%
 
-start            Get_Tut_Ptr_A(a, gr)             loop_a_cond
-// start         Get_Tut_Ptrs(a, b, gr)           loop_a_cond
+start            Get_Tut_Ptr_A(a, gr)          fetch_b
+fetch_b          Get_Tut_Ptr_B(b, gr)          loop_a_cond
 
-// loop_a_cond   Is_Null_Var(a)                   post_loop
-// loop_a_cond   Is_Not_Null_Var(a)               loop_b_cond
-// loop_b_cond   Is_Null_Var(b)                   post_loop
-// loop_b_cond   Is_Not_Null_Var(b)               loop_a_check
-// 
-// loop_a_check  Is_Student_Id(a)                 loop_a_res
-// loop_a_check  Is_Not_Student_Id(a)             loop_b_check
-// loop_a_res    Get_Tut_Ptr_A(res, gr)           exit
-// 
-// loop_b_check  Is_Student_Id(b)                 loop_b_res
-// loop_b_check  Is_Not_Student_Id(b)             loop_a_inc
-// loop_b_res    Get_Tut_Ptr_B(res, gr)           exit
-// 
-// loop_a_adb    Advance_Next(a)                  loop_b_adv
-// loop_b_adb    Advance_Next(b)                  loop_body_end
-// 
-// loop_body_end skip()                           loop_a_cond
-// 
-// post_loop     skip()                           final_a_check
-// 
-// final_a_check Is_Student_Id(a)                 final_a_res
-// final_a_check Is_Not_Student_Id(a)             final_b_check
-// final_a_res   Get_Tut_Ptr_A(res, gr)           exit
-// 
-// final_b_check Is_Not_Null_Student_Id(b)        final_b_res
-// final_b_check Is_Null_Not_Student_Id(b)        return_null
-// final_b_res   Get_Tut_Ptr_B(res, gr)           exit
-// 
-// return_null   Set_Null(res)                    exit
+// start         Get_Tut_Ptrs(a, b, gr)        loop_a_cond
 
-// TODO: Add asserts.
+loop_a_cond   Is_Null_Var(a)                   post_loop
+loop_a_cond   Is_Not_Null_Var(a)               loop_b_cond
+loop_b_cond   Is_Null_Var(b)                   post_loop
+loop_b_cond   Is_Not_Null_Var(b)               loop_a_check
+
+loop_a_check  Is_Student_Id(a)                 loop_a_res
+loop_a_check  Is_Not_Student_Id(a)             loop_b_check
+loop_a_res    Get_Tut_Ptr_A(res, gr)           exit
+
+loop_b_check  Is_Student_Id(b)                 loop_b_res
+loop_b_check  Is_Not_Student_Id(b)             loop_a_adv
+loop_b_res    Get_Tut_Ptr_B(res, gr)           exit
+
+loop_a_adv    Advance_Next(a)                  loop_b_adv
+loop_b_adv    Advance_Next(b)                  loop_body_end
+
+loop_body_end skip()                           loop_a_cond
+
+post_loop     skip()                           final_a_check
+
+final_a_check Is_Student_Id(a)                 final_a_res
+final_a_check Is_Not_Student_Id(a)             final_b_check
+final_a_res   Get_Tut_Ptr_A(res, gr)           exit
+
+final_b_check Is_Student_Id(b)                 final_b_res
+final_b_check Is_Not_Student_Id(b)             return_null
+final_b_res   Get_Tut_Ptr_B(res, gr)           exit
+
+return_null   Set_Null(res)                    exit
+
+exit Assert_Correct_Search(res, gr)            error
