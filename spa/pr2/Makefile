@@ -1,7 +1,7 @@
 TVLA = ../tvla-3.0alpha/bin/tvla
 DIR = pr2
 
-all: search.tvp.ps
+all: search.tvp.ps create.tvp.ps
 
 %.tvp.ps: %.tvp %.tvs
 	$(TVLA) $+ 2>&1 | tee /tmp/tvla.out
@@ -20,3 +20,4 @@ dist: clean
 	@touch $@
 
 search.tvp: actions.tvp predicates.tvp
+create.tvp: actions.tvp predicates.tvp

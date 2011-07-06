@@ -1,0 +1,12 @@
+%s PVar {res}
+
+#include "predicates.tvp"
+%%
+#include "actions.tvp"
+%%
+
+start            Malloc_Tutorial(res)          set_ga_null
+set_ga_null      Set_Tut_Ptr_A_Null(res)       set_gb_null
+set_gb_null      Set_Tut_Ptr_B_Null(res)       exit
+
+exit             Assert_Correct_Create(res)    error
