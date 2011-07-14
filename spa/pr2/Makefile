@@ -6,7 +6,7 @@ all: search.tvp.ps create.tvp.ps
 %.tvp.ps: %.tvp %.tvs
 	$(TVLA) $+ 2>&1 | tee /tmp/tvla.out
 	@echo
-	@grep -iE '(some|all).*inconsistent' --color=yes /tmp/tvla.out || true
+	@grep -iE '(some|all).*inconsistent|The analysis has stopped since a constraint was breached' --color=yes /tmp/tvla.out || true
 
 clean:
 	rm -rf *.tvp.ps *.tvp.dt *.tvp.out.tvs
