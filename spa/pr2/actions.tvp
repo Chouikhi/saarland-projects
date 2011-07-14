@@ -39,6 +39,25 @@
 }
 
 //////////////////////////////////////////////////
+// Structure pointer sets
+//////////////////////////////////////////////////
+
+%action Set_Tut_Ptr_A(sv, lv) {
+  %t sv + "->tut_A = " + lv
+  {
+    ga(s, e) = (sv(s) ? lv(e) : ga(s, e))
+  }
+}
+
+
+%action Set_Tut_Ptr_B(sv, lv) {
+  %t sv + "->tut_B = " + lv
+  {
+    gb(s, e) = (sv(s) ? lv(e) : gb(s, e))
+  }
+}
+
+//////////////////////////////////////////////////
 // NULL sets
 //////////////////////////////////////////////////
 
@@ -120,6 +139,16 @@
     var(e) = isNew(e)
     le(e) = le(e) & !isNew(e)
     ts(e) = ts(e) | isNew(e)
+  }
+}
+
+%action Malloc_Student(var) {
+  %t var + " = malloc(sizeof(struct list_el))"
+  %new
+  {
+    var(e) = isNew(e)
+    le(e) = le(e) | isNew(e)
+    ts(e) = ts(e) & !isNew(e)
   }
 }
 

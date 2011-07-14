@@ -1,0 +1,13 @@
+%s PVar {res, el}
+
+#include "predicates.tvp"
+%%
+#include "actions.tvp"
+%%
+
+start            Malloc_Tutorial(res)          malloc_stud
+malloc_stud      Malloc_Student(el)            set_ga
+set_ga           Set_Tut_Ptr_A(res, el)        set_gb
+set_gb           Set_Tut_Ptr_B(res, el)        exit
+
+exit             Assert_Correct_Create(res)    error
