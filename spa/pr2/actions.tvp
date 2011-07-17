@@ -39,6 +39,28 @@
 }
 
 //////////////////////////////////////////////////
+// List variable manipulations
+//////////////////////////////////////////////////
+
+%action Assign_NULL_ListVar(lhs) {
+  %t lhs + " = NULL"
+  %message (E(e) (lhs(e) & !le(e))) ->
+           "" + lhs + " doesn't point to list_el."
+  {
+    lhs(e) = 0
+  }
+}
+
+%action Copy_ListVar(lhs, rhs) {
+  %t lhs + " = " + rhs
+  %message (E(e) (lhs(e) & !le(e))) ->
+           "" + lhs + " doesn't point to list_el."
+  {
+    lhs(e) = rhs(e)
+  }
+}
+
+//////////////////////////////////////////////////
 // Structure pointer sets
 //////////////////////////////////////////////////
 
@@ -58,7 +80,7 @@
 }
 
 //////////////////////////////////////////////////
-// NULL sets
+// Structure pointer NULL sets
 //////////////////////////////////////////////////
 
 %action Set_Tut_Ptr_A_Null(sv) {
@@ -115,9 +137,46 @@
   %p !(E(e) (var(e) & stud_id(e)))
 }
 
+%action Set_Student_Id(var) {
+  %t var + "->studentId = studentId"
+  %f { E(e) stud_id(e) }  // this is used in a message
+  %message (E(e) (var(e) & !le(e))) ->
+           "" + var + " does not point to a list element"
+  %message (E(e) stud_id(e)) ->
+           "assigning studentId to two elements"
+  {
+    stud_id(e) = var(e)
+  }
+}
+
 //////////////////////////////////////////////////
 // next pointer related
 //////////////////////////////////////////////////
+
+%action Set_Next_NULL(var) {
+  %t var + "->next = NULL"
+  %f { var(e), E(e_1, e_2) var(e_1) & n(e_1, e_2) & t[n](e_2, v) }
+  %message (!E(e) var(e)) -> "Illegal dereference ->n of " + var
+  {
+    n(e_1, e_2) = n(e_1, e_2) & !var(e_1)
+  }
+}
+
+%action Set_Next(lhs, rhs) {
+  %t lhs + "->" + n + " = " + rhs
+  %f {
+       lhs(v), rhs(v),
+       // optimized change-formula for t[n] upate-formula
+       E(v_4) rhs(v_4) & t[n](v_4, v_2)
+     }
+  %message (E(v_1, v_2) lhs(v_1) & n(v_1, v_2)) ->
+           "Internal Error! " + lhs + "->" + n + " != NULL"
+  %message (E(v_1, v_2) lhs(v_1) & rhs(v_2) & t[n](v_2, v_1)) -> 
+           "A cycle may be introduced\nby assignment " + lhs + "->" + n + "=" + rhs
+  {
+    n(v_1, v_2) = n(v_1, v_2) | lhs(v_1) & rhs(v_2)
+  }
+}
 
 %action Advance_Next(var) {
   %t var + " = " + var + "->next"
@@ -180,4 +239,14 @@
      !(E(s, n1, n2) (v(n1) & sv(s) & res(n2) &
                      ((ga(s, n1) & r[n,ga](s, n2)) |
                       (gb(s, n1) & r[n,gb](s, n2)))))
+}
+
+//////////////////////////////////////////////////
+// add related assertions
+//////////////////////////////////////////////////
+
+%action Assert_Correct_Add() {
+  %t "Assert_Correct_Add()"
+  // the checks are already made in Set_Student_Id and consistency constraints
+  %p 0
 }

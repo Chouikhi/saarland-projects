@@ -1,0 +1,73 @@
+%s PVar {a, b, aprev, bprev, stud_el, gr}
+
+#include "predicates.tvp"
+%%
+#include "actions.tvp"
+%%
+
+start              Get_Tut_Ptr_A(a, gr)          fetch_b
+fetch_b            Get_Tut_Ptr_B(b, gr)          prep_aprev
+prep_aprev         Assign_NULL_ListVar(aprev)    prep_bprev
+prep_bprev         Assign_NULL_ListVar(bprev)    loop_a_cond
+
+// start           Get_Tut_Ptrs(a, b, gr)        loop_a_cond
+
+loop_a_cond        Is_Null_Var(a)                post_loop
+loop_a_cond        Is_Not_Null_Var(a)            loop_b_cond
+loop_b_cond        Is_Null_Var(b)                post_loop
+loop_b_cond        Is_Not_Null_Var(b)            loop_a_check
+
+loop_a_check       Is_Student_Id(a)              loop_a_has
+loop_a_check       Is_Not_Student_Id(a)          loop_b_check
+loop_a_has         skip()                        exit
+
+loop_b_check       Is_Student_Id(b)              loop_b_has
+loop_b_check       Is_Not_Student_Id(b)          loop_save_a
+loop_b_has         skip()                        exit
+
+loop_save_a        Assign_NULL_ListVar(aprev)    loop_save_a2
+loop_save_a2       Copy_ListVar(aprev, a)        loop_save_b
+loop_save_b        Assign_NULL_ListVar(bprev)    loop_save_b2
+loop_save_b2       Copy_ListVar(bprev, b)        loop_a_adv
+
+loop_a_adv         Advance_Next(a)               loop_b_adv
+loop_b_adv         Advance_Next(b)               loop_body_end
+
+loop_body_end      skip()                        loop_a_cond
+
+post_loop          skip()                        final_a_check
+
+final_a_check      Is_Student_Id(a)              final_a_has
+final_a_check      Is_Not_Student_Id(a)          final_b_check
+final_a_has        skip()                        exit
+
+final_b_check      Is_Student_Id(b)              final_b_has
+final_b_check      Is_Not_Student_Id(b)          malloc_stud
+final_b_has        skip()                        exit
+
+malloc_stud        Malloc_Student(stud_el)       record_stud_id
+record_stud_id     Set_Student_Id(stud_el)       check_append_a
+
+check_append_a     Is_Null_Var(a)                check_append_aprev
+check_append_a     Is_Not_Null_Var(a)            check_append_b
+check_append_aprev Is_Null_Var(aprev)            append_a_first
+check_append_aprev Is_Not_Null_Var(aprev)        append_a_last
+append_a_first     Set_Tut_Ptr_A(gr, stud_el)    appended_a_first
+append_a_last      Set_Next(aprev, stud_el)      appended_a_last
+
+check_append_b     Is_Null_Var(b)                check_append_bprev
+check_append_b     Is_Not_Null_Var(b)            error_both_var_non_null
+check_append_bprev Is_Null_Var(bprev)            append_b_first
+check_append_bprev Is_Not_Null_Var(bprev)        append_b_last
+append_b_first     Set_Tut_Ptr_B(gr, stud_el)    appended_b_first
+append_b_last      Set_Next(bprev, stud_el)      appended_b_last
+
+appended_a_first   skip()                        exit
+appended_a_last    skip()                        exit
+appended_b_first   skip()                        exit
+appended_b_last    skip()                        exit
+
+
+error_both_var_non_null skip()                   error
+exit               Assert_Correct_Add()          error
+

@@ -55,6 +55,17 @@ foreach (ptr in TutPtr) {
   }
 }
 
+foreach (var in PVar) {
+  foreach (ptr in TutPtr) {
+    %r E(s) r[n,ptr](s, e_1) & r[n,ptr](s, e_2) & t[n](e_1, e_2) & e_1 != e_2
+       ==> !t[n](e_2, e_1)
+    %r E(s) r[n,ptr](s, e_1) & r[n,ptr](s, e_2) & !t[n](e_1, e_2) & e_1 != e_2
+       ==> t[n](e_2, e_1)
+    %r E(e_1) r[n,ptr](s, e_1) & t[n](e_1, e_2) ==> r[n,ptr](s, e_2)
+    %r E(s) r[n,ptr](s, e_1) & !r[n,ptr](s, e_2) ==> !t[n](e_1, e_2)
+  }
+}
+
 %r (ga(s, e_1) & gb(s, e_2)) ==> e_1 != e_2
 %r (r[n,ga](s, e_1) & r[n,gb](s, e_2)) ==> e_1 != e_2
 
