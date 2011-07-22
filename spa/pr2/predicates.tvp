@@ -45,13 +45,15 @@ foreach (ptr in TutPtr) {
   %i r[n,ptr](s, e) = E(e_0) (ptr(s, e_0) & t[n](e_0, e))
 }
 
+%i r[n,ts](e) = le(e) & (E(s) (ts(s) & (r[n,ga](s, e) | r[n,gb](s, e)))) abs
+
 foreach (ptr in TutPtr) {
   %r E(e_1) (r[n,ptr](e_1, e_2) & !r[n,ptr](e_1, e_3)) ==> !r[n,ptr](e_2, e_3)
   foreach (optr in TutPtr - {ptr}) {
-    %r ptr(s, e_1) ==> !optr(s, e_1)
-    %r ptr(s, e_1) ==> !r[n,optr](s, e_1)
-    %r r[n,ptr](s, e_1) ==> !optr(s, e_1)
-    %r r[n,ptr](s, e_1) ==> !r[n,optr](s, e_1)
+    %r ts(s) & le(e_1) & ptr(s, e_1) ==> !optr(s, e_1)
+    %r ts(s) & le(e_1) & ptr(s, e_1) ==> !r[n,optr](s, e_1)
+    %r ts(s) & le(e_1) & r[n,ptr](s, e_1) ==> !optr(s, e_1)
+    %r ts(s) & le(e_1) & r[n,ptr](s, e_1) ==> !r[n,optr](s, e_1)
   }
 }
 
@@ -61,13 +63,16 @@ foreach (var in PVar) {
        ==> !t[n](e_2, e_1)
     %r E(s) r[n,ptr](s, e_1) & r[n,ptr](s, e_2) & !t[n](e_1, e_2) & e_1 != e_2
        ==> t[n](e_2, e_1)
-    %r E(e_1) r[n,ptr](s, e_1) & t[n](e_1, e_2) ==> r[n,ptr](s, e_2)
-    %r E(s) r[n,ptr](s, e_1) & !r[n,ptr](s, e_2) ==> !t[n](e_1, e_2)
+    %r ts(s) & le(e_2) & (E(e_1) (le(e_1) & r[n,ptr](s, e_1) & t[n](e_1, e_2)))
+       ==> r[n,ptr](s, e_2)
+    %r E(s) (r[n,ptr](s, e_1) & !r[n,ptr](s, e_2)) ==> !t[n](e_1, e_2)
   }
 }
 
-%r (ga(s, e_1) & gb(s, e_2)) ==> e_1 != e_2
-%r (r[n,ga](s, e_1) & r[n,gb](s, e_2)) ==> e_1 != e_2
+%r le(e_1) & le(e_2) & (E(s) (ts(s) & ga(s, e_1) & gb(s, e_2)))
+   ==> e_1 != e_2
+%r le(e_1) & le(e_2) & (E(s) (ts(s) & r[n,ga](s, e_1) & r[n,gb](s, e_2)))
+   ==> e_1 != e_2
 
 //////////////////////////////////////////
 // Depth related
@@ -80,4 +85,4 @@ foreach (var in PVar) {
 //////////////////////////////////////////
 
 // List element e has the searched student_id.
-%p stud_id(e)
+%p stud_id(e) abs

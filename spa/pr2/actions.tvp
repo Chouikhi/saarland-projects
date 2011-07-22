@@ -175,6 +175,7 @@
            "A cycle may be introduced\nby assignment " + lhs + "->" + n + "=" + rhs
   {
     n(v_1, v_2) = n(v_1, v_2) | lhs(v_1) & rhs(v_2)
+    r[n,ts](e) = r[n,ts](e) | (rhs(e) & (E(e_1) (lhs(e_1) & r[n,ts](e_1))))
   }
 }
 
@@ -208,6 +209,15 @@
     var(e) = isNew(e)
     le(e) = le(e) | isNew(e)
     ts(e) = ts(e) & !isNew(e)
+    t[n](e_1, e_2) = t[n](e_1, e_2) | (isNew(e_1) & isNew(e_2))
+    r[n,var](e) = isNew(e)
+    r[n,ts](e) = r[n,ts](e)
+    foreach (v in PVar - {var}) {
+      r[n,v](e) = r[n,v](e)
+    }
+    foreach (ptr in TutPtr) {
+      r[n,ptr](s, e) = r[n,ptr](s, e)
+    }
   }
 }
 
