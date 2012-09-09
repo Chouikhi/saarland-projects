@@ -1,0 +1,84 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\def\d{\mathrm{d}}
+
+\begin{document}
+
+\title{Digital Signal Processing - Exercise 5}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+\section*{Exercise 1}
+
+\subsection*{1.1}
+
+Implemented in \texttt{knn}. It receives all the data, $ k $ -- the number of
+neighbours to consider, $ \mathrm{trainSize} $ -- the number of data points to
+search for nearest neighbours, $ \mathrm{query} $ -- the point we want to
+approximate, $ \mathrm{distf} $ -- the distance function to use. In case
+$ k > 1 $ the best $ k $ neighbours are found and each ``votes'' for their
+value (letter). The letter with the highest number of votes is returned, in
+case of a tie, the one with the closest neighbour is returned.
+
+\subsection*{1.2}
+
+Implemented in \texttt{plot\_knn\_precision}. The helper function
+\texttt{test\_knn} tests the performance of \texttt{knn} on a single
+combination of $ k $, $ \mathrm{trainSize}$ , $ \mathrm{testSize} $ and
+$ \mathrm{distf} $, returning the precision -- $ \text{number of correct}
+/ \text{total number} $. It is clear from the graphic, that more samples give
+better precision -- precision improvement is logarithmic to the number of train
+samples. Something unusual is, that the higher the number of neighbours, the
+worse performance. This may be due to the fact that the number of different
+letters is high -- i.e. if there were only two different letters than the
+performance might be different.
+
+\section*{Exercise 2}
+
+\subsection*{2.1}
+
+Implementation is in \texttt{pca}. Nothing fancy -- just following the
+explanation on the sheet. The only difference is that $ N $ is the number of
+dimensions, and $ M $ is the number of vectors.
+
+\subsection*{2.2}
+
+Implementation is in \texttt{pca\_test}. The function \texttt{backproject}
+performs the projection to the compressed space and then back to the original
+space. One minor difference from the sheet is that the average has to be
+substituted before the compression (and then added again after back projection,
+but that was in the sheet). The graphic shows nicely how the error rises, when
+the number of ``cut'' dimensions rises.
+
+\end{document}

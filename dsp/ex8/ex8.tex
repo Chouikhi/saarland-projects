@@ -1,0 +1,157 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\def\d{\mathrm{d}}
+\def\T{\mathrm{T}}
+\def\R{\mathbb{R}}
+\def\N{\mathbb{N}}
+\def\LDR{Levinson-Durbin recursion\;}
+\newcommand{\TT}[1] {\texttt{#1}}
+\newcommand{\norm}[1] {\left\lVert #1 \right\rVert}
+\newcommand{\B}[1] {\left(#1\right)}
+
+\begin{document}
+
+\title{Digital Signal Processing - Exercise 8}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+\section*{Exercise 1}
+
+\subsection*{1.1}
+
+I couldn't proof that the matrix is positive-semidefinite.
+
+Let $ \phi $ is an eigenvector with eigenvalue $ \lambda $. So $ R\phi
+= \lambda\phi $. Multiply this equation by $ \phi^\T $ on the left side to get
+$ 0 \le \phi^\T R \phi = \phi^\T \lambda \phi = \lambda \phi^\T \phi = \lambda
+\norm{\phi}^2 $. But $ \norm{\phi}^2 \ge 0 $, so $ \lambda \ge 0 $. Also,
+because $ R $ is symetric ($ R_{ij} = R_{ji} $), $ \lambda^\T R\lambda \in \R
+$, $ \norm{\phi}^2 \in \R $, so $ \lambda \in \R $ Since $ \lambda $ was an
+arbitrary eigenvalue, we proved that all eigenvalues are non-negative and real.
+
+\subsection*{1.2}
+
+In order to proof that R has Toeplitz structure we need to proof that $ R_{ij}
+= R_{i+d,j+d} = R_{|j-i|} $. Lets calculate $ R_{i+d,j+d} - R_{ij} $, where
+$ i,j \in \{ 0, \dots, n \} $ and $ d \in \N $, such that $ i + d, j + d \in \{
+0, \dots, n \} $.
+
+\begin{eqnarray*}
+R_{i+d,j+d} - R_{ij}
+  &=& \frac{1}{n+1}\B{ \sum_{k=0}^{n} x[k+i+d]x[k+j+d] - \sum_{k=0}^{n} x[k+i]x[k+j] } \\
+  &=& \frac{1}{n+1}\B{ \sum_{k=d}^{n+d} x[k+i]x[k+j] - \sum_{k=0}^{n} x[k+i]x[k+j] } \\
+  &=& \frac{1}{n+1}\B{ \sum_{k=n+1}^{n+d} x[\underbrace{k+i}_{\in [n+1,2n]}]x[\underbrace{k+j}_{\in [n+1,2n]}]
+                     - \sum_{k=0}^{d-1} x[\underbrace{k+i}_{\in [0,n-1]}]x[\underbrace{k+j}_{\in [0,n-1]}] } \\
+\end{eqnarray*}
+
+Now, if the signal is cyclic: $ x[i] = x[i+(n+1)k] $ for any $ i, k \in \N $,
+then $ R_{i+d,j+d} = R_{ij} $. It is clear, that $ R_{d} = R_{-d} = R_{n+1+d} $,
+so R has the desired structure.
+
+\[
+\begin{pmatrix}
+  R_{0} & R_{1} & \cdots & R_{n} \\
+  R_{n+2} & \ddots & \ddots & \vdots \\
+  \vdots & \ddots & \ddots & R_{1} \\
+  R_{2n+1} & \cdots & R_{n+2} & R_{0} \\
+\end{pmatrix}
+\]
+
+NOTE: This is slightly different than the formula given on the exercise, but I double checked my version and I think it's correct :)
+
+\section*{Exercise 2}
+
+\subsection*{2.1}
+
+\LDR solves the following problem:
+
+\[
+\begin{pmatrix}
+  r_{0} & r_{1} & \cdots & r_{p-1} \\
+  r_{1} & \ddots & \ddots & \vdots \\
+  \vdots & \ddots & \ddots & r_{1} \\
+  r_{p-1} & \cdots & r_{1} & r_{0} \\
+\end{pmatrix} \begin{pmatrix}
+  a_1^p \\ a_2^p \\ \vdots \\ a_p^p
+\end{pmatrix} = \begin{pmatrix}
+  r_1 \\ r_2 \\ \vdots \\ r_p
+\end{pmatrix}
+\]
+
+recursively. That is, it finds the solution of the above equation given the
+solution of:
+
+\[
+\begin{pmatrix}
+  r_{0} & r_{1} & \cdots & r_{p-2} \\
+  r_{1} & \ddots & \ddots & \vdots \\
+  \vdots & \ddots & \ddots & r_{1} \\
+  r_{p-2} & \cdots & r_{1} & r_{0} \\
+\end{pmatrix} \begin{pmatrix}
+  a_1^{p-1} \\ a_2^{p-1} \\ \vdots \\ a_{p-1}^{p-1}
+\end{pmatrix} = \begin{pmatrix}
+  r_1 \\ r_2 \\ \vdots \\ r_{p-1}
+\end{pmatrix}
+\]
+
+The runtime is $ O(p^2) $, because each recursive step needs $ O(p)
+$ operations to compute the solution given the smaller solution.
+
+The basic idea is:
+
+\[
+\begin{pmatrix} -1 \\ a_1^p \\ \vdots \\ a_{p-1}^p \\ a_p^p \end{pmatrix} =
+\begin{pmatrix} -1 \\ a_1^{p-1} \\ \vdots \\ a_{p-1}^{p-1} \\ 0 \end{pmatrix} - k_p
+\begin{pmatrix} 0 \\ a_{p-1}^{p-1} \\ \vdots \\ a_1^{p-1} \\ -1 \end{pmatrix}
+\]
+
+\subsection*{2.2}
+
+\begin{eqnarray*}
+q^{P-1} &=& -r_{P} + \sum_{k=1}^{P-1} r_{P-k}a_k^{P-1} \\
+k_{P} &=& - q^{P-1} / E^{P-1} \\
+a_P^P &=& k_{P} \\
+a_i^P &=& a_{i}^{P-1} - k_p a_{P-i}^{P-1} \\
+E^{P} &=& E^{P-1} - [q^{P-1}]^2 / E^{P-1} \\
+\end{eqnarray*}
+
+\subsection*{2.3}
+
+Implementation in \TT{ldr}.
+
+\subsection*{2.4}
+
+Implementation in \TT{test\_ldr}.
+
+\end{document}

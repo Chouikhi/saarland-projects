@@ -1,0 +1,125 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\def\d{\mathrm{d}}
+
+\begin{document}
+
+\title{Digital Signal Processing - Exercise 4}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+% \newcommand{\Binom}[2] {\B{
+
+\section*{Exercise 1}
+
+\subsection*{1.1}
+
+Implemented in \texttt{pre\_emph}. This is a simple linear filter, using only
+the original sequence (not the filtered one). This is a high-pass filter,
+because it increases the magnitude of the higher frequencies, and decreases the
+magnitude of the lower frequencies.
+
+\subsection*{1.2}
+
+The windowing is implemented in \texttt{windowing}. The number of frames for
+given shift and width are calculated in the function
+\texttt{get\_frame\_count}. The formula is $ \mathrm{frameCount}
+= (\mathrm{len} - \mathrm{width}) / \mathrm{shift} $. This is basically how
+many shifts we can do in the signal, but first discarding the ``final'' width
+(on the last frame the total shift + width must be within the signal).
+
+\subsection*{1.3}
+
+The spectogram generation is implemented in \texttt{spectogram}, the testing
+function is \texttt{show\_spectogram}. It is clear that in the moments of
+silence there is a constant ``background'' frequency, and in the moments of
+sound the frequency distribution is different depending on the actual sounds.
+
+\subsection*{1.4}
+
+Implemented in \texttt{show\_mel}. The filter banks are plotted in L different
+graphs.
+
+\subsection*{1.5}
+
+The MFCC algorithm is implemented in \texttt{mfcc}, the testing function is
+\texttt{show\_mfcc}. To see both the MFCC and the spectrogram use
+\texttt{show\_all}. The similarities are big -- the MFCC has just L (24)
+frequency bins, while the spectrogram has 256. The spectrogram is more noisy and
+without the logarithm fixation of the magnitudes of the frequencies.
+
+\section*{Exercise 2}
+
+\subsection*{2.1}
+
+\begin{eqnarray*}
+\epsilon(a,b) &=& \sum_{i = 1}^{N} (y_i - ax_i - b)^2 \\
+\frac{\d\epsilon(a, b)}{\d b} &=& 0 \\
+0 &=& \sum_{i = 1}^{N} 2(y_i - ax_i - b)(-1) \\
+0 &=& \sum_{i = 1}^{N} y_i - a\sum_{i = 1}^{N} x_i - Nb \\
+\frac{\d\epsilon(a, b)}{\d a} &=& 0 \\
+0 &=& \sum_{i = 1}^{N} 2(y_i - ax_i - b)(-x_i) \\
+0 &=& \sum_{i = 1}^{N} y_ix_i - a\sum_{i = 1}^{N} x_i^2 - b\sum_{i=1}^{N} x_i \\
+\end{eqnarray*}
+
+Now if we substitute:
+\begin{eqnarray*}
+s_x &=& \sum_{i = 1}^{N} x_i \\
+s_y &=& \sum_{i = 1}^{N} y_i \\
+s_{xy} &=& \sum_{i = 1}^{n} x_iy_i \\
+s_{x^2} &=& \sum_{i = 1}^{N} x_i^2 \\
+\end{eqnarray*}
+
+we get the following system of equalities:
+\[
+\begin{array}{|ccccc}
+  s_x a &+& Nb &=& s_y \\
+  s_{x^2} a &+& s_xb &=& s_{xy} \\
+\end{array}
+\]
+
+We can solve it using Cramer's rule:
+\begin{eqnarray*}
+\Delta_0 &=& \begin{Vmatrix} s_x & N \\ s_{x^2} & s_x \end{Vmatrix} \\
+\Delta_1 &=& \begin{Vmatrix} s_y & N \\ s_{xy} & s_x \end{Vmatrix} \\
+\Delta_2 &=& \begin{Vmatrix} s_x & s_y \\ s_{x^2} & s_{xy} \end{Vmatrix} \\
+a &=& \Delta_1 / \Delta_0 \\
+b &=& \Delta_2 / \Delta_0 \\
+\end{eqnarray*}
+
+\subsection*{2.2}
+
+Implementation is in \texttt{fit\_line} and \texttt{test\_fit\_line}.
+
+\end{document}

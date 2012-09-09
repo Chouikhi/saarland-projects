@@ -1,0 +1,57 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+\title{Digital Signal Processing - Exercise 3}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+% \newcommand{\Binom}[2] {\B{
+
+\section*{Exercise 1}
+
+For a finite-word language $W$, recognizable by a finite automaton $A=(S,I,T,F)$, where $S = \{s_1,s_2,\ldots,s_n\}$, we define a WS1S formula $\psi_W(y)$ over $V_1 = \emptyset$, $V_2 = AP$, which models are the words which prefix up to position $y$ is in $W$, as follows:
+\begin{align*}
+\psi_W(y) \; = \; & \exists At_{s_1},\ldots,At_{s_n} \;.\\
+& \bigvee\limits_{s\in I} 0 \in At_s \\
+& \land \; \forall x<y \; \Bigg(
+\bigvee\limits_{(s_i,A,s_j)\in T} \Big( x \in At_{s_i} \land S(x) \in At_{s_j}
+\land \bigwedge\limits_{P \in A} x \in P
+\land \bigwedge\limits_{P \in AP \setminus A} x \not\in P \Big) \Bigg) \\
+& \land \; \forall x \leq y \; \Bigg(
+\bigwedge\limits_{i \neq j} \neg \Big( x \in At_{s_i} \land x \in At_{s_j} \Big) \Bigg) \\
+& \land \; \bigvee\limits_{s_i \in F} y \in At_{s_i}
+\end{align*}
+
+\end{document}

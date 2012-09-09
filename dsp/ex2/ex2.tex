@@ -1,0 +1,122 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+\def\rbc{foo bar}
+\def\dc{bar baz}
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+\title{Digital Signal Processing - Exercise 2}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+\def\sm{\mathrm{sm}}
+\def\P{\mathbb{P}}
+\def\E{\mathbb{E}}
+\def\irv{i.r.v.\;}
+\def\rv{r.v.\;}
+\def\FMM{F.M.M.\;}
+\def\endproof{$\square$}
+\def\Var{\mathrm{Var}}
+\def\Cov{\mathrm{Cov}}
+\def\CS{\mathrm{CS}}
+\def\CCS{\mathrm{CCS}}
+\def\R{\mathrm{R}}
+\newcommand{\FL}[1] {\left\lfloor #1 \right\rfloor}
+% \newcommand{\irv}{i.r.v\;}
+\newcommand{\bfrac}[2] {\left(\frac{#1}{#2}\right)}
+\newcommand{\B}[1] {\left(#1\right)}
+% \newcommand{\Binom}[2] {\B{
+
+\section*{Exercise 1}
+
+\paragraph*{Subtask 1.1}
+Lets consider a kernel with size $ K \in \R^{h\times{}w} $ and an image $ I \in
+\R^{n\times{}m} $. Lets consider the pixel $ x, y $ in the convolved image:
+\begin{eqnarray*}
+  I_2(x, y) = \sum_{i = -\lfloor \frac{h}{2} \rfloor}^{\lfloor \frac{h-1}{2} \rfloor}
+              \sum_{j = -\lfloor \frac{w}{2} \rfloor}^{\lfloor \frac{w-1}{2} \rfloor}
+                K(i, j) I(x + i, y + j)
+\end{eqnarray*}
+From this formula it is clear that we access the image off its bounds by
+$ \lfloor \frac{h}{2} \rfloor, \lfloor \frac{w-1}{2} \rfloor, \lfloor
+\frac{h-1}{2} \rfloor, \lfloor \frac{w}{2} \rfloor $ respectively in directions
+up, left, down, right. So we need the strip size $ s $ to be equal to the maximum of these numbers, that is
+$$
+  s = \max\B{\FL{\frac{h}{2}}, \FL{\frac{w-1}{2}}, \FL{\frac{h-1}{2}}, \FL{\frac{w}{2}}}
+$$
+Of course, we may mirror the image as much as it needs in each direction, but
+that is not necessary.
+
+The function \texttt{imgmirror} does the mirroring, given an image and a strip size.
+
+\subsection*{Subtask 1.2}
+
+The function \texttt{boxfilter} does the actual filtering. It calculates the strip size as described previously, mirrors the image and runs a box filter on top. The actual convolution is performed in the private function \texttt{i\_conv2}.
+
+The runtime of the algorithm is clearly $ \Theta(n.m.h.w) $ where the image has
+size $ n \times m $ and the filter has size $ h \times w $. That is because for
+every pixel in the image we have to consider $ h \times w $ neighbouring pixels
+and multiply them by the appropriate filter value and sum them all up.
+
+\subsection*{Subtask 1.3}
+
+The function \texttt{smooth\_verifier} can be used to test the performance of
+the box filter implemented in the previous subtask. It receives the parameters
+for salt-pepper intensity and the box filter size. It then displays the
+original image, the noisy image and the filtered image.
+
+\section*{Exercise 2}
+
+\paragraph*{Subtask 2.1}
+
+The function \texttt{histogram} implements the desired functionality.
+Computations of bins is done slightly differently: for each pixel with range
+$ [0, 255] $ is divided by $ 256 $ to get a real number in $ [0, 1) $, and then
+multiplied by \texttt{num\_bins}, to get a number in $ [0, \mathrm{num\_bins}) $.
+Rounding the result down produces a number in $ \{ 0, 1, \dots,
+\mathrm{num\_bins}-1 \} $, which has exactly \texttt{num\_bins} possible values.
+
+\paragraph*{Subtask 2.2}
+
+The function \texttt{segmented\_histogram} implements the algorithm that
+computes histograms of multiple parts (segments) of an image for all channels
+(rgb) and concatenates the histograms together.
+
+The function \texttt{ln\_dist} computes the n-norm distance (Manhattan,
+euclidean etc). Pass $ n = -1 $ to get infinity-norm.
+
+The function \texttt{distance\_test} computes the histograms and distances
+between them for images \texttt{img1.jpg, img2.jpg, img3.jpg, img4.jpg}. It
+then displays the distances between the histograms.
+
+\end{document}

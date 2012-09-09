@@ -1,0 +1,112 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\def\d{\mathrm{d}}
+\def\T{\mathrm{T}}
+\def\R{\mathbb{R}}
+\def\N{\mathbb{N}}
+\def\LDR{Levinson-Durbin recursion\;}
+\newcommand{\TT}[1] {\texttt{#1}}
+\newcommand{\norm}[1] {\left\lVert #1 \right\rVert}
+\newcommand{\B}[1] {\left(#1\right)}
+\def\F {\mathcal{F}}
+\def\w {\omega}
+
+\begin{document}
+
+\title{Digital Signal Processing - Exercise 8}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+\section*{Exercise 1}
+
+\subsection*{1.1}
+
+The error in time domain is given by the formula:
+
+\[
+  e(n) = s(n) - h(n) * x(n)
+\]
+
+Converting this equation to frequency domain gives:
+
+\[
+  J(\w_k) = S(\w_k) - H(\w_k) X(\w_k)
+\]
+
+\subsection*{1.2}
+
+We'll take the derivative of $ E[J(\w_k)] $ by $ H(\w_k) $, and make it equal to 0.
+
+\begin{eqnarray*}
+\frac{\d E[J^2(\w_k)]}{\d H(\w_k)} &=& 0 \\
+0 &=& E\left[ \frac{\d (S(\w_k) - H(\w_k) X(\w_k))^2}{ \d H(\w_k) } \right] \\
+0 &=& E[ 2(S(\w_k) - H(\w_k)X(\w_k))X(\w_k) ] \\
+0 &=& E[ S(\w_k)X(\w_k) ] - H(\w_k) E [ X(\w_k)X(\w_k) ] \\
+H(\w_k) &=& \frac{E[ S(\w_k)X(\w_k) ]}{E [ X(\w_k)X(\w_k) ]} \\
+H(\w_k) &=& \frac{\phi_{sx}(\w_k)}{\phi_{xx}(\w_k)} \\
+\end{eqnarray*}
+
+\subsection*{1.3}
+
+If the signal and the noise are uncorrelated, then we can use $ X(\w_k) = S(\w_k) + N(\w_k) $ to get:
+
+\begin{eqnarray*}
+H(\w_k)
+  &=& \frac{E[ S(\w_k)X(\w_k) ]}{E [ X(\w_k)X(\w_k) ]} \\
+  &=& \frac{E[ S(\w_k)(S(\w_k) + N(\w_k)) ]}{E [ (S(\w_k) + N(\w_k))^2 ]} \\
+  &=& \frac{E[ S(\w_k)S(\w_k) + S(\w_k)N(\w_k)) ]}{E [ S(\w_k)S(\w_k) + 2S(\w_k)N(\w_k) + N(\w_k)N(\w_k) ]} \\
+  &=& \frac{E[ S(\w_k)S(\w_k) ] + \overbrace{E[ S(\w_k)N(\w_k)) ]}^{0}}
+           {E[ S(\w_k)S(\w_k) ] + 2\underbrace{E[ S(\w_k)N(\w_k) ]}_{0} + E[ N(\w_k)N(\w_k) ]} \\
+  &=& \frac{\Phi_{ss}(\w_k)}{\Phi_{ss}(\w_k) + \Phi_{nn}(\w_k)} \\
+\end{eqnarray*}
+
+\subsection*{1.4}
+
+If we have $ H(\w_k) $ we can obtain $ \hat S(\w_k) = H(\w_k)X(\w_k) $, and then using reverse Fourier transform we obtain the clean signal $ \hat s(n) = \F^{-1}(\hat S(\w_k)) $.
+
+\subsection*{1.5}
+
+If we assume that the noise and the signal are uncorrelated then we get
+\[
+  H(\w_k) = \B{1 + SNR_k^{-1}}^{-1}
+\]
+
+\subsection*{1.6}
+
+Implementation in script \TT{plot\_amplitude}. The greater the signal to noise
+ratio, the closer the frequency response is to 1 ($ \log = 0 $). This means
+that the smaller the noise compared to the signal, the less ``work'' needs to
+be done by the filter.
+
+\end{document}

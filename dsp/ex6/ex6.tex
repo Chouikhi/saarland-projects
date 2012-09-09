@@ -1,0 +1,121 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\def\d{\mathrm{d}}
+\def\T{\mathrm{T}}
+
+\begin{document}
+
+\title{Digital Signal Processing - Exercise 6}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+\section*{Exercise 1}
+
+\subsection*{1.1}
+
+The idea of LDA is to project data partitioned in several claasses in such
+a way, that the distance between the classes is maximized, while the distance
+within the classes stays constant. Without the second rule we can just multiply
+all coordinates by a constant and achieve a bigger between-class distance.
+
+\begin{eqnarray*}
+K && \text{number of classes} \\
+N && \text{number of all elements} \\
+N_k & k \in [1,K] & \text{number of elements in each class} \\
+\mu && \text{mean value of all vectors in all classes} \\
+\mu_k & k \in [1,K] & \text{mean value of class $ k $} \\
+v_{k,i} & k \in [1,K], i \in [1, N_k] & \text{vector $ i $ from class $ k $} \\
+\end{eqnarray*}
+
+$ S_w $ stays for average within class distance. It is defined by summing the
+covariance matrixes of the different classes and normalizing.
+
+\[
+  S_w = \frac{1}{N} \sum_{k = 1}^{K} \sum_{i = 1}^{N_k} (v_{k,i} - \mu_k)(v_{k,i} - \mu_k)^\T
+\]
+
+$ S_b $ stays for average between class distance. It is defined by summing the
+covariance matrix of the class centers and weighting them by the number of
+elements in each class.
+
+\[
+  S_b = \frac{1}{N} \sum_{k=1}^K N_k (\mu_k - \mu)(\mu_k - \mu)^\T
+\]
+
+\subsection*{1.2}
+
+\subsection*{1.3}
+
+We need to maximize between scatter matrix, after projection on direction
+$ \phi $. This means maximizing $ \phi^\T S_b \phi $.
+
+The within class matrix need to stay the same, after projection on $ \phi $, so
+the following must hold $ S_w - \phi^\T S_w \phi = 0 $.
+
+Plugging these two in Lagrange mutipliers gives:
+\[
+  E(\lambda, \phi) = \phi^\T S_b \phi + \lambda(S_w - \phi^\T S_w \phi)
+\]
+
+\subsection*{1.4}
+
+Differentiating on $ \phi $ gives:
+\begin{eqnarray*}
+\frac{\d E(\lambda, \phi)}{\d \phi} &=& 2 S_b \phi - 2 \lambda S_w \phi \\
+S_b \phi &=& \lambda S_w \phi \\
+\end{eqnarray*}
+
+This is equivalent to solving the eigenvalue problem for $ (S_w^{-1} S_b) \phi
+= \lambda \phi $.
+
+\section*{Exercise 2}
+
+\subsection*{2.1}
+
+The function \texttt{gen\_rand} generates normally distributed 2d vectors, with
+given $ \mu $ and $ \sigma^2 $. The function \texttt{gen\_plot} generates the
+desired distributions and plots them.
+
+\subsection*{2.2}
+
+The function \texttt{lda} computes the eigen vectors and eigenvalues of the
+equation $ S_b \phi = \lambda S_w \phi $ and returns them in sorted order. The
+\texttt{proj} function can be used to obtain the projected data. It returns the
+raw projected values (in our case -- one dimentional vectors), and the
+geometric projection onto $ \phi $, which can be plotted.
+
+The script \texttt{ex2} generates the sample points, computes LDA and plots the
+geometric projections.
+
+\end{document}
