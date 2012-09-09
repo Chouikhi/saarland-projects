@@ -1,0 +1,90 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+\title{Automata, Games and Verification -- solution to challenge problem 2}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+\section*{Solution}
+
+Let $ \Sigma = \{ 0, 1 \} $ is a binary alphabet. \\
+% Let $ \alpha \in \Sigma^\omega $ is an arbitrary word in that alphabet. \\
+% Let $ L \ni \alpha $ is an arbitrary language, containing the word $ \alpha $. \\
+Let $ \Sigma^2 = \Sigma \times \Sigma $ is an expansion of the alphabet
+$ \Sigma $, in such a way that $ (0, 0), (1, 1) \in \Sigma^2 $ correspond to
+$ 0 \in \Sigma $ and $ (0, 1), (1, 0) \in \Sigma^2 $ correspond to $ 1 \in
+\Sigma $.  Having this correspondence we can translate any word/language from
+$ \Sigma $ in $ \Sigma^2 $ and vice versa. Because each letter in $ \Sigma $ corresponds to
+2 letters in $ \Sigma^2 $ then each word $ \alpha \in \Sigma $ is translated to
+a set of words $$ \alpha^{\Sigma^2} = \{ \alpha' | (\forall i \in
+\omega)(\alpha'(i) \in \{ (0, 0), (1, 1) \} \iff \alpha(i) = 0) \} $$
+
+Let $ \emptyset \ne L'  \subseteq  (\Sigma^2)^\omega $ is a language on the
+alphabet $ \Sigma^2 $ translated from the language $ \emptyset \ne L \subseteq
+\Sigma^\omega $. We'll prove, that $ pr_1(L') = \Sigma^\omega $.
+
+Let $ \alpha \in L $ is an arbitrary word from $ L $. \\ Let $ \beta \in
+\Sigma^\omega $ is also arbitrary chosen word. \\ We'll prove, that $ \beta \in
+pr_1(L') $.
+
+Lets construct the word $ \gamma \in \Sigma^\omega $ in the following way:
+$$
+  \gamma(i) = \alpha(i) \oplus \beta(i)
+$$
+where $ \oplus $ is addition modulus 2: $ a + b\ (\mathrm{mod}\ 2) $
+
+We'll show that the word $ \alpha'' = (\beta(0), \gamma(0))(\beta(1),
+\gamma(1))\dots(\beta(n), \gamma(n))\dots $ is a translation of $ \alpha $.
+
+From the construction of $ \gamma $ it follows, that $ \alpha(i) = \beta(i) \oplus \gamma(i) $ (because $ \oplus $ has this property).
+
+\begin{tabular}{|c||c|c|}
+  \hline
+  $ \oplus $ & 0 & 1 \\
+  \hline \hline
+  0 & 0 & 1 \\ \hline
+  1 & 1 & 0 \\ \hline
+\end{tabular}
+
+This means that $ \alpha'' $ is a translation of $ \alpha $, so $ \alpha'' \in
+L' $. Then $ \beta \in pr_1(L') $, and because $ \beta $ was arbitrary chosen,
+then $ pr_1(L') = \Sigma^\omega $.
+
+Now the final thing to note is that any language on $ \Sigma^2 $ for which the
+letters $ (0, 0), (1, 1) $ and $ (0, 1), (1, 0) $ are interchangeable -- this
+means that if we change one letter in one word with its ``buddy'' then the
+resulting word is also in the language -- is Buchi recognizable if and only if
+the translated language to the alphabet $ \Sigma $ is Buchi recognizable. This
+is easy to see if one considers the automata recognizing these languages and
+just changes the letters on the edges.
+
+This means that every language on $ \Sigma $ that is not Buchi recognizable,
+can be translated to a non Buchi recognizable language on $ \Sigma^2 $, which
+in turn has the property that its projection is $ \Sigma^\omega $, which is
+Buchi recognizable.
+
+\end{document}
