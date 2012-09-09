@@ -1,0 +1,8 @@
+First make sure the Makefile has the right TVLA variable (path to the tvla
+script).
+
+Then type `make' to build. It will create 3 postcript files.
+
+access.tvp -- the program from the problem statement
+access_all.tvp -- a test program that goes through all possible cases
+free_list.tvp -- a program that frees a singly-linked list

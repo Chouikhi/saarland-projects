@@ -1,0 +1,27 @@
+///////
+// Sets
+
+%s PVar {a, b, c}
+
+#include "predicates.tvp"
+
+%%
+
+#include "actions.tvp"
+
+%%
+
+// Example from Ex7.
+
+L1 Malloc_L(a) L2            // a = malloc
+L2 Copy_Var_L(b, a) L3       // b = a
+L3 Free_L(b) L4              // free(b)
+L4 Malloc_L(c) L5            // c = malloc
+L5 fork() L5_1               // \
+L5 fork() L5_2               //  > make sure messages wont stop the execution
+L5 fork() L5_3               // /
+L5_1 Is_Eq_Var(c, a) L6      // if (c == a)
+L5_2 Is_Not_Eq_Var(c, a) L6  // if (c != a)
+L5_3 skip() L6               // Just to make sure it goes
+L6 Copy_Var_L(a, c) L7       // a = c
+L7 Copy_Var_L(b, a) L8       // b = a

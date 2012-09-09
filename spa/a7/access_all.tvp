@@ -1,0 +1,68 @@
+///////
+// Sets
+
+%s PVar {a, b, c}
+
+#include "predicates.tvp"
+
+%%
+
+#include "actions.tvp"
+
+%%
+
+Start                   fork()                  MallocFreeA
+Start                   fork()                  MallocFreeCopyA
+Start                   fork()                  MallocCopyFreeA
+Start                   fork()                  MallocCopyNFreeA
+
+
+MallocFreeA             Malloc_L(a)             MallocFreeA1
+MallocFreeA1            Free_L(a)               MallocFreeAE
+MallocFreeAE            skip()                  MidPoint
+
+MallocFreeCopyA         Malloc_L(b)             MallocFreeCopyA1
+MallocFreeCopyA1        Free_L(b)               MallocFreeCopyA2
+MallocFreeCopyA2        Copy_Var_L(a, b)        MallocFreeCopyAE
+MallocFreeCopyAE        skip()                  MidPoint
+
+MallocCopyFreeA         Malloc_L(b)             MallocCopyFreeA1
+MallocCopyFreeA1        Copy_Var_L(a, b)        MallocCopyFreeA2
+MallocCopyFreeA2        Free_L(b)               MallocCopyFreeA3
+MallocCopyFreeA3        skip()                  MidPoint
+
+MallocCopyNFreeA        Malloc_L(b)             MallocCopyNFreeA1
+MallocCopyNFreeA1       Malloc_L(c)             MallocCopyNFreeA2
+MallocCopyNFreeA2       Set_Next_L(b, c)        MallocCopyNFreeA3
+MallocCopyNFreeA3       Free_L(c)               MallocCopyNFreeA4
+MallocCopyNFreeA4       Get_Next_L(a, b)        MallocCopyNFreeA5
+MallocCopyNFreeA5       skip()                  MidPoint
+
+MidPoint                fork()                  FreeA
+MidPoint                fork()                  CopyA
+MidPoint                fork()                  CopyAN
+MidPoint                fork()                  CmpVarEqA
+MidPoint                fork()                  CmpVarNeA
+MidPoint                fork()                  CmpNullEqA
+MidPoint                fork()                  CmpNullNeA
+
+FreeA                   Free_L(a)               FreeAE
+FreeAE                  skip()                  EndPoint
+
+CopyA                   Copy_Var_L(b, a)        CopyAE
+CopyAE                  skip()                  EndPoint
+
+CopyAN                  Get_Next_L(b, a)        CopyANE
+CopyANE                 skip()                  EndPoint
+
+CmpVarEqA               Is_Eq_Var(a, b)         CmpVarEqAE
+CmpVarEqAE              skip()                  EndPoint
+
+CmpVarNeA               Is_Not_Eq_Var(a, b)     CmpVarNeAE
+CmpVarNeAE              skip()                  EndPoint
+
+CmpNullEqA              Is_Null_Var(a)         CmpNullEqAE
+CmpNullEqAE             skip()                 EndPoint
+
+CmpNullNeA              Is_Not_Null_Var(a)     CmpNullNeAE
+CmpNullNeAE             skip()                 EndPoint

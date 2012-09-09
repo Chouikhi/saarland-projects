@@ -1,0 +1,31 @@
+// NOTE: All structures have an additional freed node to reduce the number of
+// structures during runtime
+
+// An acyclic singly-linked list with two or more elements. Head stored to x.
+%n = {head, tail, fr}
+%p = {
+  sm = {tail:1/2, fr:1/2}
+  n = {head->tail:1/2, tail->tail:1/2}
+  x = {head}
+  t[n] = {head->head, head->tail, tail->tail:1/2, fr->fr:1/2}
+  r[n,x] = {head, tail}
+  freed = {fr}
+}
+
+// An acyclic singly-linked list with a single element pointed by x.
+%n = {head, fr}
+%p = {
+  sm = {fr:1/2}
+  x = {head}
+  t[n] = {head->head, fr->fr:1/2}
+  r[n,x] = {head}
+  freed = {fr}
+}
+
+// An empty list (x and y point to NULL).
+%n = {fr}
+%p = {
+  sm = {fr:1/2}
+  t[n] = {fr->fr:1/2}
+  freed = {fr}
+}
