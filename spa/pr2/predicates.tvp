@@ -1,0 +1,88 @@
+// list element
+%p le(e)
+
+// Every variable may points to something.
+foreach (z in PVar) {
+  %p z(v_1) unique pointer
+}
+
+// The predicate n represents the n field of the list data type.
+%p n(v_1, v_2) function acyclic
+
+// The t[n] predicate records transitive reflexive reachability between
+// list elements along the n field.
+%i t[n](v_1, v_2) = le(v_1) & le(v_2) & n*(v_1, v_2) transitive
+
+// Integrity constraints for transitive reachability
+%r le(v_1) & le(v_2) & !t[n](v_1, v_2) ==> !n(v_1, v_2)
+%r le(v_1) & le(v_2) & !t[n](v_1, v_2) ==> v_1 != v_2
+%r le(v_2) & le(v_3) & (E(v_1) (t[n](v_1, v_2) &
+                                t[n](v_1, v_3) & !t[n](v_2, v_3))) ==>
+   t[n](v_3, v_2)
+// t[n] reflexivity for list elements
+%r le(v_1) & le(v_2) & v_1 == v_2 ==> t[n](v_1, v_2)
+%r le(v_1) & le(v_2) & v_1 != v_2 & t[n](v_1, v_2) ==> !t[n](v_2, v_1)
+%r le(v_1) & le(v_2) & v_1 != v_2 & n(v_1, v_2) ==> !n(v_2, v_1)
+
+// Reachability of nodes from variables thru next pointer.
+foreach (z in PVar) {
+  %i r[n,z](v) = E(v_1) (z(v_1) & t[n](v_1, v))
+}
+
+//////////////////////////////////////////
+// Tutorial structure specific
+//////////////////////////////////////////
+
+// Tutorial structure. There are only list elements and tutorial strucures in
+// the analysis so tutorial structures are all non-list structures
+%i ts(e) = !le(e)
+
+// Pointers inside a tutorial structure.
+%s TutPtr {ga, gb}
+
+foreach (ptr in TutPtr) {
+  %p ptr(s, e) function
+  %i r[n,ptr](s, e) = E(e_0) (ptr(s, e_0) & t[n](e_0, e))
+}
+
+%i r[n,ts](e) = le(e) & (E(s) (ts(s) & (r[n,ga](s, e) | r[n,gb](s, e)))) abs
+
+foreach (ptr in TutPtr) {
+  %r E(e_1) (r[n,ptr](e_1, e_2) & !r[n,ptr](e_1, e_3)) ==> !r[n,ptr](e_2, e_3)
+  foreach (optr in TutPtr - {ptr}) {
+    %r ts(s) & le(e_1) & ptr(s, e_1) ==> !optr(s, e_1)
+    %r ts(s) & le(e_1) & ptr(s, e_1) ==> !r[n,optr](s, e_1)
+    %r ts(s) & le(e_1) & r[n,ptr](s, e_1) ==> !optr(s, e_1)
+    %r ts(s) & le(e_1) & r[n,ptr](s, e_1) ==> !r[n,optr](s, e_1)
+  }
+}
+
+foreach (var in PVar) {
+  foreach (ptr in TutPtr) {
+    %r E(s) r[n,ptr](s, e_1) & r[n,ptr](s, e_2) & t[n](e_1, e_2) & e_1 != e_2
+       ==> !t[n](e_2, e_1)
+    %r E(s) r[n,ptr](s, e_1) & r[n,ptr](s, e_2) & !t[n](e_1, e_2) & e_1 != e_2
+       ==> t[n](e_2, e_1)
+    %r ts(s) & le(e_2) & (E(e_1) (le(e_1) & r[n,ptr](s, e_1) & t[n](e_1, e_2)))
+       ==> r[n,ptr](s, e_2)
+    %r E(s) (r[n,ptr](s, e_1) & !r[n,ptr](s, e_2)) ==> !t[n](e_1, e_2)
+  }
+}
+
+%r le(e_1) & le(e_2) & (E(s) (ts(s) & ga(s, e_1) & gb(s, e_2)))
+   ==> e_1 != e_2
+%r le(e_1) & le(e_2) & (E(s) (ts(s) & r[n,ga](s, e_1) & r[n,gb](s, e_2)))
+   ==> e_1 != e_2
+
+//////////////////////////////////////////
+// Depth related
+//////////////////////////////////////////
+
+// TODO: Implement me!
+
+//////////////////////////////////////////
+// Other
+//////////////////////////////////////////
+
+// List element e has the searched student_id.
+%p stud_id(e) abs

@@ -1,0 +1,5 @@
+syntax: glob
+
+*.tvp.dt
+*.tvp.out.tvs
+*.tvp.ps

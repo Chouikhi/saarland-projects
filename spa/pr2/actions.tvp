@@ -1,0 +1,262 @@
+//////////////////////////////////////////////////
+// Accessing tutorial structure pointers
+//////////////////////////////////////////////////
+
+// %action Get_Tut_Ptrs(av, bv, sv) {
+//   %t "(" + av + ", " + bv + ") = (" + sv + "->tut_A, " + sv + "->tut_B)"
+//   %f { E(s) (sv(s) & ga(s, v)), E(s) (sv(s) & gb(s, v)) }
+//   %message !(E(s) sv(s)) ->
+//            "" + sv + " points to NULL"
+//   {
+//     av(e) = (E(s) sv(s) & ga(s, e))
+//     bv(e) = (E(s) sv(s) & gb(s, e))
+//     // TODO: Get depth information from sv.
+//   }
+// }
+
+%action Get_Tut_Ptr_A(v, sv) {
+  %t v + " = " + sv + "->tut_A"
+  %f { E(s, v_1) (sv(s) & ga(s, v_1) & t[n](v_1, v)) }
+  %message !(E(s) sv(s)) ->
+           "" + sv + " points to NULL"
+  // %message (E(s) sv(s)) & !(E(s, e) sv(s) & ga(s, e)) ->
+  //          s + "->tut_A is NULL"
+  {
+    v(e) = E(s) (sv(s) & ga(s, e))
+  }
+}
+
+%action Get_Tut_Ptr_B(v, sv) {
+  %t v + " = " + sv + "->tut_B"
+  %f { E(s, v_1) (sv(s) & gb(s, v_1) & t[n](v_1, v)) }
+  %message !(E(s) sv(s)) ->
+           "" + sv + " points to NULL"
+  // %message (E(s) sv(s)) & !(E(s, e) sv(s) & gb(s, e)) ->
+  //          s + "->tut_A is NULL"
+  {
+    v(e) = E(s) (sv(s) & gb(s, e))
+  }
+}
+
+//////////////////////////////////////////////////
+// List variable manipulations
+//////////////////////////////////////////////////
+
+%action Assign_NULL_ListVar(lhs) {
+  %t lhs + " = NULL"
+  %message (E(e) (lhs(e) & !le(e))) ->
+           "" + lhs + " doesn't point to list_el."
+  {
+    lhs(e) = 0
+  }
+}
+
+%action Copy_ListVar(lhs, rhs) {
+  %t lhs + " = " + rhs
+  %message (E(e) (lhs(e) & !le(e))) ->
+           "" + lhs + " doesn't point to list_el."
+  {
+    lhs(e) = rhs(e)
+  }
+}
+
+//////////////////////////////////////////////////
+// Structure pointer sets
+//////////////////////////////////////////////////
+
+%action Set_Tut_Ptr_A(sv, lv) {
+  %t sv + "->tut_A = " + lv
+  {
+    ga(s, e) = (sv(s) ? lv(e) : ga(s, e))
+  }
+}
+
+
+%action Set_Tut_Ptr_B(sv, lv) {
+  %t sv + "->tut_B = " + lv
+  {
+    gb(s, e) = (sv(s) ? lv(e) : gb(s, e))
+  }
+}
+
+//////////////////////////////////////////////////
+// Structure pointer NULL sets
+//////////////////////////////////////////////////
+
+%action Set_Tut_Ptr_A_Null(sv) {
+  %t sv + "->tut_A = NULL"
+  {
+    ga(s, e) = !sv(s) & ga(s, e)
+  }
+}
+
+
+%action Set_Tut_Ptr_B_Null(sv) {
+  %t sv + "->tut_B = NULL"
+  {
+    gb(s, e) = !sv(s) & gb(s, e)
+  }
+}
+
+//////////////////////////////////////////////////
+// Variable NULL checks
+//////////////////////////////////////////////////
+
+%action Is_Not_Null_Var(var) {
+  %t var + " != NULL"
+  %f { var(v) } 
+  %p E(v) var(v)
+}
+
+%action Is_Null_Var(var) {
+  %t var + " == NULL"
+  %f { var(v) } 
+  %p !(E(v) var(v))
+}
+
+%action Set_Null(var) {
+  %t var + " = NULL"
+  {
+    var(v) = 0
+  }
+}
+
+//////////////////////////////////////////////////
+// student_id related
+//////////////////////////////////////////////////
+
+%action Is_Student_Id(var) {
+  %t var + "->studentID == studentID"
+  %f { E(e) (var(e) & stud_id(e)) }
+  %p (E(e) (var(e) & stud_id(e)))
+}
+
+%action Is_Not_Student_Id(var) {
+  %t var + "->studentID != studentID"
+  %f { E(e) (var(e) & stud_id(e)) }
+  %p !(E(e) (var(e) & stud_id(e)))
+}
+
+%action Set_Student_Id(var) {
+  %t var + "->studentId = studentId"
+  %f { E(e) stud_id(e) }  // this is used in a message
+  %message (E(e) (var(e) & !le(e))) ->
+           "" + var + " does not point to a list element"
+  %message (E(e) stud_id(e)) ->
+           "assigning studentId to two elements"
+  {
+    stud_id(e) = var(e)
+  }
+}
+
+//////////////////////////////////////////////////
+// next pointer related
+//////////////////////////////////////////////////
+
+%action Set_Next_NULL(var) {
+  %t var + "->next = NULL"
+  %f { var(e), E(e_1, e_2) var(e_1) & n(e_1, e_2) & t[n](e_2, v) }
+  %message (!E(e) var(e)) -> "Illegal dereference ->n of " + var
+  {
+    n(e_1, e_2) = n(e_1, e_2) & !var(e_1)
+  }
+}
+
+%action Set_Next(lhs, rhs) {
+  %t lhs + "->" + n + " = " + rhs
+  %f {
+       lhs(v), rhs(v),
+       // optimized change-formula for t[n] upate-formula
+       E(v_4) rhs(v_4) & t[n](v_4, v_2)
+     }
+  %message (E(v_1, v_2) lhs(v_1) & n(v_1, v_2)) ->
+           "Internal Error! " + lhs + "->" + n + " != NULL"
+  %message (E(v_1, v_2) lhs(v_1) & rhs(v_2) & t[n](v_2, v_1)) -> 
+           "A cycle may be introduced\nby assignment " + lhs + "->" + n + "=" + rhs
+  {
+    n(v_1, v_2) = n(v_1, v_2) | lhs(v_1) & rhs(v_2)
+    r[n,ts](e) = r[n,ts](e) | (rhs(e) & (E(e_1) (lhs(e_1) & r[n,ts](e_1))))
+  }
+}
+
+%action Advance_Next(var) {
+  %t var + " = " + var + "->next"
+  %f { E(e_1, e_2) (var(e_1) & n(e_1, e_2) & t[n](e_2, v)) }
+  {
+    var(e) = E(e_1) var(e_1) & n(e_1, e)
+    // TODO: Change depth.
+  }
+}
+
+//////////////////////////////////////////////////
+// Memory management
+//////////////////////////////////////////////////
+
+%action Malloc_Tutorial(var) {
+  %t var + " = malloc(sizeof(struct bintut))"
+  %new
+  {
+    var(e) = isNew(e)
+    le(e) = le(e) & !isNew(e)
+    ts(e) = ts(e) | isNew(e)
+  }
+}
+
+%action Malloc_Student(var) {
+  %t var + " = malloc(sizeof(struct list_el))"
+  %new
+  {
+    var(e) = isNew(e)
+    le(e) = le(e) | isNew(e)
+    ts(e) = ts(e) & !isNew(e)
+    t[n](e_1, e_2) = t[n](e_1, e_2) | (isNew(e_1) & isNew(e_2))
+    r[n,var](e) = isNew(e)
+    r[n,ts](e) = r[n,ts](e)
+    foreach (v in PVar - {var}) {
+      r[n,v](e) = r[n,v](e)
+    }
+    foreach (ptr in TutPtr) {
+      r[n,ptr](s, e) = r[n,ptr](s, e)
+    }
+  }
+}
+
+//////////////////////////////////////////////////
+// Auxiliary
+//////////////////////////////////////////////////
+
+%action skip() {
+  %t "skip"
+}
+
+//////////////////////////////////////////////////
+// create related assertions
+//////////////////////////////////////////////////
+
+%action Assert_Correct_Create(sv) {
+  %t "Assert_Correct_Create(" + sv + ")"
+  %p !((E(s) (sv(s) & ts(s) & !(E(n) (ga(s, n) | gb(s, n))))) &
+       (A(s) sv(s)))
+}
+
+//////////////////////////////////////////////////
+// search related assertions
+//////////////////////////////////////////////////
+
+%action Assert_Correct_Search(v, sv) {
+  %t "Assert_Correct_Search(" + v + ", " + sv + ")"
+  %p (E(n) res(n)) &
+     !(E(s, n1, n2) (v(n1) & sv(s) & res(n2) &
+                     ((ga(s, n1) & r[n,ga](s, n2)) |
+                      (gb(s, n1) & r[n,gb](s, n2)))))
+}
+
+//////////////////////////////////////////////////
+// add related assertions
+//////////////////////////////////////////////////
+
+%action Assert_Correct_Add() {
+  %t "Assert_Correct_Add()"
+  // the checks are already made in Set_Student_Id and consistency constraints
+  %p 0
+}
