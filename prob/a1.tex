@@ -1,0 +1,439 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+\def\rbc{foo bar}
+\def\dc{bar baz}
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+% 1.Подробно математическо описание на алгоритъма
+% 2. Описание на работата на програмата с примери, разпечатка на кода,
+% подробен user guide. Кодът трябва да е написан ясно и четливо, с подходящи коментари
+% 3. Кривите да се чертаят като се използва алгоритъма на de Casteljau
+
+% \title{\rbc}
+% \author{
+% Зорница Атанасова Костадинова, 4 курс, КН, фн: 80227
+% }
+% \date{\today}
+% \maketitle
+% 
+% %\includegraphics[scale=0.1]{drop}
+% 
+% \begin{abstract}
+% Настоящият документ е курсова работа към проекта ``\rbc'' по предмета ``Компютърно геометрично моделиране''. Описан е математическият алгоритъм за пресмятане на кривата. Обяснена е програмната реализация на проекта.
+% \end{abstract}
+% \newpage
+% 
+% \setcounter{tocdepth}{2}
+% \tableofcontents
+% \newpage
+
+\title{The probabilistic method and randomized algorithms - Exercise 1 (rev. 2)}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+% \begin{enumerate}
+%   \item \em{}Solution\em \\
+%   Let us assume that $ n = 3k $.
+%   Then it is easy to follow that
+%   $$
+%     k = \log \sqrt{n}
+%   $$
+%   which solves everything.
+%   \item \em{}Solution\em
+% \end{enumerate}
+
+\section{Solution}
+
+\def\sm{\mathrm{sm}}
+\def\P{\mathbb{P}}
+\def\E{\mathbb{E}}
+\def\irv{i.r.v.\;}
+\def\rv{r.v.\;}
+\def\FMM{F.M.M.\;}
+\def\endproof{$\square$}
+\def\Var{\mathrm{Var}}
+% \newcommand{\irv}{i.r.v\;}
+\newcommand{\bfrac}[2] {\left(\frac{#1}{#2}\right)}
+\newcommand{\B}[1] {\left(#1\right)}
+% \newcommand{\Binom}[2] {\B{
+
+Let $ X_{\sm} $ \irv showing weather the submatrix $ \sm $ is constant.
+
+$$
+  \P(X_{\sm} = 1) = 2 \left(\frac{1}{2}\right)^{j^2}
+$$
+
+Let $ X $ is a \rv showing the number of constant submatrixes of size $ j $.
+
+$$
+  X = \sum_{\sm} X_{\sm}
+$$
+
+Lets calculate $ \E X $:
+
+\begin{eqnarray*}
+  \E X &=& \sum_{\sm} \E X_{\sm} \\
+       &=& \sum_{\sm} \P(X_{\sm} = 1) \\
+       &=& \binom{n}{j}^2 2 \left(\frac{1}{2}\right)^{j^2} \\
+\end{eqnarray*}
+
+Lets get an upper bound on $ \E X $:
+
+\begin{eqnarray*}
+  \E X &=& \binom{n}{j}^2 2 \left(\frac{1}{2}\right)^{j^2} \\
+       &=& \binom{\lfloor 2^{j/2} \rfloor}{j}^2 2 \left(\frac{1}{2}\right)^{j^2} \\
+       &\le& \binom{2^{j/2}}{j}^2 2 \left(\frac{1}{2}\right)^{j^2} \\
+       &\le& \left(\frac{(2^{j/2})^j}{j!}\right)^2 2\left(\frac{1}{2}\right)^{j^2} \\
+       &=& \frac{2^{\frac{j}{2} 2j}}{(j!)^2} \frac{2}{2^{j^2}} \\
+       &=& \frac{2}{(j!)^2} \\
+       &\le& \frac{1}{2}
+\end{eqnarray*}
+
+Now, using the \FMM we conclude, that exists a matrix, for which the count $ X $ of constant submatrices with size $ j $ is less than $ \frac{1}{2} $. But $ X \in \mathbb{N} $ so $ X = 0 $. Which means there are no constant submatrices. \endproof
+
+\section{Solution}
+
+I'll show that $ n^\star = \frac{k}{\sqrt{2}e}2^{\frac{k}{2}} $. Since $ k = O(\log n) = o(\sqrt n) $ then we can use $ \binom{n}{k} \sim \frac{n^k}{k!} $
+
+\begin{eqnarray*}
+  \binom{n}{k} 2^{1-\binom{k}{2}}
+  &\sim& \frac{\left(\frac{k}{\sqrt{2}e} 2^{\frac{k}{2}}\right)^k 2}{k! 2^{\frac{k^2}{2}-\frac{k}{2}}} \\
+  &\sim& \frac{
+              \left(\frac{k}{e}\right)^k 2^\frac{k^2}{2}
+          }{
+              2^{\frac{k}{2}} \sqrt{2\pi k} \left(\frac{k}{e}\right)^k 2^{\frac{k^2}{2}-\frac{k}{2}}
+          } \\
+  &=& \frac{1}{\sqrt{2\pi k}} \longrightarrow 0
+\end{eqnarray*}
+
+Now we'll try a slightly bigger function $ n^+ = (1 + \epsilon) \frac{k}{\sqrt{2}e}2^{\frac{k}{2}} $:
+
+\begin{eqnarray*}
+  \binom{n^+}{k} 2^{1-\binom{k}{2}}
+  &\sim& \frac{\left((1 + \epsilon)\frac{k}{\sqrt{2}e} 2^{\frac{k}{2}}\right)^k 2}{k! 2^{\frac{k^2}{2}-\frac{k}{2}}} \\
+  &\sim& (1 + \epsilon)^k \frac{
+              \left(\frac{k}{e}\right)^k 2^\frac{k^2}{2}
+          }{
+              2^{\frac{k}{2}} \sqrt{2\pi k} \left(\frac{k}{e}\right)^k 2^{\frac{k^2}{2}-\frac{k}{2}}
+          } \\
+  &=& \frac{(1+\epsilon)^k}{\sqrt{2\pi k}} \longrightarrow \infty
+\end{eqnarray*}
+
+Hence $ n^\star \sim \frac{k}{\sqrt{2}e}2^{\frac{k}{2}} $. \endproof
+
+\section{Solution}
+
+We choose randomly $ z $ points out of $ n^2 $.
+
+Let $ X_{ij} $ is \irv that the points $ i, j $ are such that their middle
+point exists. To calculate the probability we'll use the fact, that $ i,
+j $ can have middle point only if the distances on $ x $ and $ y $ axes are
+both even numbers -- denoted by $ \mathrm{even}(\Delta i,j) $ (otherwise the
+middle point doesn't have integer coordinates). $ \P(\mathrm{even}(\Delta i,j))
+$ is $ \bfrac{1}{2}^2 $ for $ n $ even and $ \bfrac{n^2+1}{2n^2}^2 $ for
+$ n $ odd.  Both of these tend to $ \frac{1}{4} $ for $ n \longrightarrow
+\infty $. Also the probability that there is a point at any fixed position is
+$ \frac{z-2}{n^2-2} $.
+$$
+  \P(X_{ij} = 1) = \frac{1}{4} \frac{z - 2}{n^2 - 2}
+$$
+
+Let $ X $ is the number of pair of points, whose middle one exists: $$ X = \sum_{ij} X_{ij} $$
+
+Lets calculate $ \E X $
+$$
+  \E X = \sum_{ij} \P(X_{ij} = 1) = \binom{z}{2} \frac{1}{4} \frac{z-2}{n^2-2} = \frac{[z]^3}{8(n^2-2)}
+$$
+
+From the \FMM we conclude that there exists assignment of $ z $ points out of
+$ n^2 $ in which $ X \le \E X $. If we remove that many points from $ z $ all
+the other pairs won't have middle point. So the left number of points without
+middles is at least $$ A = z - \frac{[z]^3}{8(n^2-2)} $$ It is obvious, that
+if $ z = \Theta(n) $ than $ A = \Theta(n) $. We want to find a constant $ k $ in $ z = kn $ such that $ A \sim k'n $ yields the largest $ k' $. For that we only need to calculate the highest powers of $ n $ in $ A $, which give the following:
+$$
+  A \sim \frac{8zn^2 - z^3}{8n^2} = \frac{8kn^3 - k^3n^3}{8n^2} = \frac{8k - k^3}{8} n
+$$
+Maximum for $ 8k - k^3 $ is reached for $ k = \frac{2\sqrt{6}}{3} $ giving $ A = \frac{4\sqrt{6}}{9} n $.
+
+
+\section{Solution}
+
+Let $ Y_i $ is a random variable denoting the number of cycles with length
+$ i $. Then $ \E Y_i = \frac{[n]^i}{2i}p^i $.
+Let $ Y $ be a random variable denoting the number of cycles with length less than $ g $. Then
+
+\begin{eqnarray*}
+  Y &=& \sum_{i=3}^{g-1} Y_i \\
+  \E Y &=& \sum_{i=3}^{g-1} \E Y_i \\
+    &=& \sum_{i=3}^{g-1} \frac{[n]^i}{2i}p^i \\
+    &\le& np^i \\
+    &=& n^{(g-1)/g} \\
+    &=& o(n) \\
+\end{eqnarray*}
+
+We fixed $ p = n^{-1 + 1/g} $ for this to hold.
+
+For $ n $ large enough $ \E Y < \frac{n}{4} $. Then we can use Markov's inequality:
+$$
+  \P (Y \ge 2 \E Y > 2\frac{n}{4}) \le \frac{1}{2}
+$$
+If we invert the statement we get: $ \P(Y < \frac{n}{2}) > 1/2\quad (\star)$.
+
+Let $ X_v $ be a \irv denoting weather vertex $ v $ has output degree $ < 2n^{1/(2g)} $.
+Let $ X $ be \rv denoting the number of verteces with output degree $ < 2n^{1/(2g)} $.
+
+\begin{eqnarray*}
+  X &=& \sum_{v} X_v \\
+  \E X &=& \sum_{v} \E X_v \\
+    &=& n \P(X_v = 1) \\
+    &=& n \P(Z < 2n^{1/(2g)})
+\end{eqnarray*}
+
+Where Z is a \rv with binom distribution $ B(n-1, p) $. This means that $ \E
+Z = (n-1)p \sim n^{1/g} $, and $ \Var Z = (n-1)p(1 - p) \sim n^{1/g} = \sigma^2
+$. Using Chebyshev's inequality for $ Z $ it is easy to see that $ \P(Z
+< 2n^{1/(2g)}) = o(1) $ (because $ 2n^{1/(2g)} \sim \sqrt{\E Z} $, so $ Z - \E
+Z \sim \E Z = \omega(\sigma) $):
+\begin{eqnarray*}
+  \P(|Z - \E Z| > t\sigma) &\le& \frac{1}{t^2} \\
+  \P(\omega(\sigma) > t\sigma) &\le& \frac{1}{t^2} \\
+\end{eqnarray*}
+
+Using this we conclude, that $ \E X = o(n) $, so eventually $ \E
+X < \frac{1}{40}n $, then from Markov:
+$$
+  \P(X \ge 2 \E X > 2 \frac{n}{40}) \le \frac{1}{2}
+$$
+Inverting the statement yields $ \P(X < \frac{n}{20}) > \frac{1}{2} \quad (\star\star)$.
+
+From $ (\star) $ and $ (\star\star) $ we can conclude that there exists a graph
+with $ n $ vertices, which has less than $ n/2 $ cycles with length less than
+$ g $ and less than $ \frac{n}{20} $ vertices with degree less than
+$ 2n^{1/(2g)} $. We should prove, that removing $ n / 2 $ edges so that the
+resulting graph has no cycles with length less than $ g $ will leave at most
+$ n / 10 $ vertices with degree $ < n^{1/(2g)} $. This means that at most
+$ n / 20 $ of the vertices with degree $ \ge 2n^{1/(2g)} $ should become with
+degree $ < n^{1/(2g)} $. So the removed edges should be at least $ (n/20)
+n^{1/(2g)} = \omega(n) $, meaning that for $ n $ large enough $ n/2 $ is
+less than $ (n/20) n^{1/(2g)} $. Thus there will be at least $ 9n/10 $ vertices
+with degree at least $ n^{1/(2g)} $.
+
+% So if we remove at most
+% $ n / 2 $ edges to achieve girth $ g $ (by destroying all small cycles), then
+% we should check how many vertices with small degree might occur (because we are
+% removing edges).  Removing the edges should ``destroy'' more than $ n / 20
+% $ vertices with big degree, but we chose them to have degree $ 2n^{1/(2g)} $,
+% so to ``destroy'' one such vertex you need to take out at least $ n^{1/(2g)}
+% $ edges leading to it. In total $ (n / 20) n^{1/(2g)} = \omega(n) $ edges need
+% to be removed. But only $ n / 2 $ are removed to destroy the cycles, so we'll
+% have at least $ 9n/10 $ edges with degree at least $ n^{1/(2g)} $.
+% the number of vertices with small degree will become at most $ \frac{n}{2.10}
+% $, so there will be more than $ \frac{9n'}{10} $ vertices with degree at least
+% $ n^{1/2g} $.
+
+% Let $ X_v $ is a random variable, denoting the output degree of vertex $ v $. Obviously, it has binomial distribution $ B(n-1, p) $, which means $ \E X_v = (n-1)p $ and $ \Var X_v = (n-1)p(1 - p) $. We want to use Chebyshev's inequality to prove, that $ \P(X_v < n^{1/(2g)}) = o(1) $.
+
+\section{Solution}
+  \subsection*{(a)}
+
+  Fix $ n $.
+  \begin{itemize}
+    \item \em k = 1 \em\quad $ \binom{n}{1} = n \le  n.e = \bfrac{en}{1}^1 $ \\
+    \item \em k \em given \em k - 1 \em \\
+    \begin{eqnarray*}
+      \binom{n}{k} &=& \binom{n}{k-1} \frac{n-k+1}{k} \\
+                   &<& \binom{n}{k-1} \frac{n}{k} \\
+                   &\overset{IH}{\le}& \bfrac{en}{k-1}^{k-1} \frac{n}{k} \\
+      \bfrac{en}{k}^k &=& \bfrac{en}{k-1}^{k-1} \frac{(k-1)^{k-1}}{k^k}(en) \\
+                      &=& \bfrac{en}{k-1}^{k-1} \bfrac{k-1}{k}^{k-1} \frac{en}{k} \\
+                      &\ge& \bfrac{en}{k-1}^{k-1} \frac{1}{e} \frac{en}{k} \\
+                      &=& \bfrac{en}{k-1}^{k-1} \frac{n}{k}
+    \end{eqnarray*}
+  \end{itemize}
+  \subsection*{(b)}
+
+  We'll calculate $ \underset{n\to\infty}\lim
+  \frac{\binom{n}{k}}{\frac{n^k}{k!}} $ and prove it is $ 1 $.
+
+  \begin{eqnarray*}
+    \lim_{n\to\infty} \frac{\binom{n}{k}}{\frac{n^k}{k!}}
+      &=& \lim_{n\to\infty} \frac{\frac{n!}{(n-k)!k!}}{\frac{n^k}{k!}} \\
+      &=& \lim_{n\to\infty} \frac{n!}{(n-k)!n^k} \\
+      &\overset{\mathrm{Stirling}}{=}&
+          \lim_{n\to\infty} \frac{(1 + o(1)) \sqrt{2\pi n} \bfrac{n}{e}^n}
+                                 {(1 + o(1)) \sqrt{2\pi(n-k)} \bfrac{n-k}{e}^{n-k} n^k} \\
+      &=& \lim_{n\to\infty} \sqrt{\frac{n}{n-k}} \bfrac{n}{n-k}^{n-k} e^{-k} \\
+      &=& \lim_{\substack{n\to\infty\\ \frac{k}{n} \to 0}}
+                            \sqrt{\frac{1}{1-\frac{k}{n}}} e^{k+O(\frac{k^2}{n-k})} e^{-k} \\
+      &=& \lim_{n\to\infty} e^{O(\frac{k^2}{n-k})} \\
+      &\overset{(\star)}{=}& 1
+  \end{eqnarray*}
+  In $ (\star) $ we use that $ k = o(\sqrt{n}) $ so $ \frac{k^2}{n-k} \le \frac{k^2}{\frac{n}{2}} = o(1) $,
+  so it tends to $ 0 $ when $ n \to \infty $.
+  
+\section{Solution}
+
+Lets fix the number of edges $ m $ and the graph size $ n $ in a graph $ H = (V, E) $.
+
+Lets denote $ \psi = \frac{2n^{3/2}}{3\sqrt{3}\sqrt{m}} $.
+
+Lets choose a random subset $ S \subseteq V $ of the vertices of $ H $, such
+that $ |S| = k\psi $ for some positive constant $ k \ge 1 $.
+
+Let $ X_e $ is an \irv showing weather the edge $ e $ is inside the chosen component $ S $. The probability for that is the number of ways to select and edge inside the component divided by all available edges:
+
+$$
+  \P(X_e = 1) = \frac{\binom{k\psi}{3}}{\binom{n}{3}} = \frac{[k\psi]^3}{[n]^3} \le \frac{k^3\psi^3}{n^3}
+$$
+
+Let $ X $ be an \rv showing the number of edges inside the component $ S $. Thus
+\begin{eqnarray*}
+  X &=& \sum_e X_e \\
+  \E(X) &=& \sum_e \P(X_e = 1) \\
+    &=& mk^3\frac{\psi^3}{n^3} \\
+    &=& mk^3\frac{8n^{9/2}}{81\sqrt{3}m^{3/2}}\frac{1}{n^3} \\
+    &=& k^3 \frac{8n^{3/2}}{81\sqrt{3}\sqrt{m}} \\
+    &=& k^3 \frac{4}{27} \psi \\
+\end{eqnarray*}
+
+From the \FMM we can choose a component $ S' $, such that $ X \le k^3
+\frac{8n^{3/2}}{81\sqrt{3}\sqrt{m}} $. In order to make the component independent, we have to remove at least one vertex per each edge inside $ S' $, and we have to prove that what is left is $ \ge \psi $.
+
+\begin{eqnarray*}
+  k\psi - k^3 \frac{4}{27} \psi &\ge& \psi \\
+  &\Updownarrow& \\
+  (k-1)\psi - k^3 \frac{4}{27} \psi &\ge& 0 \\
+  &\Updownarrow& \\
+  \underbrace{27k - 27 - 4k^3}_{f(k)} &\ge& 0 \\
+\end{eqnarray*}
+
+$$
+  f'(k) = 27 - 12k^2 = 12(k - 3/2)(k + 3/2)
+$$
+
+And it's easy to check, that $ f(\frac{3}{2}) = 0 $.
+
+So we can choose a component having $ \frac{3}{2} \psi $ vertices, and at most
+$ \frac{1}{2} \psi $ edges. Removing a vertex per edge will result in
+a component with size at least $ \psi = \frac{2n^{3/2}}{3\sqrt{3}\sqrt{m}} $. \endproof
+
+\section{Solution}
+
+\begin{eqnarray*}
+  \E X(X-1) &=& \E (X^2 - X) \\
+    &=& \E X^2 - \E X \\
+    &=& \E X^2 - (\E X)^2 + (\E X)^2 - \E X \\
+    &=& \Var(X) + (\E X)^2 - \E X
+\end{eqnarray*}
+      
+\begin{eqnarray*}
+  \E X(X-1) &=& \E (X^2 - X) \\
+    &=& \E X^2 - \E X \\
+    &=& \E \B{\sum_i Y_i}^2 - \E \B{\sum_i Y_i} \\
+    &=& \E \B{\sum_i Y_i^2} + \E \sum_{1\le i,j \le k} Y_iY_j - \E \B{\sum_i Y_i} \\
+    &=& \E Z + \E \B{\sum_i \underbrace{Y_i^2 - Y_i}_{=0}} \\
+    &=& \E Z
+\end{eqnarray*}
+
+
+\begin{eqnarray*}
+  \Var X &=& \E Z - (\E X)^2 + \E X \\
+    &=& (1 + o(1) - 1)(\E X)^2 + \E X \\
+    &=& o((\E X)^2) + \E X \quad (\star)\\
+  \P(X = 0) &<& \P\B{ |X - \E X| \ge \frac{\E X}{2}} \\
+    &\overset{\mathrm{Chebyshev}}{\le}&
+          4\frac{\Var X}{(\E X)^2} \\
+    &\overset{(\star)}{=}& 4\frac{\E X + o((\E X)^2)}{(\E X)^2} \\
+    &=& 4\B{ \frac{1}{\E X} + \frac{o((\E X)^2)}{(\E X)^2} } \overset{\E X\to\infty}\longrightarrow 0
+\end{eqnarray*}
+
+\section{Solution}
+
+\subsection{A}
+
+Let $ X_{ni} $ be \irv showing weather the $ i^{\mathrm{th}} $ bit is 1. So $ \P(X_{ni} = 1) = p $.
+
+\begin{eqnarray*}
+  \E(X_n) &=& \sum_i \P(X_{ni} = 1) \\
+  &=& np \\
+  \\
+  \E Z &=& p^2[n]^2 \\
+  \\
+  \Var X_n &=& \E Z - (\E X)^2 + \E X \\
+           &=& p^2n(n-1) - n^2p^2 + np \\
+           &=& np(1 - p) \\
+  \\
+  \P(X_n < pn - \sqrt{n\log n}) &\le& \P(|X_n - pn| > \sqrt{n\log n}) \\
+    &\overset{\mathrm{Chebyshev}}{\le}& \frac{np(1-p)}{(\sqrt{n\log n})^2} \\
+    &=& \frac{np(1-p)}{n\log n} \\
+    &=& \frac{p(1-p)}{\log n} \\
+    &=& O\B{\frac{1}{\log n}} \\
+\end{eqnarray*}
+
+\subsection{B}
+
+Let $ Q_{ni} $ is \irv that the sequence $ 101 $ occurs at position $ i $ in the string. Obviously $ \P(Q_{ni}) = p^2(1-p) $. We define
+
+\begin{eqnarray*}
+  Q_n &=& \sum_i Q_{ni} \\
+  \E Q_n &=& \sum_i^{n-2} \P(Q_{ni} = 1) \\ 
+    &=& p^2(1-p)(n-2) \\
+  \\
+  \E Z &=& \sum_{i,j} \P(Q_{ni}Q_{nj} = 1) \\
+     &=& (p^2(1-p))^2 ((n-2)(n-3) - 2(n-4) - 2(n-3)) + p^3(1-p)^2 (2(n-4)) + 0.2(n-3) \\
+     &=& (p^2(1-p))^2(n^2 - 9n + 20) + p^3(1-p)^2(2n - 8) \\
+  \\
+  \Var Q_n &=& \E Z - (\E X)^2 + \E X \\
+    &=& (p^2(1-p))^2(-5n + 16) + p^2(1-p)((2p(1-p) + 1)n + o(n)) \\
+    &=& \Theta(n)
+\end{eqnarray*}
+
+\begin{eqnarray*}
+  \P(|Q_n - p^2(1-p)n| > a\sqrt{n}) &\le& \P(|Q_n - \E Q_n| > a\sqrt{n} + O(1)) \\
+    &\overset{\mathrm{Chebyshev}}{\le}& \frac{\Var Q_n}{a^2 n + O(\sqrt{n})} \\
+    &=& \frac{\Theta(n)}{\Theta(a^2n)} \\
+    &=& \Theta\B{\frac{1}{a^2}} \\
+  \P(|Q_n - p^2(1-p)n| > a\sqrt{n}) &=& O\B{\frac{1}{a^2}} \\
+\end{eqnarray*}
+\endproof
+
+
+\begin{eqnarray*}
+ [ \neg ((Q \wedge \neg P) \wedge \neg (Q \wedge R)) \rightarrow (Q
+\wedge (Q \rightarrow P) \wedge \neg P)] \wedge (P \vee R) &=& \\
+ \lbrack ((Q \wedge \neg P) \wedge \neg (Q \wedge R)) \vee (Q \wedge
+(\neg Q \vee P) \wedge \neg P) \rbrack  \wedge (P \vee R) &=& \\
+\end{eqnarray*}
+
+\end{document}

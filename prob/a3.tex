@@ -1,0 +1,283 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+\def\rbc{foo bar}
+\def\dc{bar baz}
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+\title{The probabilistic method and randomized algorithms - Exercise 3}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+\def\sm{\mathrm{sm}}
+\def\P{\mathbb{P}}
+\def\E{\mathbb{E}}
+\def\irv{i.r.v.\;}
+\def\rv{r.v.\;}
+\def\FMM{F.M.M.\;}
+\def\endproof{$\square$}
+\def\Var{\mathrm{Var}}
+\def\Cov{\mathrm{Cov}}
+\def\CS{\mathrm{CS}}
+\def\CCS{\mathrm{CCS}}
+% \newcommand{\irv}{i.r.v\;}
+\newcommand{\bfrac}[2] {\left(\frac{#1}{#2}\right)}
+\newcommand{\B}[1] {\left(#1\right)}
+% \newcommand{\Binom}[2] {\B{
+
+\section*{Problem 1}
+
+\subsection*{(a)}
+
+Lets estimate the average and the variance of $ X_n $. First we observe that
+$ X_n = \sum_{i=1}^{n-k+1} X_n^i $ where $ X_n^i $ is the \irv denoting weather
+the sequence of bits starting from position $ i $ consists of only 1's. Its
+clear, that $ \P(X_n^i = 1) = p^k \quad \forall i $.
+
+\begin{eqnarray*}
+\E(X_n)
+  &=& \E\B{\sum_{i=1}^{n-k+1} X_n^i} \\
+  &=& \sum_{i=1}^{n-k+1} \E(X_n^i) \\
+  &=& \sum_{i=1}^{n-k+1} \P(X_n^i = 1) \\
+  &=& \sum_{i=1}^{n-k+1} p^k \\
+  &=& (n-k+1)p^k \\
+  &\sim& np^k \\
+\Var(X_n)
+  &=& \sum_{i=1}^{n-k+1} \Var(X_n^i) + \sum_{i\neq j} \Cov(X_n^i, X_n^j) \\
+\Var(X_n^i)
+  &=& \P(X_n^i = 1)(1 - \P(X_n^i = 1)) \\
+  &=& p^k(1 - p^k) \\
+  &\sim& p^k \\
+\Cov(X_n^i, X_n^j)
+  &=& \E(X_n^i, X_n^j) - \E(X_n^i)\E(X_n^j) \\
+  &=& p^{2k - |i-j|} - p^{2k} \quad |i-j| < k \\
+\sum_{i \neq j} \Cov(X_n^i, X_n^j)
+  &=& \sum_{d = 1}^{k-1} (n - (2k - d) + 1) (p^{2k - d} - p^{2k}) \\
+  &\overset{\star}{<}& \sum_{d = 1}^{k-1} n p^{2k - d} \\
+  &=& np^{k+1}\frac{1 - p^{k-2}}{1 - p} \\
+  &\sim& np^{k+1} \\
+\Var(X_n^i)
+  &=& \sum_{i=1}^{n-k+1} \Var(X_n^i) + \sum_{i\neq j} \Cov(X_n^i, X_n^j) \\
+  &<& (n-k+1)p^k + np^{k+1} \\
+  &\sim& np^k
+\end{eqnarray*}
+
+Now assume $ p = o(n^{-1/k}) $. So $ \E(X_n) = o(1) $. Using Markov's inequality we get
+
+\begin{eqnarray*}
+\P(X_n > 0)
+  &=& \P(X_n \ge 1) \\
+  &\le& \frac{\E(X_n)}{1} \\
+  &=& o(1) \\
+\end{eqnarray*}
+
+which means that $ \P(X_n = 0) = 1 - \P(X_n > 0) \to 1 $.
+
+Next, assume $ p = \omega(n^{-1/k}) $. Plug variance and average into Chebyshev's inequality gives:
+
+\begin{eqnarray*}
+\P(X_n = 0)
+  &\le& \P(|X_n - \E(X_n)| \ge \E(X_n)) \\
+  &\le& \frac{\Var X}{\E(X_n)^2} \\
+  &<& \frac{np^k}{(np^k)^2} \\
+  &=& \frac{1}{np^k} \\
+  &=& \frac{1}{\omega(1)} \\
+  &=& o(1) \\
+\end{eqnarray*}
+
+So the probability we don't see any sequence of $ k $ consecutive 1's tends to 0.
+
+\subsection*{(b)}
+
+We'll prove that $ \E([X_n]_j) = c^j + o(1) $. $ [X_n]_j $ can be interpreted
+as the number of ordered $j$-tuples of sequences of $ k $ consecutive 1's. So
+the expected value is the expected number of ways to choose the first interval
+of $ k $ consecutive 1's, multiplied by the expected number of ways to choose
+the second interval (given the first is already chosen), multiplied by the
+expected number of ways to choose the third interval (given the first two are
+already chosen), and so on.
+
+\begin{eqnarray*}
+\E([X_n]_j)
+  &=& \underbrace{((n - c_1)p^k)}_{(1)}\prod_{s=2}^{j}\B{\underbrace{(n - c_s)p^k}_{(2)} + \underbrace{\sum_{t=1}^{k-1} d_{s,t} p^{k-t}}_{(3)}}
+\end{eqnarray*}
+
+(1) calculates the expected number of possible choices for the first interval
+in the $j$-tuple. There are $ n - k + 1 $ ways to choose the beginning (here $ c_1 = k+1 $) and probability $ p^k $ that that particular interval will consist of only 1's.
+
+To calculated the expected number of ways to choose the other intervals we
+again need to multiply the number of possible beginning by the probability that
+the interval consists of only 1's. The newly chosen interval can be disjoint
+from all others -- that is what (2) calculates. The constant $ c_s $ accounts
+for the remaining number of beginnings of disjoin intervals.  It depends on the
+choice of the previous intervals, but it is bounded: $ c_s \in [s-1 + (k-1),
+(2k-1)(s-1) + (k-1)] $.  This is because an interval can occupy between 1 spot
+for a new interval and $ 2k-1 $ spots (1 spot if it almost completely overlaps
+with an existing interval, $ 2k-1 $ spots if it is not near any existing
+interval). If the new interval is disjoin from all previously chosen, the
+probability that all its bits are 1's $ p^k $.
+
+(3) calculates the number of ways to choose an interval, intersecting with
+a previous interval. The sum over $ t $ accounts for the number of shared bits.
+The probability that a chosen interval, having $ t $ bits shared with already
+chosen intervals, to have its $ k $ bits up is $ p^{k-t} $ (because $ k-t $ is
+the number of non-shared bits). The constants $ d_{s,t} $ account for the
+number of ways to choose the beginning of the $s$-th interval, so that it has
+exactly $ t $ bits shared with already chosen intervals. It depends on the
+previously chosen intervals, but it also bounded: $ d_{s, t} \in [0, 2(s-1)] $.
+
+Its easy to see that using the bounds for $ d_{s,t} $ and $ c_s $ we can get
+a lower and upper bound for $ \E([X_n]_j) $. The lower and upper bound are
+asymptotically $ (np^k)^j + o(1) = c^j + o(1) $. That is because if we expand
+the product we'll get either $ (np^k)^j = c^j $ or $ (np^k)^{j-i}p^v $ where
+$ i, v $ are positive, and because $ p^v = o(1) $ the only term left at the end
+will be $ (np^k)^j $ and the rest can be accumulated by $ o(1) $.
+
+\subsection*{(c)}
+
+We'll use Janson's inequality. The events $ B_i $ denote that the
+$ k $ consecutive bits starting from position $ i $ are all 1's.
+\begin{eqnarray*}
+\P(B_i) &=& p^k \\
+M &=& \prod \P(\overline{B_i}) \\
+  &=& \prod^{n-k+1} (1 - p^k) \\
+  &=& \B{1-o\B{\B{\frac{1}{n}}^\frac{k}{k+1}}}^{n-k+1} \\
+  &=& o(\exp(n^\frac{1}{k+1})) \\
+\Delta
+  &=& \sum_{i\sim j}\P(B_i \cap B_j) \\
+  &=& \sum_{d = 1}^{k-1} p^{2k-d}(n - (2k-d) + 1) \\
+  &<& \sum_{d = 1}^{k-1} np^{2k-d} \\
+  &=& np^{k+1}\frac{1 - p^{k-2}}{1 - p} \\
+  &=& o(1) \\
+\frac{1}{1 - \epsilon}
+  &=& \frac{1}{1 - p^k} \\
+  &\to& 1 \\
+\exp\B{\frac{1}{1-\epsilon}\frac{\Delta}{2}}
+  &=& \exp(o(1)) \\
+  &=& 1 + o(1) \\
+\end{eqnarray*}
+
+Now it is clear that $ \P(X_n = 0) = \P(\bigcap \overline{B_i}) \in [M, M(1 + o(1))] $, so $ \P(X_n = 0) \sim M = o(\exp(n^\frac{1}{k+1})) $.
+
+\section*{Problem 2}
+
+We'll prove that $ \E([X_n]_j) = e^{-cj} $. $ \E([X_n]_j) $ is the expected number of ordered $j$-tuples of points with degree $ 0 $. This number can be directly calculated:
+
+\begin{eqnarray*}
+\E([X_n]_j)
+  &=& \prod_{i=1}^{j} (n-i+1)(1-p)^{n-i} \\
+  &=& \prod_{i=1}^{j} (n-i+1)\exp(p(n-i) + O(p^2(n-i))) \\
+  &=& \prod_{i=1}^{j} (n-i+1)\exp\B{-\frac{\ln n + c}{n}(n-i)
+                                    + O\underbrace{\B{\B{\frac{\ln n + c}{n}}^2(n-i)}}_{=o(1)}} \\
+  &=& \prod_{i=1}^{j} (n-i+1)\exp(-\ln n - c + o(1)) \\
+  &\sim& \prod_{i=1}^{j} \underbrace{(n-i+1)n^{-1}}_{\to 1}e^{-c} \\
+  &\sim& e^{-cj} \\
+\end{eqnarray*}
+
+Then $ \E([X_n]_j) = (1 + o(1))e^{-cj} = e^{-cj} + o(1)e^{-cj} = e^{-cj} + o(1) $.
+
+This means that $ X_n $ has Poisson distribution with parameter $ \lambda = e^{-c} $. 
+$$
+  \lim_{n\to \infty} \P(X_n = i) = e^{-e^{-c}} \frac{e^{-cj}}{j!}
+$$
+
+\section*{Problem 3}
+
+\begin{eqnarray*}
+\P(X \ge (1 + \delta)\mu)
+  &=& \P(e^{tX} \ge e^{t(1 + \delta)\mu}) \\
+  &\overset{\mathrm{Markov}}{\le}& \frac{\E(e^{tX})}{e^{t(1 + \delta)\mu}} = (\star) \\
+\E(e^{tX})
+  &\overset{\mathrm{Taylor}}{=}& \E\B{\sum_{i=0}^{\infty} \frac{(tX)^i}{i!}} \\
+  &=& \sum_{i=0}^{\infty} \frac{t^i \E(X^i)}{i!} = (\star\star) \\
+\E(X^i)
+  &=& \E\B{\sum_{1 \le j_1\dots j_i \le n} X_{j_1}X_{j_2}\dots X_{j_i}} \\
+  &=& \sum_{1 \le j_1\dots j_i \le n} \E(X_{j_1}X_{j_2}\dots X_{j_i}) \\
+  &=& \sum_{1 \le j_1\dots j_i \le n} \P(\land_{z \in \{ j_1 \dots j_i \}} X_{z} = 1) \\
+  &\le& \sum_{1 \le j_1\dots j_i \le n} \prod_{z \in \{ j_1 \dots j_i \}} \P( X_{z} = 1) \\
+  &\le& \sum_{1 \le j_1\dots j_i \le n} \prod_{z \in \{ j_1 \dots j_i \}} \P( Y_{z} = 1) \\
+  &=& \sum_{1 \le j_1\dots j_i \le n} \P(\land_{z \in \{ j_1 \dots j_i \}} Y_{z} = 1) \\
+  &=& \E(Y^i) \\
+(\star\star)
+  &\le& \frac{t^i \E(Y^i)}{i!} \\
+  &=& \E(e^{tY}) \\
+(\star)
+  &\le& \frac{\E(e^{tY})}{e^{t(1 + \delta)\mu}} \\
+  &=& \B{\frac{e^\delta}{(1+\delta)^{1+\delta}}}^\mu
+\end{eqnarray*}
+
+The last equality is true for $ t = \ln (1 + \delta) $. The full proof is given
+in the lecture. Basically this is the same bound as for sum of independent
+binary random variables. The trick was to show it holds for dependent variables
+given the assumption in the problem statement.
+
+\section*{Problem 4}
+
+\begin{eqnarray*}
+\P(X \ge (1 + \delta)\mu)
+  &=& \P(e^{tX} \ge e^{t(1 + \delta)\mu}) \\
+  &\overset{\mathrm{Markov}}{\le}& \frac{\E(e^{tX})}{e^{t(1 + \delta)\mu}} \\
+  &=& \frac{\prod_{i=1}^{n} \E(e^{tX_i})}{e^{t(1 + \delta)\mu}} \\
+  &=& \frac{\prod_{i=1}^{n} \frac{\lambda_i}{\lambda_i - t}}{e^{t(1 + \delta)\mu}} \\
+  &\overset{(\star)}{\le}& \frac{\prod_{i=1}^{n} 4^{t/\lambda_i}}{e^{t(1 + \delta)\mu}} \\
+  &=& \frac{4^{t\mu}}{e^{(1 + \delta)^t\mu}} \\
+  &=& \B{\frac{4}{e^{1+\delta}}}^{t\mu} \\
+\end{eqnarray*}
+
+For $ (\star) $ we used the inequality $ (1 - \frac{1}{x})^x \ge \frac{1}{4}
+\quad x \ge 2 $. $ (1 - \frac{1}{x})^x \to \frac{1}{e} $ when $ x \to \infty $ and is also
+monotonically increasing. For $ x = 2 $ the value is exatly $ \frac{1}{4} $ so
+$ (1 - x^{-1})^x \ge 1/4 \quad x \ge 2 $. We substitute $ x = \lambda_i
+/ t $ and take the reciprocal:
+
+\begin{eqnarray*}
+\B{1 - \frac{1}{x}}^x &\le& \frac{1}{4} \\
+\B{1 - \frac{1}{x}}^{-x} &\ge& 4 \\
+\B{\frac{x}{x - 1}}^x &\ge& 4 \\
+\B{\frac{\lambda_i/t}{\lambda_i/t - t/t}}^{\lambda_i/t} &\ge& 4 \\
+\frac{\lambda_i}{\lambda_i - t} &\ge& 4^{t / \lambda_i} \\
+\end{eqnarray*}
+
+$ x \ge 2 $ gives a bound for $ t $ : $ \lambda_i / t \ge 2 \quad \forall i $.
+Which gives $ t \le \lambda_i / 2 $. If we assume $ 4 / e^{1+\delta} < 1 $ than
+we should maximize the power, which means we need to take the largest possible
+$ t $ for the minimum possible bound: $ t = \lambda_{\mathrm{min}} / 2 $.
+
+So the final bound we get is:
+
+\begin{eqnarray*}
+\P(X \ge (1 + \delta)\mu) &\le& \B{\frac{4}{1+\delta}}^{\frac{\lambda_{\mathrm{min}} \mu}{2}}
+\end{eqnarray*}
+
+
+\end{document}

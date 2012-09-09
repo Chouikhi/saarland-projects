@@ -1,0 +1,210 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+\def\rbc{foo bar}
+\def\dc{bar baz}
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+\title{The probabilistic method and randomized algorithms - Exercise 2}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+\def\sm{\mathrm{sm}}
+\def\P{\mathbb{P}}
+\def\E{\mathbb{E}}
+\def\irv{i.r.v.\;}
+\def\rv{r.v.\;}
+\def\FMM{F.M.M.\;}
+\def\endproof{$\square$}
+\def\Var{\mathrm{Var}}
+\def\Cov{\mathrm{Cov}}
+\def\CS{\mathrm{CS}}
+\def\CCS{\mathrm{CCS}}
+% \newcommand{\irv}{i.r.v\;}
+\newcommand{\bfrac}[2] {\left(\frac{#1}{#2}\right)}
+\newcommand{\B}[1] {\left(#1\right)}
+% \newcommand{\Binom}[2] {\B{
+
+\section{TODO}
+
+Let $ y > 0 $.
+\begin{eqnarray*}
+  \P(X \ge \lambda) &=& \P(X + y \ge \lambda + y) \\
+    &\le& \P((X + y)^2 \ge (\lambda + y)^2) \\
+    &\le& \frac{\E((X + y)^2)}{(\lambda + y)^2} \\
+    &=& \frac{\E(X^2) + y^2}{(\lambda + y)^2} \\
+    &=& \frac{\sigma^2 + y^2}{(\lambda + y)^2} \\
+    &=& f(y) \\
+  f'(y) &=& \frac{2y(\lambda + y)^2 - (\sigma^2 + y^2)2(\lambda + y)}{(\lambda + y)^4} \\
+    &=& \frac{2(\lambda + y)(y\lambda + y^2 - \sigma^2 - y^2)}{(\lambda + y)^4} \\
+    &=&  \frac{2(\lambda + y)(y\lambda - \sigma^2)}{(\lambda + y)^4} \\
+  f'(y) &=& 0 \\
+   &\Updownarrow& \\
+  y\lambda &=& \sigma^2 \\
+  y &=& \sigma^2 / \lambda \\
+\end{eqnarray*}
+
+We just plug the value of $ y $ into the lower bound:
+\begin{eqnarray*}
+  \frac{\sigma^2 + y^2}{(\lambda + y)^2}
+    &=& \frac{\sigma^2 + \frac{\sigma^4}{\lambda^2}}{(\lambda + \frac{\sigma^2}{\lambda})^2} \\
+    &=& \frac{\sigma^2\lambda^2 + \sigma^4}{\lambda^4 + 2\lambda^2 + \sigma^2} \\
+    &=& \frac{\sigma^2(\lambda^2 + \sigma^2}{(\lambda^2 + \sigma^2)^2} \\
+    &=& \frac{\sigma^2}{\lambda^2 + \sigma^2} \\
+\end{eqnarray*}
+\endproof
+
+\section{Solution}
+
+Let $ X_c $ is \irv that the subgraph $ c $ of size $ s $ is a clique.
+Let $ X = \sum X_c $ is \rv denoting the number of cliques.
+We have to calculate $ \E X $ and $ \Var X $.
+
+\begin{eqnarray*}
+  \E X &=& \sum_{c} \P(X_c = 1) \\
+    &=& \sum_{c} p^{\binom{s}{2}} \\
+    &=& \binom{n}{s} p^{\binom{s}{2}} \\
+    &\sim& n^s p^{\binom{s}{2}}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+  \Var X &=& \sum_{c} \Var X_c + \sum_{c,d} \Cov(X_c, X_d) \\
+  \Var X_c &=& \P(X_c = 1)(1 - \P(X_c = 1)) = p^{\binom{s}{2}}(1 - p^{\binom{s}{2}}) \\
+    &\sim& p^{\binom{s}{2}} \\
+  \sum_c \Var X_c &\sim& \binom{n}{s} p^{\binom{s}{2}} \\
+    &=& \sim n^s p^{\binom{s}{2}} \\
+  \sum_{c,d} \Cov(X_c, X_d) &=& 2 \sum_{k=2}^{s-1} \binom{s}{k} \binom{n-s}{s-k} p^{2\binom{s}{2} - \binom{k}{2}} \\
+    &\le& \sum_k O(n^{s-k} p^{\binom{s}{2}}) \\
+    &\overset{\star}{=}& o(n^s p^{\binom{s}{2}}) \\
+  \Var X &\sim& n^s p^{\binom{s}{2}} \\
+\end{eqnarray*}
+
+where $ k \ge 2 $ is the number of common vertices between the components
+$ c $ and $ d $. In $ \star $ we use that $ n $ is always to a power less than
+$ s $ and $ p $ is to a power greater than $ \binom{s}{2} $, so the asymptotics
+hold.
+
+Now it is easy to check that $ \E X \to \infty $ implies $ \P(X \ge 1) \le \frac{1}{\E X} \to 0 $.
+And $ \E X \to 0 $ implies $ \P(X = 0) \le \P( | X - \E X | \ge \E X) \le \frac{\Var x}{(\E x)^2} \to 0 $.
+So this means $$ f_s(n) = n^{{-s}/{\binom{s}{2}}} $$ is a treshold function for $ A(s) $ (because $ \E X $ goes to $ 0 $ or $ \infty $ for $ p \overset{<<}{\underset{>>}{}} f_s(n) $. \endproof
+
+\section{Solution}
+
+The probability space is all possible colorings of our graph in such a way that
+the color for each vertex is chosen uniformly at random.
+
+Lets consider the events $ \{ A_{e,c} \} $ that edge $ e = (u, v) $ is such
+that both verteces $ u $ and $ v $ are colored with color $ c $. We only
+consider the event if $ c \in S(v) \land c \in S(u) $. The probability of all
+events is just the probability that a vertex has a given color, squared --
+because both endpoints should have color $ c $.
+
+$$
+  \P(A_{e,c} = 1) = \frac{1}{(10d)^2}
+$$
+
+Now lets calculate the maximum number of dependent events.
+$$
+  A_{e,c} \sim \{ A_{e',c'}\ |\ e' \cap e \ne \emptyset \land (\forall v \in e')(c' \in S(v)) \}
+$$
+
+Each vertex has $ 10d $ colors and at most $ d $ neighbours that share each
+color. So that makes at most $ 10d^2 $ (edge, color) combinations per vertex.
+So each event $ A_{e,c} $ is dependent on at most $ 2 . 10d^2 = 20 d^2 $ other
+events.
+
+$$
+  4. 20 d^2 . \frac{1}{(10d)^2} = \frac{80}{100} \le 1
+$$
+
+So by the second collorary of LLL there exists a configuration, in which all
+events $ A_{e,c} $ are false, that is -- all neighbouring verteces are colored
+with different colors. \endproof
+
+\section{todo}
+
+\section{Solution}
+
+Lets define the graph property $ \CS(G) $ to be ``the graph $ G $ connected and spanning''. That
+is $ \P(\CS(G)) = P $.
+Lets define another graph property $ \CCS $ to be ``the edge complement of the
+graph $ G $ is connected and spanning''. There is bijection between each graph
+and its edge complement graph, so $ \P(\CCS(G)) = \P(\CS(\bar G)) = P $.
+
+It is not hard to see, that if we color all the edges in two colors and want
+the resulting two graphs to be connected and spanning is equivalent to $ \CS(G)
+\land \CCS(G) $. $ \CS $ is increasing property, because if we add more edges,
+a graph will continue to be connected and spanning. On the other hand $ \CCS
+$ is decreasing property, because if we remove edges from a graph, its edge
+complement will gain edges, so if the edge complement was connected and
+spanning, the new one (having more edges) will also be connected and spanning.
+
+Thus, we can use Janson's inequality to derive the answer:
+
+\begin{eqnarray*}
+  \P(\CS(G) \land \CCS(G)) &\le& \P(\CS(G)) \P(\CCS(G)) \\
+  Q &\le& P^2
+\end{eqnarray*}
+
+\section{Solution}
+
+We can construct a lattice of all possible choosings of edges -- that is all
+possible subsets of edges, where the lattice ordering is induced by the subset
+relation. In this lattice we can define the family of sets $ \mathcal{A}_1,
+\mathcal{A}_2, \dots, \mathcal{A}_{2k} $ so that $ \mathcal{A}_i = \{ E \in
+2^{V^2}\ |\ |E \cap \{ v_i, \star \}| \le k - 1 \} $, that is all edge
+choosings for which vertex $ i $ has degree at most $ k - 1 $. This families
+are decreasing, because if a subset of all edges has the property that vertex
+$ i $ has degree at most $ k - 1 $ then removing edges won't break the
+property.
+
+The probability of event $ \mathcal{A}_i = 1/2 $ for all $ i $. This is because
+the distribution of $ \mathcal{A}_i $ is a binomial distribution with
+$ n = 2k-1 $ and $ p = 1/2 $. The expectation is $ np $ which is exactly
+$ k-\frac{1}{2} $. Because the distribution is symetric, this means that all
+values are partitioned evently above and below the mean, so this means number
+of graphs where degree of $ v_i $ is $ \le k - 1 $ is exatly the same as number
+of graphs with degree $ \ge k $.
+
+Now we can apply Janson's inequality for probability vector $ \vec
+p = \underbrace{\B{\frac{1}{2}, \frac{1}{2}, \dots, \frac{1}{2}}}_{\binom{2k}{2}} $ and the event
+$$ \mathcal{A} = \bigcap_{i=1}^{2k} \mathcal{A}_i $$ which means that all
+vertices have degree at most $ k $. From the theorem we get
+
+\begin{eqnarray*}
+  \P(\mathcal{A}) &\ge& \prod_{i=1}^{2k} \P(\mathcal{A}_i) \\
+    &=& \B{\frac{1}{2}}^{2k} \\
+    &=& \frac{1}{4^k}
+\end{eqnarray*}
+
+\end{document}

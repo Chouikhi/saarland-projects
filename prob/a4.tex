@@ -1,0 +1,188 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+\def\rbc{foo bar}
+\def\dc{bar baz}
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+\title{The probabilistic method and randomized algorithms - Exercise 4}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+\def\sm{\mathrm{sm}}
+\def\P{\mathbb{P}}
+\def\E{\mathbb{E}}
+\def\irv{i.r.v.\;}
+\def\rv{r.v.\;}
+\def\FMM{F.M.M.\;}
+\def\endproof{$\square$}
+\def\Var{\mathrm{Var}}
+\def\Cov{\mathrm{Cov}}
+\def\CS{\mathrm{CS}}
+\def\CCS{\mathrm{CCS}}
+\def\Dom{\mathrm{Dom}}
+\def\Im{\mathrm{Im}}
+% \newcommand{\irv}{i.r.v\;}
+\newcommand{\bfrac}[2] {\left(\frac{#1}{#2}\right)}
+\newcommand{\B}[1] {\left(#1\right)}
+% \newcommand{\Binom}[2] {\B{
+
+\section*{Problem 1}
+
+Let $ r \in [0, \mu - 1] $ is an integer. We'll show, that $ \P(Z = \mu + r) \ge
+\P(Z = \mu - r - 1) $. Lets consider $ \P(Z = \mu + r) / \P(Z = \mu - r - 1) $:
+
+\begin{eqnarray*}
+\P(Z = \mu + r) / \P(Z = \mu - r - 1)
+  &=& \frac{e^{-\mu} \frac{\mu^{\mu + r}}{(\mu + r)!}}{e^{-\mu} \frac{\mu^{\mu - r -1}}{(\mu - r - 1)!}} \\
+  &=& \frac{\mu^{\mu+r}}{\mu^{\mu - r - 1}} \B{\frac{(\mu + r)!}{(\mu - r - 1)!}}^{-1} \\
+  &=& \frac{\mu^{2r+1}}{[\mu + r]_{2r+1}} \\
+  &=& \frac{\mu^{2r} \mu}{\mu \prod_{i=1}^{r} (\mu - i)(\mu + i)} \\
+  &=& \frac{\mu^{2r}} {\prod_{i=1}^{r} (\mu^2 - i^2)} \\
+  &\le& \frac{\mu^{2r}} {\prod_{i=1}^{r} \mu^2} \\
+  &=& 1 \\
+\end{eqnarray*}
+
+This means that $ \P(Z = \mu + r) \ge \P(Z = \mu - r - 1) $ for all $ r \in [0,
+\mu - 1] $. Now its easy to see
+
+\begin{eqnarray*}
+\P(Z \ge \mu)
+  &=& \sum_{r = 0}^{\mu - 1} \P(Z = \mu + r) + \sum_{r = 2\mu}^{\infty} \P(Z = r) \\
+  &\ge& \sum_{r = 0}^{\mu - 1} \P(Z = \mu - r + 1) + 0 \\
+  &\ge& \sum_{r' = 0}^{\mu - 1} \P(Z = r') \\
+  &=& \P(Z < \mu)
+\end{eqnarray*}
+
+But $ \P(Z \ge \mu) + \P(Z < \mu) = 1 $ so $ \P(Z \ge \mu) \ge \frac{1}{2} $.
+
+\section*{Problem 2}
+
+\subsection*{(a)}
+
+We are going to use theorem 2 from the ``balls and bins'' lecture, namely, that
+\[
+  \E(f(X_1^{(m)}, \dots, X_n^{(m)})) \le e\sqrt{m}\ \E(f(Y_1^{(m)}, \dots, Y_n^{(n)}))
+\]
+
+for any function $ f $. In our case $ m = n $ and $ f(x_1, \dots, x_n) =
+\prod_{i=1}^{n} x_i $. Let the event $ A $ be that all balls fall in separate
+bins (one ball per each bin). Then $ \E(A) = \E(f(X_1^{(n)}, \dots, X_n^{(n)}))
+\le e\sqrt{n} \E(f(Y_1^{(n)}, \dots, Y_n^{(n)})) $. $ \P(Y_i^{(n)} = 1) =
+e^{-1}\frac{1^1}{1!} = \frac{1}{e} $, and all $ Y_i^{(n)} $ are mutually
+independent, so $ \E(f(Y_1^{(n)}, \dots, Y_n^{(n)})) = \prod \E(Y_i^{(n)} = 1)
+= \B{\frac{1}{e}}^{n} $. This gives an upper bound \[ \E(A) \le e\sqrt{n}
+\bfrac{1}{e}^n \].
+
+\subsection*{(b)}
+
+The exact expactation can be calculated by dividing the total number of configurations with one ball per each bin ($ n! $) by the number of all configurations ($ n^n $). We would also apply the stirling's formula:
+
+\begin{eqnarray*}
+\E(A)
+  &=& \frac{n!}{n^n} \\
+  &\sim& \frac{\sqrt{2\pi n}\bfrac{n}{e}^n}{n^n} \\
+  &=& \sqrt{2\pi} \sqrt{n} \bfrac{1}{e}^n \\
+\end{eqnarray*}
+
+$ \sqrt{2\pi} \approx 2.51 $ and $ e \approx 2.72 $, so the poisson approximation is pretty close.
+
+\section*{Problem 3}
+
+% First we have to consider the function $ f_i(x) = 2^i(1 - x) $. It is
+% a bijective function $ f_i : [0, 1] \to [0, 2^i] $, with inverse:
+% $ f_i^{-1}(y) = 1 - y2^{-i} $.
+% \begin{itemize}
+%   \item {\bf Inective} For all $ x_1, x_2 \in \Dom(f_i) = [0, 1], x_1 = x_2 \iff f_i(x_1) = f_i(x_2) $
+%   \item {\bf Surjective} For any $ y \in \Im(f_i) = [0, 2^i] $ there exists $ x = f_i^{-1}(y) $ such that $ y = f_i(x) $.
+% \end{itemize}
+
+% Now it it is clear that an expectation conditioned on $ \{ Y_i | i \in I \}
+% $ is the same as conditioning on $ \{ X_i | i \in I \} $ because ``knowing''
+% the value of $ Y_i $ for any $ i $ is the same as ``knowing'' the value for
+% $ X_i $ for the same $ i $.
+
+Let $ Z_i = \E(Y_i | X_{i-1}, \dots, X_0) $. We use $ Y_i = 2^i(1 - X_i) $ to
+obtain $ Z_i = 2^i(1 - \E(X_i|X_{i-1}, \dots, X_0)) $. Using both hints, the
+value of $ X_i $ is uniformly distributed between $ X_{i-1} $ and $ 1 $, so the
+expectation is the middle of that interval. That is, given $ X_{i-1} $ the
+expectation of $ X_i $ is exactly $ f(X_{i-1}) = (X_{i-1} + 1) / 2 $. This
+means $ Z_i = 2^i(1 - (X_{i-1} + 1) / 2) = 2^{i-1}(2 - X_{i-1} - 1) = 2^{i-1}(1
+- X_{i-1}) = Y_{i-1} $. This means $ \{ Y_i \}_{i=0}^{\infty} $ is
+a martingale with respect to $ \{X_i\}_{i=0}^{\infty} $.
+
+\section*{Problem 4}
+
+Lets consider the sequence of random variables $ Y_t = X_t + t\delta $. We'll prove that it's a supermartingale with respect to $ X_i $:
+
+\begin{eqnarray*}
+\E(Y_t|X_0,\dots,X_{t-1})
+  &=& \E(X_t + t\delta|X_0, \dots, X_{t-1}) \\
+  &=& \E(X_t|X_0, \dots, X_{t-1}) + t\delta \\
+  &=& \E(X_t|X_{t-1}) + t\delta \\
+  &=& (\star) \\
+\end{eqnarray*}
+
+Lets assume $ Z_t = \E(X_t | X_{t-1}) $. From the definition of conditional expectation, for all $ \omega \in \Omega $ we have
+\begin{eqnarray*}
+Z_t(\omega) = \E(X_t | X_{t-1} = X_{t-1}(\omega)) \begin{cases}
+  \le X_{t-1}(\omega) - \delta & \text{if $ X_{t-1}(\omega) \ne 0 $} \\
+  = 0 & \text{if $ X_{t-1}(\omega) = 0 $} \\
+\end{cases}
+\end{eqnarray*}
+
+The second case is not given in the problem statement, but we can assume that
+if $ X_t(\omega) = 0 $ then the following variables in the sequence are also
+$ 0 $, because we don't care about them anyway (we stop on the first $ 0 $).
+
+From this its easy to see that $ Z_t \le \max(X_{t-1} - \delta, 0) $ (because
+$ \delta < 1 $, so $ X_{t-1} - \delta < 0 $ implies $ X_{t-1} = 0 $). Plugging this in $ \star $ gives
+\begin{eqnarray*}
+\E(Y_t | X_0, \dots, X_{t-1})
+  &\le& \max(X_{t-1} - \delta, 0) + t\delta \\
+  &=& \max(X_{t-1} + (t-1)\delta, t\delta) \\
+  &=& \max(Y_{t-1}, t\delta)
+\end{eqnarray*}
+
+Now the stopping time $ \tau = \min\{t : X_t = 0\} $ can be reinterpreted on
+$ \{Y_i\}_{i=0}^{\infty} $ like $ \tau = \min\{t : Y_t = t\delta\} $, because
+$ Y_t \ge t\delta $ for all $ t $. This means $ \{ Y_t \}_{t = 0}^{\infty} $ is
+a supermartingale with respect to $ \{ X_t \}_{t = 0}^{\infty} $ before the stopping
+time. Then $ \E(\tau) < \infty $ because from $ Y_t $ being a supermartingale before
+the stop time we conclude $ \E(Y_t) = \E(Y_0) = \E(X_0) $, and from the
+definition of $ Y_t = X_t + t\delta $ we get $ \E(Y_t) \ge t\delta $ so its
+clear than the stopping time cannot be infinitely large. So applying the O.S.T.
+we get $ \E(Y_\tau) \le \E(Y_0) = \E(X_0) $, and $ \E(Y_\tau) = \E(X_\tau)
++ \tau\delta = 0 + \tau\delta $. So $ \tau \le \E(X_0) / \delta $.
+
+\end{document}

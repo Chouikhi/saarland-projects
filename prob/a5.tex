@@ -1,0 +1,270 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+\def\rbc{foo bar}
+\def\dc{bar baz}
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+\title{The probabilistic method and randomized algorithms - Exercise 5}
+\author{Iskren Ivov Chernev}
+\maketitle
+
+\def\sm{\mathrm{sm}}
+\def\P{\mathbb{P}}
+\def\E{\mathbb{E}}
+\def\irv{i.r.v.\;}
+\def\rv{r.v.\;}
+\def\as{a.s.\;}
+\def\aas{a.a.s.\;}
+\def\FMM{F.M.M.\;}
+\def\endproof{$\square$}
+\def\Var{\mathrm{Var}}
+\def\Cov{\mathrm{Cov}}
+\def\CS{\mathrm{CS}}
+\def\CCS{\mathrm{CCS}}
+\def\Dom{\mathrm{Dom}}
+\def\Im{\mathrm{Im}}
+\newcommand{\IF}[1] {\mathrm{I}_{#1}}
+% \newcommand{\irv}{i.r.v\;}
+\newcommand{\bfrac}[2] {\left(\frac{#1}{#2}\right)}
+\newcommand{\B}[1] {\left(#1\right)}
+% \newcommand{\Binom}[2] {\B{
+
+\section*{Problem 1}
+
+\begin{eqnarray*}
+\E(X_{t \wedge \tau} | X_0, \dots, X_{t-1})
+  &=& \E(\IF{\tau < t - 1}X_\tau + \IF{\tau = t - 1}X_{t-1} + \IF{\tau \ge t}X_t|X_0, \dots, X_{t-1})  \\
+  &=& \E(\IF{\tau < t - 1}X_\tau + \IF{\tau \ge t - 1}X_{t-1} \\
+  && + \IF{\tau \ge t}(X_t - X_{t-1})|X_0, \dots, X_{t-1}) \\
+  &=& \E(X_{t-1 \wedge \tau}|X_0, \dots, X_{t-1})
+  +   \E(\IF{\tau \ge t}(X_t - X_{t-1}) | X_0, \dots, X_{t-1}) \\
+  &=& X_{t-1 \wedge \tau}
+  +   \E(\IF{\tau \ge t}(X_t - X_{t-1}) | X_0, \dots, X_{t-1}) \\
+\end{eqnarray*}
+%   + \P(\tau \ge t | X_0, \dots, X_{t-1})
+%     \E(X_t - X_{t-1}|X_0, \dots, X_{t-1}, \tau \ge t) \\
+%   &=& X_{t-1 \wedge \tau}
+%   + \P(\tau \ge t | X_0, \dots, X_{t-1})
+%     \E(X_t - X_{t-1}|X_{0}, \dots, X_{t-1}, \tau \ge t) \\
+%   &=& X_{t-1 \wedge \tau}
+%   + \P(\tau \ge t | X_0, \dots, X_{t-1})
+%     (\E(X_t|X_{0}, \dots, X_{t-1}, \tau \ge t) - X_{t-1}) \\
+%   &=& X_{t-1 \wedge \tau}
+%   + \P(\tau \ge t | X_0, \dots, X_{t-1})
+%     (X_{t-1} - X_{t-1}) \\
+%   &=& X_{t-1 \wedge \tau}
+%   + \P(\tau \ge t | X_0, \dots, X_{t-1})
+%     (0) \\
+%   &=& X_{t-1 \wedge \tau}
+% \end{eqnarray*}
+But $ \E(X_t - X_{t-1} | X_0, \dots, X_{t-1}) = \E(X_t | X_0, \dots, X_{t-1})
+- X_{t-1} = X_{t-1} - X_{t-1} = 0 $, and $ 0 \le \IF{\tau \ge t}(X_t - X_{t-1})
+\le (X_t - X_{t-1}) $, so $ \E(\IF{\tau \ge t}(X_t - X_{t-1}) | X_0, \dots,
+X_{t-1}) = 0 $, which means $ \E(X_{t \wedge \tau} | X_0, \dots, X_{t-1})
+= X_{t-1 \wedge \tau} $. So $ \{ X_{t \wedge \tau} \}_{t = 0}^{\infty} $ is
+a martingale w.r.t. $ \{X_t\}_{t=0}^{\infty} $
+
+\section*{Problem 2}
+
+$ X_4(g) $ means that all vertices have already been exposed, so $ X_4(g)
+= 2 $, because the chromatic number of a cycle is 2.
+
+$ X_3(g) = \E(f(g) | v_1, v_2, v_3)$ which means that we know, the edges $ E_1
+= \{ (v_1, v_2), (v_2, v_3) \} $, and we are unsure about $ E_2 = \{ (v_1,
+v_4), (v_2, v_4), (v_3, v_4) \} $. The chromatic number can be either 2 or 3.
+It is two when the following edge sets are selected \[ Z_2 = \{ \{ (v_1, v_4)
+\}, \{ (v_2, v_4) \}, \{ (v_3, v_4) \}, \{ \}, \{ (v_1, v_4), (v_2, v_4) \} \}
+\] It is three, when the following edge sets are selected \[ Z_3 = \{ \{ (v_1,
+v_4), (v_2, v_4) \}, \{ (v_2, v_4), (v_3, v_4) \}, \{ (v_1, v_4), (v_2, v_4),
+(v_3, v_4) \} \} \] So this means
+\begin{eqnarray*}
+X_3(g)
+  &=& 2\P(Z_2) + 3 \P(Z_3) \\
+  &=& 2 \frac{57}{64} + 3\frac{7}{64} \\
+  &=& \frac{114 + 21}{64} \\
+  &=& \frac{135}{64} \\
+  &=& 2 \frac{7}{64} \\
+\end{eqnarray*}
+
+\section*{Problem 3}
+
+Lets consider Doob's martingale for function \[ f(\omega) = \sum_{i=1}^{n}
+X_i(\omega) \] Let $ Y_k = \E(f | X_1, \dots, X_k) $. $ \{ Y_i
+\}_{i=1}^{\infty} $ is a martingale. Now lets show that it is $ \vec
+c $-Lipschitz, where $ \vec c = (b_1 - a_1, b_2 - a_2, \dots, b_n - a_n) $.
+Lets examine $ |Y_{k} - Y_{k-1}| $ for $ k \in [1, n-1] $:
+
+\begin{eqnarray*}
+\left|Y_{k} - Y_{k-1}\right|
+  &=& \left|\E(f | X_1, \dots, X_{k})
+    - \E(f | X_1, \dots, X_{k-1}) \right| \\
+  &=& \left|\sum_{i=1}^{k} X_i + \E\sum_{i=k+1}^{n} X_i
+    - \B{\sum_{i=1}^{k-1} X_i + \E\sum_{i=k}^{n} X_i} \right| \\
+  &=& |X_{k} - \E X_{k}| \\
+\end{eqnarray*}
+
+It is clear, that $ X_{k} \in [a_k, b_k] $ and so $ \E X_k \in [a_k, b_k] $.
+Then $ |X_k - \E X_k| \le b_k - a_k $.
+
+Now all we have to do is use Azuma's inequality for the martingale $ \{ Y_i
+\}_{i=1}^n $ and $ \vec c = (b_1 - a_1, \dots, b_n - a_n) $, to get:
+
+\[
+  \E(|Y_n - \E Y_n| \ge \lambda) \le 2 \exp\B{ - \frac{\lambda^2}{2\sum_{i=1}^n (b_i - a_i)^2}} 
+\]
+
+But $ Y_n = \E(\sum_{k=1}^n X_k | X_1, \dots, X_n) = \sum_{k=1}^n X_k = X $,
+which proofs the Hoeffding's inequality.
+
+\section*{Problem 4}
+
+Lets consider the vertex exposure martingale $ \{ Y_i \}_{i=0}^n $ for the
+graph function $ X_k $. This martingale is 1-Lipschitz, because $ X_k $ is
+1-Lipschitz. That is because revealing the edges of a vertex may require the
+removal of the independent set the vertex was part of. So the maximal number of
+disjoint independent k-sets may decrease by at most 1. Now we use Azuma's
+inequality for $ Y_n $:
+
+\[
+  \P(|Y_n - \E Y_n| \ge \lambda) \le 2\exp\B{-\frac{\lambda^2}{2\sum_{i=1}^n 1}}
+                      = 2\exp\B{-\frac{\lambda^2}{2n}}
+\]
+
+And apply the fact, that $ Y_n $ is actually $ X_k $, because all vertexes have
+been exposed, so we know the exact number of maximally disjoin independent
+k-sets.
+
+\section*{Problem 5}
+
+Let $ X_k $ denote the number of subsequences of $ x $ of length exactly $ k $,
+which are monotone increasing. $ X_k = \sum_{i} X_k^i $, where $ i $ stands for
+a subsequence of $ x $ and $ X_k^i $ is \irv denoting whether the subsequence
+$ i $ is monotone increasing. The number of subsequences is $ \binom{n}{k} $,
+and $ \P(X_k^i = 1) = 1 / k! $. This gives
+
+\[ \E(X_k) = \binom{n}{k}\frac{1}{k!} = \frac{[n]_k}{k!^2} \]
+
+Let $ k_1 = e\sqrt{n} $.
+
+\begin{eqnarray*}
+\E(X_{k_1})
+  &=& \frac{[n]_{k_1}}{k_1!^2} \\
+  &\le& \frac{n^{k_1}}{2\pi k_1\bfrac{k_1}{e}^{2k_1}} \\
+  &=& \frac{n^{k_1}}{2\pi k_1\bfrac{e\sqrt{n}}{e}^{2k_1}} \\
+  &=& \frac{1}{2\pi k_1} \\
+  &\overset{n \to \infty}\to& 0 \\
+\end{eqnarray*}
+
+Now it is sufficient to use Markov's corollary $ \P(X_{k_1} > 0) = \E(X_{k_1})
+\to 0 $, so $ \P(X_{k_1} = 0) \to 1 $ $ (\star) $.
+
+Lets calculate $ \Var(X_k) $.
+
+\begin{eqnarray*}
+\Var(X_k)
+  &=& \underbrace{\sum_{i} \Var(X_k^i)}_{A} + \underbrace{\sum_{i\neq j} \Cov(X_k^i, X_k^j)}_B \\
+A
+  &=& \sum_{i} \P(X_k^i = 1)(1 - \P(X_k^i = 1)) \\
+  &=& \frac{[n]_k}{k!^2}\B{1 - \frac{1}{k!}} \\
+  &\sim& \frac{[n]_k}{k!^2} \\
+\end{eqnarray*}
+
+We can reorder the covariance sum, by considering the pairs of subsequences
+based on the number of common elements $ c $. Given two sequences that have
+exactly $ c $ common elements the probability that both of them are monotone
+increasing is $ \frac{c!^2}{c!k!^2} $, because the probability for the common
+elements to be increasing is $ \frac{1}{c!} $ and then for both sequences the
+probability is $ \frac{1}{[k]_{k-c}} = \frac{c!}{k!} $.
+
+\begin{eqnarray*}
+B
+  &=& \sum_{c = 2}^{k-1} \binom{n}{c\ (k-c)\ (k-c)}
+                         \B{\frac{c!^2}{c!k!^2}
+                            - \frac{1}{k!^2}} \\
+  &\le& \sum_{c = 2}^{k-1} \frac{[n]_{2k-c}}{c!(k-c)!^2}
+                           \frac{c!}{k!^2} \\
+  &=& \sum_{c = 2}^{k-1} \frac{[n]_{2k-c}}{(k-c)!^2k!^2} \\
+  &=& \Theta \frac{[n]_{2k-2}}{(k-2)!^2k!^2}
+\end{eqnarray*}
+
+Lets plug this into Chebyshev's inequality:
+
+\begin{eqnarray*}
+\P(X_k = 0)
+  &\le& \P(|X_k - \E(X_k)| \ge \E(X_k)) \\ 
+  &\le& \frac{\Var(X_k)}{\E(X_k)^2} \\
+  &\le& \frac{
+                \frac{[n]_{2k-2}}
+                     {(k-2)!^2k!^2}
+             }{
+                \frac{{([n]_k)^2}}
+                     {k!^4}
+             } \\
+  &\le& \frac{(k(k-1))^2}{n(n-1)} \\
+\end{eqnarray*}
+
+I can't make this go to $ 0 $ for any $ k = \Theta(\sqrt{n}) $ :(
+
+\subsection*{(b)}
+
+The function $ h(x) $ is $ \varphi(s) = s $ certifyable, because it is needed
+to fix the elements of the maximal monotone sequence in place to have the same
+(or higher) maximum.
+
+$ h(x) $ is $ 1 $-Lipschitz, because changing one element in the sequence may
+reduce or increase the maximal monotone sequence by at most 1.
+
+I'll show, that $ \P(|h(x) - m| \ge n^{3/8}) \to 0 $ for $ n \to \infty $.
+
+So we can apply Talagrand's corollary
+\begin{eqnarray*}
+\P(|h(x) - m| \ge n^{3/8})
+  &\le& 4\exp\B{\frac{-n^{6/8}}{4.1^2\varphi(m+n^{3/8})}} \\
+  &=& 4\exp\B{\frac{-n^{6/8}}{4(m+n^{3/8})}} \\
+  &=& Z \\
+\end{eqnarray*}
+
+Because $ m = \Theta(\sqrt{n}) $ (from (a)), then it is easy to see that
+$ Z = 4\exp(-\Theta(n^{1/4})) $ and, for $ n \to \infty $ we get $ Z \to 0 $.
+
+We chose $ n^{3/8} $ because it is $ o(m) = o(\sqrt{n}) $, and so
+$ \frac{h(x)}{m} = \frac{m + o(m)}{m} \to 1 $ \as. This means that $ h(x)
+\sim m $ \aas. Now we use $ \E h(x) = m = \Theta(\sqrt{n}) $ and the statement
+is proven.
+
+We cannot use Azuma's inequality, because the variable $ t $ should be
+$ o(\sqrt{n}) $ and $ t^2 / n $ in  the exponent will go to $ 0 $, not $ \infty
+$.
+
+\end{document}
