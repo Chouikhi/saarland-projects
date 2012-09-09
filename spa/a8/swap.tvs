@@ -1,0 +1,45 @@
+// Singly linked list pointed by x; first points to the begining and second to
+// the second element (if any).
+
+// An acyclic singly-linked list with two or more elements pointed by variable x.
+%n = {head, sec, tail}
+%p = {
+       sm = {tail:1/2}
+       n = {head->sec, sec->tail:1/2, tail->tail:1/2}
+       x = {head}
+       first = {head}
+       second = {sec}
+       t[n] = { head->head, head->sec, head->tail
+              , sec->sec, sec->tail, tail->tail:1/2 }
+       r[n,x] = {head, sec, tail}
+       r[n,first] = {head, sec, tail}
+       r[n,second] = {sec, tail}
+}
+
+// An acyclic singly-linked list with two elements pointed by variable x.
+%n = {head, tail}
+%p = {
+  n = {head->tail}
+  x = {head}
+  first = {head}
+  second = {tail}
+  t[n] = {head->head, head->tail, tail->tail}
+  r[n,x] = {head, tail}
+  r[n,first] = {head, tail}
+  r[n,second] = {tail}
+}
+
+// An acyclic singly-linked list with a single element pointed by x.
+%n = {head}
+%p = {
+  x = {head}
+  first = {head}
+  t[n] = {head->head}
+  r[n,x] = {head}
+  r[n,first] = {head}
+}
+
+// An empty list (x points to NULL).
+%n = {}
+%p = {
+}

@@ -1,0 +1,106 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{slashbox}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{amsfonts}
+\usepackage{amsmath, amsthm, amssymb}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+\def\definition{Definition:\ }
+\def\la{\leftarrow}
+\def\vars{\mathrm{Vars}}
+\def\occ{\mathrm{Occ}}
+\def\lub{\sqcup}
+\def\xlub{\underline\lub}
+\def\glb{\sqcap}
+% \def\dc{bar baz}
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+\newcommand{\aee}[1] {[[#1]]^\sharp}
+\newcommand{\cc}[1] {\texttt{#1}}
+\newcommand{\s}[1] {\{#1\}}
+\newcommand{\e}[1] {[#1]}
+% \def\e {[]}
+\def\A {\mathcal{A}}
+\def\N {\mathcal{N}}
+\def\Neg {\mathrm{Neg}}
+\def\Pos {\mathrm{Pos}}
+\def\Vars {\mathrm{Vars}}
+\def\Occ {\mathrm{Occ}}
+\def\PP {\mathrm{ProgramPoints}}
+
+\title{Static Program Analysis - Exercise 9}
+\author{Iskren Ivov Chernev \\ tutorial group B}
+
+\maketitle
+
+\section{Solution}
+
+\subsection{Must analysis}
+
+\begin{itemize}
+  \item Initial state: $ \s{ \e{}, \e{}, \e{}, \e{} } $.
+  \item Entry to 1: $ \s{ \e{a}, \e{}, \e{}, \e{} } $ (this gets combined with
+        $ \bot $, I won't state this again).
+  \item 1 to 2: $ \s{ \e{b}, \e{a}, \e{}, \e{} } $.
+  \item 2 to 3: $ \s{ \e{a}, \e{b}, \e{}, \e{} } $.
+  \item 3 to 4: $ \s{ \e{c}, \e{a}, \e{b}, \e{} } $.
+  \item 4 to 1: We combine in a conservative way: $ \s{ \e{}, \e{a}, \e{}, \e{}
+        } $.
+  \item 1 to 2: $ \s{ \e{b}, \e{}, \e{a}, \e{} } $, combining with previous
+        gives $ \s{ \e{b}, \e{}, \e{a}, \e{} } $.
+  \item 2 to 3: $ \s{ \e{a}, \e{b}, \e{}, \e{} } $, this is no different than
+        previous one, so continue with 4 to 5.
+  \item 4 to 5: $ \s{ \e{d}, \e{c}, \e{a}, \e{b} } $.
+  \item 5 to 6: $ \s{ \e{e}, \e{d}, \e{c}, \e{a} } $.
+  \item 6 to Exit: $ \s{ \e{b}, \e{e}, \e{d}, \e{c} } $.
+
+\end{itemize}
+
+\subsection{May analysis}
+
+\begin{itemize}
+  \item Initial state: $ \s{ \e{}, \e{}, \e{}, \e{} } $.
+  \item Entry to 1: $ \s{ \e{a}, \e{}, \e{}, \e{} } $.
+  \item 1 to 2: $ \s{ \e{b}, \e{a}, \e{}, \e{} } $.
+  \item 2 to 3: $ \s{ \e{a}, \e{b}, \e{}, \e{} } $.
+  \item 3 to 4: $ \s{ \e{c}, \e{a}, \e{b}, \e{} } $ (up to now no difference than must analysis).
+  \item 4 to 1: Combine: $ \s{ \e{c, a}, \e{}, \e{b}, \e{} } $.
+  \item 1 to 2: $ \s{ \e{b}, \e{c, a}, \e{}, \e{} } $, combining with previous gives same (new) result.
+  \item 2 to 3: $ \s{ \e{a}, \e{b}, \e{c}, \e{} } $, combining with previos gives same (new) result.
+  \item 3 to 4: $ \s{ \e{c}, \e{a}, \e{b}, \e{} } $, this is the same as previous value.
+  \item from now on the analysis is the same as the may analysis
+  \item 4 to 5: $ \s{ \e{d}, \e{c}, \e{a}, \e{b} } $.
+  \item 5 to 6: $ \s{ \e{e}, \e{d}, \e{c}, \e{a} } $.
+  \item 6 to Exit: $ \s{ \e{b}, \e{e}, \e{d}, \e{c} } $.
+\end{itemize}
+
+\end{document}

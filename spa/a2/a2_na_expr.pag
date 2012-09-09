@@ -1,0 +1,107 @@
+PROBLEM Unvailable_Expressions
+
+  direction  : forward
+  carrier    : ExpressionSet
+  init       : {}   /* the bottom element of the lattice */
+  init_start : nonTrivialExpressions()  /* the value with which the program starts */
+  combine    : union
+
+
+TRANSFER
+
+  ASSIGN(variable, exp) =
+    @
+       - nonTrivialSubExpressions(exp)
+       + occ(variable)
+
+  IF(exp) = 
+    @
+       - nonTrivialSubExpressions(exp)
+       + {}
+
+
+  WHILE(exp) = 
+    @  
+       - nonTrivialSubExpressions(exp)
+       + {}
+
+
+  CALL(_, _, exp), call_edge = 
+    @ 
+       - nonTrivialSubExpressions(exp)
+       + {}
+
+
+  CALL(_, _, _), local_edge = nonTrivialExpressions()
+
+
+  END(_, param), return_edge =
+    @
+      + occ(param)
+      - {}
+
+
+SUPPORT
+
+  nonTrivialExpressions :: -> ExpressionSet
+  nonTrivialExpressions() =
+    { exp | exp in expressions;
+            case expType(exp) of
+              "VAR" => false;
+              "CONST" => false;
+              "TRUE" => false;
+              "FALSE" => false;
+              _       => true;
+            endcase }
+
+  occ :: Var -> ExpressionSet
+  occ(var) =
+    { exp | exp in nonTrivialExpressions();
+            var ? variables(exp) }
+ 
+  nonTrivialSubExpressions :: Expression -> ExpressionSet
+  nonTrivialSubExpressions(expression) =
+    { exp | exp in nonConstSubExpressions(expression);
+            expType(exp) != "VAR" }
+
+  nonConstSubExpressions :: Expression ->ExpressionSet
+  nonConstSubExpressions(expression) =
+    case expType(expression) of
+      "ARITH_BINARY" => 
+        let expSet = nonConstSubExpressions(expSubLeft(expression)) +
+                     nonConstSubExpressions(expSubRight(expression)) in
+          if expSet != {} then expSet + expression else {} endif;
+      "BOOL_BINARY"  => 
+        let expSet = nonConstSubExpressions(expSubLeft(expression)) +
+                     nonConstSubExpressions(expSubRight(expression)) in
+            if expSet != {} then expSet + expression else {} endif;
+      "ARITH_UNARY"  => 
+        let expSet = nonConstSubExpressions(expSub(expression)) in
+          if expSet != {} then expSet + expression else {} endif;
+      "BOOL_UNARY"   =>
+        let expSet = nonConstSubExpressions(expSub(expression)) in
+          if expSet != {} then expSet + expression else {} endif;
+      "VAR"          => { expression };
+      _              => {};
+    endcase
+  
+
+
+  subExpressions :: Expression -> ExpressionSet
+  subExpressions(expression) =
+    case expType(expression) of
+      "ARITH_BINARY" => subExpressions(expSubLeft(expression)) lub 
+                        subExpressions(expSubRight(expression));
+      "ARITH_UNARY"  => subExpressions(expSub(expression));
+      "BOOL_BINARY"  => subExpressions(expSubLeft(expression)) lub 
+                        subExpressions(expSubRight(expression));
+      "BOOL_UNARY"   => subExpressions(expSub(expression));
+      _              => {};
+    endcase
+    + expression
+     
+  variables :: Expression -> VarSet
+  variables(expression) = 
+    { expVar(exp) | exp in subExpressions(expression);
+                    expType(exp) = "VAR" }
+

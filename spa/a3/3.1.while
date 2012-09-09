@@ -1,0 +1,19 @@
+program Life Var example
+
+begin
+  x := 4
+  y := 5
+  while y > 0 do (
+    x := x * x
+    x := x - 1
+    y := y - 1
+  )
+
+  y := y * 1
+  stopAt := y
+  /* make sure x and RESULT are used */
+  if x > RESULT then (
+    skip
+  )
+end
+

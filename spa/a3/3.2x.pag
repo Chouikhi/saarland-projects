@@ -1,0 +1,61 @@
+// TYPE
+// 
+//   VarSetLifted = VarSet
+
+
+PROBLEM Live_Variables_2
+
+  direction  : backward
+  carrier    : VarSet // VarSetLifted
+  init       : {}
+  init_start : {}
+  combine    : union
+
+
+TRANSFER
+
+  ASSIGN(variable, expression) =
+      let lifeVars = @ in
+        ((lifeVars - variable) + variables(expression))
+
+  IF(expression) =
+      let lifeVars = @ in
+        (lifeVars + variables(expression))
+  
+  WHILE(expression) =
+      let lifeVars = @ in
+        (lifeVars + variables(expression))
+
+  CALL(_, _, expression) =
+      let lifeVars = @ in
+        (lifeVars + variables(expression))
+
+  RET(_, param, _), local_edge =
+      let lifeVars = @ in
+        ({x | x in lifeVars; x = param })
+
+  BEGIN(_, param), call_edge =
+      let lifeVars = @ in
+        ({x | x in lifeVars; x != param })
+
+
+SUPPORT
+
+  subExpressions :: Expression -> ExpressionSet
+  subExpressions(expression) =
+    case expType(expression) of
+      "ARITH_BINARY" => subExpressions(expSubLeft(expression)) lub
+                        subExpressions(expSubRight(expression));
+      "ARITH_UNARY"  => subExpressions(expSub(expression));
+      "BOOL_BINARY"  => subExpressions(expSubLeft(expression)) lub
+                        subExpressions(expSubRight(expression));
+      "BOOL_UNARY"   => subExpressions(expSub(expression));
+      _              => {}; 
+    endcase
+    + expression
+
+  variables :: Expression -> VarSet
+  variables(expression) =
+    { expVar(exp) | exp in subExpressions(expression);
+                    expType(exp) = "VAR" }
+

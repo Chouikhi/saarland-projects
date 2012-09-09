@@ -1,0 +1,64 @@
+TYPE
+
+  VarSetLifted = lift(VarSet)
+
+
+PROBLEM Truly_Live_Variables
+
+  direction  : backward
+  carrier    : VarSetLifted
+  init       : bot
+  init_start : lift({})
+  combine    : lub
+
+
+TRANSFER
+
+  ASSIGN(variable, expression) =
+      let lifeVars <= @ in
+        lift((lifeVars - variable) lub if     variable ? lifeVars
+                                       then   variables(expression)
+                                       else   {}
+                                       endif)
+
+  IF(expression) =
+      let lifeVars <= @ in
+        lift(lifeVars lub variables(expression))
+  
+  WHILE(expression) =
+      let lifeVars <= @ in
+        lift(lifeVars lub variables(expression))
+
+  CALL(_, _, expression) =
+      let lifeVars <= @ in
+        lift(lifeVars lub variables(expression))
+
+  RET(_, param, _), local_edge =
+      let lifeVars <= @ in
+        lift({x | x in lifeVars; x = param })
+
+  BEGIN(_, param), call_edge =
+      let lifeVars <= @ in
+        lift({x | x in lifeVars; x != param })
+
+
+SUPPORT
+
+  subExpressions :: Expression -> ExpressionSet
+  subExpressions(expression) =
+    case expType(expression) of
+      "ARITH_BINARY" => subExpressions(expSubLeft(expression)) lub
+                        subExpressions(expSubRight(expression));
+      "ARITH_UNARY"  => subExpressions(expSub(expression));
+      "BOOL_BINARY"  => subExpressions(expSubLeft(expression)) lub
+                        subExpressions(expSubRight(expression));
+      "BOOL_UNARY"   => subExpressions(expSub(expression));
+      _              => {}; 
+    endcase
+    + expression
+
+  variables :: Expression -> VarSet
+  variables(expression) =
+    { expVar(exp) | exp in subExpressions(expression);
+                    expType(exp) = "VAR" }
+

@@ -1,0 +1,82 @@
+Static Program Analysis
+Exercise 2
+Tutorial group B (Friday)
+Iskren Ivov Chernev
+
+1. To eliminate tail recursion in f1 we just need to add a jump from the call
+site to the begining of the function. There are no local variables, so that
+would be enough
+
+// Tail recursion eliminated
+
+main() {
+  n = M[17];
+  f();
+  M[42] = z;
+}
+
+f() {
+  x = 1;
+  y = 1;
+  f1();
+}
+
+f1() {
+f1_:
+  if(n <= 1)
+    z = y;
+  else {
+    n = n - 1;
+    z = x + y;
+    x = y;
+    y = z;
+    goto f1_;
+  }
+}
+
+2. To inline both functions we just need to move the code of f1 inside f and
+then the new code of f inside main. Since there are no local variables no
+additional steps shall be taken.
+
+
+// 2.1 Inline f1 into f
+
+main() {
+  n = M[17];
+  f();
+  M[42] = z;
+}
+
+f() {
+  x = 1;
+  y = 1;
+f1_:
+  if(n <= 1)
+    z = y;
+  else {
+    n = n - 1;
+    z = x + y;
+    x = y;
+    y = z;
+    goto f1_;
+  }
+}
+
+// 2.2 Inline f into main
+
+main() {
+  n = M[17];
+  x = 1;
+  y = 1;
+f1_:
+  if(n <= 1)
+    z = y;
+  else {
+    n = n - 1;
+    z = x + y;
+    x = y;
+    y = z;
+    goto f1_;
+  }
+  M[42] = z;
+}

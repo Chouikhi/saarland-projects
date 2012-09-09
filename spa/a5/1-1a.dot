@@ -1,0 +1,17 @@
+digraph SWH_flow {
+  splines = true ;
+  // splines = ortho ;
+  // ortho = true ;
+  // labelfloat = true ;
+  // overlap = scale ;
+  node [ shape = oval, label = "start = 0"] ; 0 ;
+  node [ shape = oval, label = "finish = 4"] ; 4 ;
+  node [ shape = circle, height = .3, width = .3, label = "\N" ] ;
+  edge [ fontname = "Monospace" ] ;
+  0 -> 1 [ label = "x = 0" ] ;
+  1 -> 2 [ label = "NonZero(x < 10)" ] ;
+  1 -> 4 [ label = "Zero(x < 10)" ]
+  2 -> 3 [ label = "x = x + 1" ] ;
+  3 -> 4 [ label = "Zero(x < 5)" ] ;
+  3 -> 1 [ label = "NonZero(x < 5)" ] ;
+}

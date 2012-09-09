@@ -1,0 +1,8 @@
+%action Assert_Proper_Delete() {
+  %t "assertProperDelete()"
+  %p !(A(v) freed(v) <-> delval(v))
+  %message !(A(v) freed(v) <-> delval(v)) -> 
+           "node containing delval was not deleted or \n" +
+           "deleted node did not contain delval"
+}
+

@@ -1,0 +1,326 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{slashbox}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{amsfonts}
+\usepackage{amsmath, amsthm, amssymb}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+\def\definition{Definition:\ }
+\def\la{\leftarrow}
+\def\vars{\mathrm{Vars}}
+\def\occ{\mathrm{Occ}}
+% \def\dc{bar baz}
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+\newcommand{\aee}[1] {[[#1]]^\sharp}
+\newcommand{\cc}[1] {\texttt{#1}}
+\def\A {\mathcal{A}}
+\def\N {\mathcal{N}}
+\def\NonZero {\mathrm{NonZero}}
+\def\Zero {\mathrm{Zero}}
+\def\Vars {\mathrm{Vars}}
+\def\Occ {\mathrm{Occ}}
+
+\title{Static Program Analysis - Exercise 4}
+\author{Iskren Ivov Chernev \\ tutorial group B}
+
+\maketitle
+
+\section{Not yet}
+\section{Solution}
+
+The basis of the carrier will be the flat lattice $ \mathbb{S} = \{ +, -, 0,
+\top \} $, where $ \top $ is the top, and the other elements are not
+comparable. Then defining the carrier is trivial $$ \mathbb{D} = (\Vars \to
+\mathbb{S})_{\bot} $$
+
+It is a complete lattice with $ \sqcup $ and $ \sqcap $ defined accordingly.
+
+The description relation $ \Delta $ is defined by $$ x \Delta z \quad \iff
+\quad (0 < x \land z = +) \lor (0 = x \land z = +) \lor (x < 0 \land z = -)
+\lor z = \top $$
+
+The concretization $ \gamma $ follows easily
+$$
+\gamma a = \begin{cases}
+  [1, +\infty)        & a = + \\
+  0                   & a = 0 \\
+  (-\infty, -1]       & a = - \\
+  (-\infty, +\infty)  & a = \top
+\end{cases}
+$$
+
+Now we should define the abstract operator effects
+
+$$
+  x +^\sharp y = \begin{cases}
+    \top      & \text{if $ x = \top $ or $ y = \top $}\\
+    x         & \text{if $ y = 0 $} \\
+    y         & \text{if $ x = 0 $} \\
+    x         & \text{if $ x = y $} \\
+    \top      & \text{otherwise}
+  \end{cases}
+$$
+
+$$
+  -^\sharp x = \begin{cases}
+    \top    & \text{if $ x = \top $} \\
+    -       & \text{if $ x = + $} \\
+    +       & \text{if $ x = - $} \\
+    0       & \text{if $ x = 0 $} \\
+  \end{cases}
+$$
+
+$$
+  x \cdot^\sharp y = \begin{cases}
+    \top      & \text{if $ x = \top \land y \ne 0 $ or $ x \ne 0 \land y = \top $} \\
+    +         & \text{if $ (x, y) \in \{ (+, +), (-, -) \} $} \\
+    -         & \text{if $ (x, y) \in \{ (+, -), (-, +) \} $} \\
+    0         & \text{if $ x = 0 $ or $ y = 0 $ } \\
+  \end{cases}
+$$
+
+$$
+  x /^\sharp y = \begin{cases}
+    +         & \text{if $ (x, y) \in \{ (+, +), (-, -) \} $} \\
+    -         & \text{if $ (x, y) \in \{ (+, -), (-, +) \} $} \\
+    0         & \text{if $ x = 0 $ and $ \lnot(y \sqsupseteq 0) $ } \\
+    \top      & \text{otherwise} \\
+  \end{cases}
+$$
+
+We shall define the boolean operators abstract effects. Here we are using the
+flat lattice $ \{ false, true, \top \} $.
+
+$$
+  x <^\sharp y = \begin{cases}
+    true    & \text{if $ (x, y) \in \{ (-, 0), (0, +), (-, +) \} $} \\
+    false   & \text{if $ (x, y) \in \{ (0, -), (+, 0), (+, -), (0, 0) \} $} \\
+    \top    & \text{otherwise} \\
+  \end{cases}
+$$
+
+$$
+  x \le^\sharp y = \begin{cases}
+    true    & \text{if $ (x, y) \in \{ (-, 0), (0, +), (-, +), (0, 0) \} $} \\
+    false   & \text{if $ (x, y) \in \{ (0, -), (+, 0), (+, -) \} $} \\
+    \top    & \text{otherwise} \\
+  \end{cases}
+$$
+
+$$
+  x =^\sharp y = \begin{cases}
+    true    & \text{if $ x = 0 $ and $ y = 0 $} \\
+    false   & \text{if $ (x, y) \in \{ (a, b)\ \in \mathbb{S}^2 |\ a \ne \top \land b \ne \top \land a \ne b \} $} \\
+    \top    & \text{otherwise} \\
+  \end{cases}
+$$
+
+The other boolean operators are analogous.
+
+Now the definition of the abstract edge effects
+
+\begin{eqnarray*}
+  \aee{;} D &=& D \\
+  \aee{M[e_1] = e_2} D &=& D \\
+  \aee{\Zero(e)} D &=& \begin{cases}
+    D     & \text{if $ \aee{e} D \sqsupseteq false $} \\
+    \bot  & \text{otherwise} \\
+  \end{cases} \\
+  \aee{\NonZero(e)} D &=& \begin{cases}
+    \bot  & \text{if $ \aee{e} D = false $} \\
+    D     & \text{otherwise} \\
+  \end{cases} \\
+  \aee{x \leftarrow e} &=& D \oplus \{ x \leftarrow \aee{e} D \} \\
+  \aee{x \leftarrow M[e]\ } &=& D \oplus \{ x \leftarrow \top \} \\
+\end{eqnarray*}
+
+This is a forward analysis, so the abstract path effect $ \aee{\pi} $ for path $ \pi = k_1 k_2 \dots k_n $ is defined as $$ \aee{\pi} = \aee{k_n} \circ \aee{k_{n-1}} \circ \dots \circ \aee{k_1} $$
+
+The MOP solution is just the least upper bound over all paths, with initial value $ \top = \{ x \to \top\ |\ x \in \Vars \} $
+$$
+  \mathcal{A}^\star[v] = \bigsqcup \{ \aee{\pi} \top\ |\ \pi : start \to^\star v \}
+$$
+Where of course $ \sqcup $ is defined as usual for the complete lattice $ \mathbb{D} $.
+
+The system of inequalities is defined by $ A_{start} \sqsupseteq \top $ and for all edges $ k = (u, lab, v) $
+$$
+  A_v \sqsupseteq \aee{lab} A_u \quad \exists \text{edge } k = (u, lab, v)
+$$
+
+Source code:
+
+\begin{verbatim}
+TYPE
+
+  AbstractVal = flat(snum)           /* -1 0 1 and top */
+  AbstractBind = Var -> AbstractVal
+  AbstractBindL = lift(AbstractBind) /* use only (x -> {-1, 0, 1, top}) + bot */
+
+PROBLEM Sign_propagation
+
+  direction  : forward
+  carrier    : AbstractBindL
+  init       : bot
+  init_start : abTop()
+  combine    : lub
+
+
+TRANSFER
+
+  ASSIGN(variable, expression) =
+    let f <= @ in
+      lift(f \ [ variable -> evalAB(expression, f) ])
+
+  IF(expression),    true_edge  = let f <= @ in posEE(expression, f)
+  IF(expression),    false_edge = let f <= @ in negEE(expression, f)
+
+  WHILE(expression), true_edge  = let f <= @ in posEE(expression, f)
+  WHILE(expression), false_edge = let f <= @ in negEE(expression, f)
+
+  CALL(_, param, expression), call_edge = 
+    let f <= @ in
+      lift(f \ [ param -> evalAB(expression, f) ])
+
+  CALL(_, _, _), local_edge = bot
+
+  END(_, param) =
+    let f <= @ in
+      lift(f \ [ param -> top ])
+
+SUPPORT
+
+  abTop :: -> AbstractBindL
+  abTop() = lift([-> top])
+
+  posEE :: Expression * AbstractBind -> AbstractBindL
+  posEE(expression, bind) =
+    let val = bEvalAB(expression, bind) in
+    if  val = lift(0) then bot else lift(bind) endif
+
+  negEE :: Expression * AbstractBind -> AbstractBindL
+  negEE(expression, bind) =
+    let val = bEvalAB(expression, bind) in
+    if  val = lift(1) then bot else lift(bind) endif
+
+
+  evalAB :: Expression * AbstractBind -> AbstractVal
+  evalAB(expression, bind) =
+    case expType(expression) of
+      "ARITH_BINARY" =>
+        let x = evalAB(expSubLeft(expression), bind),
+            y = evalAB(expSubRight(expression), bind) in
+        case expOp(expression) of
+          "+" => if x = top || y = top    then top
+            else if y = lift(0)           then x
+            else if x = lift(0)           then y
+            else if x = y                 then x
+            else                               top
+            endif endif endif endif;
+          "-" => if x = top || y = top    then top
+            else if y = lift(0)           then x
+            else if x = lift(0)           then lift(-drop(y))
+            else if drop(x) = -drop(y)    then x
+            else                               top
+            endif endif endif endif;
+          "*" => if x = lift(0) || y = lift(0) then lift(0)
+            else if x = top     || y = top     then top
+            else                                    lift(drop(x) * drop(y))
+            endif endif;
+          "/" => if x = top || y = top || y = lift(0) then top
+            else if x = lift(0)                       then lift(0)
+            else                                      lift(drop(x) * drop(y))
+            endif endif;
+        endcase;
+      "ARITH_UNARY" => let x <= evalAB(expSub(expression), bind) in lift(-x);
+      "VAR" => bind(expVar(expression));
+      "CONST" => lift(sgn(expVal(expression)));
+      _ => error("incorrect expression type passed to evalAB");
+    endcase
+
+  bEvalAB :: Expression * AbstractBind -> AbstractVal
+  bEvalAB(expression, bind) =
+    case expType(expression) of
+      "BOOL_BINARY" =>
+        let x = evalAB(expSubLeft(expression), bind),
+            y = evalAB(expSubRight(expression), bind) in
+        case expOp(expression) of
+          "="  => bEvalEq(x, y);
+          "<>" => bNot(bEvalEq(x, y));
+          "<"  => bEvalLt(x, y);
+          ">"  => bEvalLt(y, x);
+          "<=" => bNot(bEvalLt(y, x));
+          ">=" => bNot(bEvalLt(x, y));
+        endcase;
+      "BOOL_UNARY" =>
+        let x = bEvalAB(expSub(expression), bind) in
+        bNot(x);
+      _ => error("incorrect expression type passed to bEvalAB");
+    endcase
+
+  bEvalEq :: AbstractVal * AbstractVal -> AbstractVal
+  bEvalEq(xl, yl) = let x <= xl, y <= yl in
+         if x = 0 && y = 0 then lift(1)
+    else if x != y         then lift(0)
+    else                        top
+    endif endif
+
+  bEvalLt :: AbstractVal * AbstractVal -> AbstractVal
+  bEvalLt(xl, yl) = let x <= xl, y <= yl in
+         if x < y          then lift(1)
+    else if x > y || x = 0 then lift(0)
+    else                        top
+    endif endif
+
+  bNot :: AbstractVal -> AbstractVal
+  bNot(xl) = let x <= xl in lift(1 - x)
+
+  subExpressions :: Expression -> ExpressionSet
+  subExpressions(expression) =
+    case expType(expression) of
+      "ARITH_BINARY" => subExpressions(expSubLeft(expression)) lub
+                        subExpressions(expSubRight(expression));
+      "ARITH_UNARY"  => subExpressions(expSub(expression));
+      "BOOL_BINARY"  => subExpressions(expSubLeft(expression)) lub
+                        subExpressions(expSubRight(expression));
+      "BOOL_UNARY"   => subExpressions(expSub(expression));
+      _              => {}; 
+    endcase
+    + expression
+
+  variables :: Expression -> VarSet
+  variables(expression) =
+    { expVar(exp) | exp in subExpressions(expression);
+                    expType(exp) = "VAR" }
+\end{verbatim}
+
+\end{document}

@@ -1,0 +1,15 @@
+program a2sampleProgram
+begin
+  x := 2
+  y := 36
+  t := x * 21
+
+  while y > 0 do (
+    y := y - 1
+    t := x * 21
+  )
+
+  x := 5
+  foo := 0
+  foo_ := x + t
+end

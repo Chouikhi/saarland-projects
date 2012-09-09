@@ -1,0 +1,34 @@
+///////
+// Sets
+
+%s PVar {x, p, temp, first, second}
+
+#include "predicates.tvp"
+
+%%
+
+#include "actions.tvp"
+#include "swap_assert.tvp"
+
+%%
+
+////////////////////////////////////////////////////////////////////////
+// Transition system for a function that swaps the first two elements in
+// a list.
+
+L1 Is_Null_Var(x)        exit   // if (x != NULL && x->n != NULL) {
+L1 Is_Not_Null_Var(x)    L2
+L2 Get_Next_L(temp, x)   L3
+L3 Is_Null_Var(temp)     exit
+L3 Is_Not_Null_Var(temp) L4
+L4 Copy_Var_L(p, x)      L6     //   p = x;
+L6 Get_Next_L(x, x)      L7     //   x = x->n;
+L7 Get_Next_L(temp, x)   L8     //   temp = x->n;
+L8 Set_Next_Null_L(p)    L9     //   p->n = NULL;
+L9 Set_Next_L(p, temp)   L10    //   p->n = temp;
+L10 Set_Next_Null_L(x)   L11    //   x->n = NULL;
+L11 Set_Next_L(x, p)     exit   //   x->n = p;
+                                // }
+exit Assert_ListInvariants(x)     error
+exit Assert_No_Leak(x)            error
+exit Assert_First_Two_Swapped(x)  error

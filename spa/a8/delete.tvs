@@ -1,0 +1,24 @@
+// An acyclic singly-linked list with two or more elements pointed by x.
+%n = {head, tail}
+%p = {
+  sm = {tail:1/2}
+  delval = {head:1/2, tail:1/2}
+  n = {head->tail:1/2, tail->tail:1/2}
+  x = {head}
+  t[n] = {head->head, head->tail, tail->tail:1/2}
+  r[n,x] = {head, tail}
+}
+
+// An acyclic singly-linked list with a single element pointed by x.
+%n = {head}
+%p = {
+  x = {head}
+  delval = {head:1/2}
+  t[n] = {head->head}
+  r[n,x] = {head}
+}
+
+// An empty list (x points to NULL).
+%n = {}
+%p = {
+}

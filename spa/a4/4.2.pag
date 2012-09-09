@@ -1,0 +1,120 @@
+TYPE
+
+  AbstractVal = flat(snum)           /* -1 0 1 and top */
+  AbstractBind = Var -> AbstractVal
+  AbstractBindL = lift(AbstractBind) /* use only (x -> {-1, 0, 1, top}) + bot */
+
+PROBLEM Sign_propagation
+
+  direction  : forward
+  carrier    : AbstractBindL
+  init       : bot
+  init_start : lift([-> top])
+  combine    : lub
+
+
+TRANSFER
+
+  ASSIGN(variable, expression) =
+    let f <= @ in
+      lift(f \ [ variable -> evalAB(expression, f) ])
+
+  IF(expression),    true_edge  = let f <= @ in posEE(expression, f)
+  IF(expression),    false_edge = let f <= @ in negEE(expression, f)
+
+  WHILE(expression), true_edge  = let f <= @ in posEE(expression, f)
+  WHILE(expression), false_edge = let f <= @ in negEE(expression, f)
+
+  CALL(_, param, expression), call_edge = 
+    let f <= @ in
+      lift(f \ [ param -> evalAB(expression, f) ])
+
+  CALL(_, _, _), local_edge = bot
+
+  END(_, param) =
+    let f <= @ in
+      lift(f \ [ param -> top ])
+
+SUPPORT
+
+  posEE :: Expression * AbstractBind -> AbstractBindL
+  posEE(expression, bind) =
+    let val = bEvalAB(expression, bind) in
+    if  val = lift(0) then bot else lift(bind) endif
+
+  negEE :: Expression * AbstractBind -> AbstractBindL
+  negEE(expression, bind) =
+    let val = bEvalAB(expression, bind) in
+    if  val = lift(1) then bot else lift(bind) endif
+
+
+  evalAB :: Expression * AbstractBind -> AbstractVal
+  evalAB(expression, bind) =
+    case expType(expression) of
+      "ARITH_BINARY" =>
+        let x = evalAB(expSubLeft(expression), bind),
+            y = evalAB(expSubRight(expression), bind) in
+        case expOp(expression) of
+          "+" => if x = top || y = top    then top
+            else if y = lift(0)           then x
+            else if x = lift(0)           then y
+            else if x = y                 then x
+            else                               top
+            endif endif endif endif;
+          "-" => if x = top || y = top    then top
+            else if y = lift(0)           then x
+            else if x = lift(0)           then lift(-drop(y))
+            else if drop(x) = -drop(y)    then x
+            else                               top
+            endif endif endif endif;
+          "*" => if x = lift(0) || y = lift(0) then lift(0)
+            else if x = top     || y = top     then top
+            else                                    lift(drop(x) * drop(y))
+            endif endif;
+          "/" => if x = top || y = top || y = lift(0) then top
+            else if x = lift(0)                       then lift(0)
+            else                                      lift(drop(x) * drop(y))
+            endif endif;
+        endcase;
+      "ARITH_UNARY" => let x <= evalAB(expSub(expression), bind) in lift(-x);
+      "VAR" => bind(expVar(expression));
+      "CONST" => lift(sgn(expVal(expression)));
+      _ => error("incorrect expression type passed to evalAB");
+    endcase
+
+  bEvalAB :: Expression * AbstractBind -> AbstractVal
+  bEvalAB(expression, bind) =
+    case expType(expression) of
+      "BOOL_BINARY" =>
+        let x = evalAB(expSubLeft(expression), bind),
+            y = evalAB(expSubRight(expression), bind) in
+        case expOp(expression) of
+          "="  => bEvalEq(x, y);
+          "<>" => bNot(bEvalEq(x, y));
+          "<"  => bEvalLt(x, y);
+          ">"  => bEvalLt(y, x);
+          "<=" => bNot(bEvalLt(y, x));
+          ">=" => bNot(bEvalLt(x, y));
+        endcase;
+      "BOOL_UNARY" =>
+        let x = bEvalAB(expSub(expression), bind) in
+        bNot(x);
+      _ => error("incorrect expression type passed to bEvalAB");
+    endcase
+
+  bEvalEq :: AbstractVal * AbstractVal -> AbstractVal
+  bEvalEq(xl, yl) = let x <= xl, y <= yl in
+         if x = 0 && y = 0 then lift(1)
+    else if x != y         then lift(0)
+    else                        top
+    endif endif
+
+  bEvalLt :: AbstractVal * AbstractVal -> AbstractVal
+  bEvalLt(xl, yl) = let x <= xl, y <= yl in
+         if x < y          then lift(1)
+    else if x > y || x = 0 then lift(0)
+    else                        top
+    endif endif
+
+  bNot :: AbstractVal -> AbstractVal
+  bNot(xl) = let x <= xl in lift(1 - x)

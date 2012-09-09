@@ -1,0 +1,2 @@
+// Specifies that the list node contains the value to be deleted.
+%p delval(v)

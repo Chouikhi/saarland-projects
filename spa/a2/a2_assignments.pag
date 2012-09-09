@@ -1,0 +1,46 @@
+TYPE
+  Assignment = Var * Expression
+  AssignmentSet = set(Assignment)
+
+PROBLEM Available_Assignments
+
+  direction  : forward
+  carrier    : AssignmentSet
+  init       : { (v, e) | v in vars; e in expressions }
+  init_start : {}
+  combine    : intersect
+
+
+TRANSFER
+
+  ASSIGN(variable, expression) =
+    filter_occ(variable, @) + if    variable ? variables(expression)
+                              then  {}
+                              else  {(variable, expression)}
+                              endif
+
+SUPPORT
+  subExpressions :: Expression -> ExpressionSet
+  subExpressions(expression) =
+    case expType(expression) of
+      "ARITH_BINARY" => subExpressions(expSubLeft(expression)) lub
+                        subExpressions(expSubRight(expression));
+      "ARITH_UNARY"  => subExpressions(expSub(expression));
+      "BOOL_BINARY"  => subExpressions(expSubLeft(expression)) lub 
+                        subExpressions(expSubRight(expression));
+      "BOOL_UNARY"   => subExpressions(expSub(expression));
+      _              => {};
+    endcase
+    + expression
+     
+  variables :: Expression -> VarSet
+  variables(expression) = 
+    { expVar(exp) | exp in subExpressions(expression);
+                    expType(exp) = "VAR" }
+
+  filter_occ :: Var * AssignmentSet -> AssignmentSet
+  filter_occ(variable, assignments) =
+    { assign | assign in assignments;
+               case assign of
+                 (avar, aexp) => variable != avar;
+               endcase }

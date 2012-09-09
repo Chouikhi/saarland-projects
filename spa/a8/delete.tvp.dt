@@ -1,0 +1,2780 @@
+// @VERSION@ (built on @DATE@)
+
+// Page number 1
+digraph program {
+size="7.5,10";center=true;fontsize=6;node [fontsize=12, style=filled];edge [fontsize=12]; nodesep=0.1; ranksep=0.1;
+delete_tvp[style=bold];
+delete_tvp->"L1";
+"L7" [label="L7", shape=box, style=bold, color=gray, style=filled];
+"L10" [label="L10", shape=box, style=bold, color=gray, style=filled];
+"L11" [label="L11", shape=box, style=bold, color=gray, style=filled];
+"L12" [label="L12", shape=box, style=bold, color=gray, style=filled];
+"L13" [label="L13", shape=box, style=bold, color=gray, style=filled];
+"L9" [label="L9", shape=box, style=bold, color=gray, style=filled];
+"L8" [label="L8", shape=box, style=bold, color=gray, style=filled];
+"exit" [label="exit", shape=box, style=bold, color=gray, style=filled];
+"L6" [label="L6", shape=box, style=bold, color=gray, style=filled];
+"L5" [label="L5", shape=box, style=bold, color=gray, style=filled];
+"L4" [label="L4", shape=box, style=bold, color=gray, style=filled];
+"L3" [label="L3", shape=box, style=bold, color=gray, style=filled];
+"L2" [label="L2", shape=box, style=bold, color=gray, style=filled];
+"L1" [label="L1", shape=box, style=bold, color=gray, style=filled];
+"error" [label="error", shape=box, style=bold, color=gray, style=filled];
+"L7"->"L8"[label="prev->n = NULL"];
+"L10"->"L11"[label="elem->n = NULL"];
+"L11"->"exit"[label="free(elem)"];
+"L12"->"L13"[label="prev = elem"];
+"L13"->"L2"[label="elem = elem->n"];
+"L9"->"L10"[label="temp = NULL"];
+"L8"->"L9"[label="prev->n = temp"];
+"exit"->"error"[label="assertListInvariants(x)"];
+"exit"->"error"[label="assertNoLeak(x)"];
+"exit"->"error"[label="assertProperDelete()"];
+"L6"->"L7"[label="temp = elem->n"];
+"L5"->"L10"[label="x = elem->n"];
+"L4"->"L6"[label="prev != NULL"];
+"L4"->"L5"[label="prev == NULL"];
+"L3"->"L4"[label="v->val == delval"];
+"L3"->"L12"[label="v->val != delval"];
+"L2"->"exit"[label="elem == NULL"];
+"L2"->"L3"[label="elem != NULL"];
+"L1"->"L2"[label="elem = x"];
+}
+
+// Page number 2
+digraph msg {size = "7.5,10";center=true;"Program Location\nL1" [shape=box, fontsize=80]; }
+
+// Page number 3
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+"Structure with empty universe" [fontsize = 20, shape=plaintext]; 
+}
+
+// Page number 4
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"x"->"1";
+"1" [label="1\nr[n,x]\ndelval=1/2"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 5
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"1" [label="1\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]\ndelval=1/2"];
+"1"->"1" [label="n", style=dotted];
+"0"->"1" [label="n", style=dotted];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 6
+digraph msg {size = "7.5,10";center=true;"Program Location\nL2" [shape=box, fontsize=80]; }
+
+// Page number 7
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"2" [label="2\nr[n,x]", peripheries=2];
+"prev"->"1";
+"1" [label="1\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"2" [label="n", style=dotted];
+"2"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 8
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"1";
+"x"->"1";
+"1" [label="1\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 9
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"1" [label="1\nr[n,elem]\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"0";
+"x"->"0";
+"0" [label="0\nr[n,elem]\nr[n,x]\ndelval=1/2"];
+"1"->"1" [label="n", style=dotted];
+"0"->"1" [label="n", style=dotted];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 10
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n", style=dotted];
+"2"->"3" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 11
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+"Structure with empty universe" [fontsize = 20, shape=plaintext]; 
+}
+
+// Page number 12
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 13
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 14
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"4";
+"4" [label="4\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n", style=dotted];
+"3"->"4" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"4" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"4" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 15
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"x"->"1";
+"1" [label="1\nr[n,elem]\nr[n,x]\ndelval=1/2"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 16
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"1" [label="n"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 17
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"0"->"1" [label="n"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 18
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"1";
+"1" [label="1\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"0"->"1" [label="n"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 19
+digraph msg {size = "7.5,10";center=true;"Program Location\nL3" [shape=box, fontsize=80]; }
+
+// Page number 20
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"0"->"1" [label="n"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 21
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"1" [label="1\nr[n,elem]\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"0";
+"x"->"0";
+"0" [label="0\nr[n,elem]\nr[n,x]\ndelval=1/2"];
+"1"->"1" [label="n", style=dotted];
+"0"->"1" [label="n", style=dotted];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 22
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"4";
+"4" [label="4\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n", style=dotted];
+"3"->"4" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"4" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"4" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 23
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"1" [label="n"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 24
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n", style=dotted];
+"2"->"3" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 25
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 26
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"x"->"1";
+"1" [label="1\nr[n,elem]\nr[n,x]\ndelval=1/2"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 27
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 28
+digraph msg {size = "7.5,10";center=true;"Program Location\nL4" [shape=box, fontsize=80]; }
+
+// Page number 29
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"0"->"1" [label="n"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 30
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n", style=dotted];
+"3"->"4" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"4" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"4" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 31
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n", style=dotted];
+"2"->"3" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 32
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"x"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 33
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"1" [label="n"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 34
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"1" [label="1\nr[n,elem]\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"0";
+"x"->"0";
+"0" [label="0\ndelval\nr[n,elem]\nr[n,x]"];
+"1"->"1" [label="n", style=dotted];
+"0"->"1" [label="n", style=dotted];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 35
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 36
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 37
+digraph msg {size = "7.5,10";center=true;"Program Location\nL6" [shape=box, fontsize=80]; }
+
+// Page number 38
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n", style=dotted];
+"2"->"3" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 39
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"0"->"1" [label="n"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 40
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n", style=dotted];
+"3"->"4" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"4" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"4" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 41
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 42
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"1" [label="n"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 43
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 44
+digraph msg {size = "7.5,10";center=true;"Program Location\nL7" [shape=box, fontsize=80]; }
+
+// Page number 45
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"0"->"1" [label="n"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 46
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"temp"->"5";
+"5" [label="5\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"5"->"1" [label="n", style=dotted];
+"4"->"5" [label="n"];
+"3"->"4" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"5"->"5" [label="t[n]"];
+"5"->"1" [label="t[n]"];
+"4"->"5" [label="t[n]"];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"5" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"5" [label="t[n]"];
+"2"->"4" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"5" [label="t[n]"];
+"0"->"4" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 47
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"temp"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n"];
+"3"->"4" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"4" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"4" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 48
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"temp"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"2"->"1" [label="n"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 49
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"1" [label="n"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 50
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"temp"->"3";
+"3" [label="3\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"3"->"1" [label="n", style=dotted];
+"2"->"3" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 51
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"temp"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n"];
+"2"->"3" [label="n"];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 52
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 53
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"temp"->"4";
+"4" [label="4\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n", style=dotted];
+"3"->"4" [label="n"];
+"2"->"3" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"4" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"4" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 54
+digraph msg {size = "7.5,10";center=true;"Program Location\nL8" [shape=box, fontsize=80]; }
+
+// Page number 55
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"temp"->"1";
+"1" [label="1\nr[n,elem]\nr[n,temp]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n"];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 56
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"temp"->"4";
+"4" [label="4\nr[n,elem]\nr[n,temp]\ndelval=1/2"];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,temp]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n", style=dotted];
+"3"->"4" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 57
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"temp"->"1";
+"1" [label="1\nr[n,elem]\nr[n,temp]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 58
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 59
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"temp"->"5";
+"5" [label="5\nr[n,elem]\nr[n,temp]\ndelval=1/2"];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nr[n,elem]\nr[n,temp]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"5"->"1" [label="n", style=dotted];
+"4"->"5" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"5"->"5" [label="t[n]"];
+"5"->"1" [label="t[n]"];
+"4"->"5" [label="t[n]"];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 60
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 61
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]"];
+"temp"->"1";
+"1" [label="1\nr[n,elem]\nr[n,temp]\ndelval=1/2"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"2"->"1" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 62
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"temp"->"3";
+"3" [label="3\nr[n,elem]\nr[n,temp]\ndelval=1/2"];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]"];
+"1" [label="1\nr[n,elem]\nr[n,temp]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"3"->"1" [label="n", style=dotted];
+"2"->"3" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 63
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 64
+digraph msg {size = "7.5,10";center=true;"Program Location\nL9" [shape=box, fontsize=80]; }
+
+// Page number 65
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 66
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"temp"->"1";
+"1" [label="1\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n"];
+"2"->"1" [label="n"];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 67
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"temp"->"3";
+"3" [label="3\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"3"->"1" [label="n", style=dotted];
+"2"->"3" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"3" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"3" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 68
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 69
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 70
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]"];
+"temp"->"1";
+"1" [label="1\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"2"->"1" [label="n"];
+"0"->"1" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 71
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"temp"->"5";
+"5" [label="5\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"5"->"1" [label="n", style=dotted];
+"4"->"5" [label="n"];
+"3"->"5" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"5"->"5" [label="t[n]"];
+"5"->"1" [label="t[n]"];
+"4"->"5" [label="t[n]"];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"5" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"5" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"5" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 72
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"temp"->"1";
+"1" [label="1\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n"];
+"3"->"1" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 73
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"temp" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"temp"->"4";
+"4" [label="4\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2"];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,temp]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n", style=dotted];
+"3"->"4" [label="n"];
+"2"->"4" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"4" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"4" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 74
+digraph msg {size = "7.5,10";center=true;"Program Location\nL5" [shape=box, fontsize=80]; }
+
+// Page number 75
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"1" [label="1\nr[n,elem]\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"0";
+"x"->"0";
+"0" [label="0\ndelval\nr[n,elem]\nr[n,x]"];
+"1"->"1" [label="n", style=dotted];
+"0"->"1" [label="n", style=dotted];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 76
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"x"->"1";
+"1" [label="1\ndelval\nr[n,elem]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 77
+digraph msg {size = "7.5,10";center=true;"Program Location\nL10" [shape=box, fontsize=80]; }
+
+// Page number 78
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"x"->"1";
+"1" [label="1\nr[n,elem]\nr[n,x]\ndelval=1/2"];
+"elem"->"0";
+"0" [label="0\ndelval\nr[n,elem]"];
+"0"->"1" [label="n"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 79
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 80
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n"];
+"3"->"1" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 81
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 82
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"5" [label="5\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"5"->"1" [label="n", style=dotted];
+"4"->"5" [label="n"];
+"3"->"5" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"5"->"5" [label="t[n]"];
+"5"->"1" [label="t[n]"];
+"4"->"5" [label="t[n]"];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"5" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"5" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"5" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 83
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"3" [label="3\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"3"->"1" [label="n", style=dotted];
+"2"->"3" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"3" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"3" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 84
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 85
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 86
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"x"->"2";
+"2" [label="2\nr[n,elem]\nr[n,x]\ndelval=1/2"];
+"1" [label="1\nr[n,elem]\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"0";
+"0" [label="0\ndelval\nr[n,elem]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 87
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"4" [label="4\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n", style=dotted];
+"3"->"4" [label="n"];
+"2"->"4" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"4" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"4" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 88
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]"];
+"1" [label="1\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"2"->"1" [label="n"];
+"0"->"1" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 89
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nis[n]\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n"];
+"2"->"1" [label="n"];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 90
+digraph msg {size = "7.5,10";center=true;"Program Location\nL11" [shape=box, fontsize=80]; }
+
+// Page number 91
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 92
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 93
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\ndelval\nr[n,elem]"];
+"1" [label="1\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="n", style=dotted];
+"0"->"1" [label="n", style=dotted];
+"2"->"2" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 94
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"x"->"2";
+"2" [label="2\nr[n,x]\ndelval=1/2"];
+"1" [label="1\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"0";
+"0" [label="0\ndelval\nr[n,elem]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 95
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"5" [label="5\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"4";
+"4" [label="4\ndelval\nr[n,elem]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"5"->"5" [label="n", style=dotted];
+"3"->"5" [label="n", style=dotted];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"5"->"5" [label="t[n]", style=dotted];
+"4"->"4" [label="t[n]"];
+"3"->"5" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"2"->"5" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"0"->"5" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 96
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\ndelval\nr[n,elem]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 97
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 98
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nr[n,elem]"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 99
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"x"->"1";
+"1" [label="1\nr[n,x]\ndelval=1/2"];
+"elem"->"0";
+"0" [label="0\ndelval\nr[n,elem]"];
+"1"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 100
+digraph msg {size = "7.5,10";center=true;"Program Location\nexit" [shape=box, fontsize=80]; }
+
+// Page number 101
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\ndelval\nfreed\nr[n,elem]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 102
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\ndelval\nfreed\nr[n,elem]"];
+"1" [label="1\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="n", style=dotted];
+"0"->"1" [label="n", style=dotted];
+"2"->"2" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 103
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nfreed\nr[n,elem]"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 104
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"1";
+"1" [label="1\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"0"->"1" [label="n"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 105
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\ndelval\nfreed\nr[n,elem]"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 106
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"5" [label="5\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"4";
+"4" [label="4\ndelval\nfreed\nr[n,elem]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"5"->"5" [label="n", style=dotted];
+"3"->"5" [label="n", style=dotted];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"5"->"5" [label="t[n]", style=dotted];
+"4"->"4" [label="t[n]"];
+"3"->"5" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"2"->"5" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"0"->"5" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 107
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"2" [label="2\nr[n,x]", peripheries=2];
+"prev"->"1";
+"1" [label="1\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"2" [label="n", style=dotted];
+"2"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 108
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+"Structure with empty universe" [fontsize = 20, shape=plaintext]; 
+}
+
+// Page number 109
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\ndelval\nfreed\nr[n,elem]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 110
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"x"->"1";
+"1" [label="1\nr[n,x]\ndelval=1/2"];
+"elem"->"0";
+"0" [label="0\ndelval\nfreed\nr[n,elem]"];
+"1"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 111
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\ndelval\nfreed\nr[n,elem]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 112
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"x"->"2";
+"2" [label="2\nr[n,x]\ndelval=1/2"];
+"1" [label="1\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"0";
+"0" [label="0\ndelval\nfreed\nr[n,elem]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 113
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"1";
+"x"->"1";
+"1" [label="1\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 114
+digraph msg {size = "7.5,10";center=true;"Program Location\nerror" [shape=box, fontsize=80]; }
+
+// Page number 115
+digraph msg {size = "7.5,10";center=true;"Program Location\nL12" [shape=box, fontsize=80]; }
+
+// Page number 116
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"2" [label="2\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 117
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"1" [label="1\nr[n,elem]\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"0";
+"x"->"0";
+"0" [label="0\nr[n,elem]\nr[n,x]"];
+"1"->"1" [label="n", style=dotted];
+"0"->"1" [label="n", style=dotted];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 118
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,prev]\nr[n,x]"];
+"0"->"1" [label="n"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 119
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"x"->"1";
+"1" [label="1\nr[n,elem]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+}
+
+// Page number 120
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"3" [label="3\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n", style=dotted];
+"2"->"3" [label="n"];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 121
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"4";
+"4" [label="4\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"4"->"1" [label="n", style=dotted];
+"3"->"4" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"4"->"4" [label="t[n]"];
+"4"->"1" [label="t[n]"];
+"3"->"4" [label="t[n]"];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"4" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"4" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 122
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"3";
+"3" [label="3\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n"];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 123
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"prev"->"2";
+"2" [label="2\nr[n,prev]\nr[n,x]"];
+"elem"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"1" [label="n"];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 124
+digraph msg {size = "7.5,10";center=true;"Program Location\nL13" [shape=box, fontsize=80]; }
+
+// Page number 125
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"prev"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"0"->"1" [label="n"];
+"1"->"1" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 126
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"2" [label="2\nr[n,x]", peripheries=2];
+"elem"->"1";
+"prev"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"2" [label="n", style=dotted];
+"2"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 127
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"2";
+"prev"->"2";
+"2" [label="2\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"2"->"1" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n"];
+"2"->"2" [label="t[n]"];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 128
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"3";
+"prev"->"3";
+"3" [label="3\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"2" [label="2\nr[n,x]", peripheries=2];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"x"->"0";
+"0" [label="0\nr[n,x]"];
+"3"->"1" [label="n", style=dotted];
+"2"->"3" [label="n", style=dotted];
+"2"->"2" [label="n", style=dotted];
+"1"->"1" [label="n", style=dotted];
+"0"->"2" [label="n", style=dotted];
+"3"->"3" [label="t[n]"];
+"3"->"1" [label="t[n]"];
+"2"->"3" [label="t[n]"];
+"2"->"2" [label="t[n]", style=dotted];
+"2"->"1" [label="t[n]"];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"3" [label="t[n]"];
+"0"->"2" [label="t[n]"];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 129
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]\ndelval=1/2", peripheries=2];
+"elem"->"0";
+"prev"->"0";
+"x"->"0";
+"0" [label="0\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="n", style=dotted];
+"0"->"1" [label="n", style=dotted];
+"1"->"1" [label="t[n]", style=dotted];
+"0"->"1" [label="t[n]"];
+"0"->"0" [label="t[n]"];
+}
+
+// Page number 130
+digraph structure {
+size="7.5,10";center=true;fonstsize=6;
+ranksep=0.2;nodesep=0.2;edge [fontsize=10];node [fontsize=10];
+"elem" [shape=plaintext, style=bold, fontsize=16];
+"prev" [shape=plaintext, style=bold, fontsize=16];
+"x" [shape=plaintext, style=bold, fontsize=16];
+"elem"->"1";
+"prev"->"1";
+"x"->"1";
+"1" [label="1\nr[n,elem]\nr[n,prev]\nr[n,x]"];
+"1"->"1" [label="t[n]"];
+}
+

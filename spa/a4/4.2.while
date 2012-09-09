@@ -1,0 +1,83 @@
+program Sign_propagation_example
+
+begin
+
+  x := -5;
+  x := -(-x);
+  y := 0;
+  z := 10;
+  q := x + z;
+
+  v := x - y;
+  v := x - z;
+  v := y - z;
+  v := y - x;
+  v := z - x;
+  v := z - y;
+  v := q - x;
+
+  v := x - x;
+  v := y - y;
+  v := z - z;
+  v := q - q;
+
+  v := x * y;
+  v := y * z;
+  v := x * z;
+  v := y * x;
+  v := z * y;
+  v := z * x;
+  v := q * x;
+  v := q * y;
+  v := q * z;
+
+  v := x * x;
+  v := y * y;
+  v := z * z;
+  v := q * q;
+
+  v := x / y;
+  v := y / z;
+  v := x / z;
+  v := y / x;
+  v := z / y;
+  v := z / x;
+
+  v := q / x;
+  v := q / y;
+  v := q / z;
+  v := x / q;
+  v := y / q;
+  v := z / q;
+
+  v := x / x;
+  v := y / y;
+  v := z / z;
+  v := q / q;
+
+  if x < 0 then (
+    z := 3;
+    if z >= 0 then (
+      skip;
+      if y > 0 then (
+        skip;
+      )
+      else (
+        skip;
+        if z > 5 then (
+          skip;
+        )
+        else (
+          skip;
+        )
+      )
+    )
+    else (
+      skip;
+    ) 
+  )
+  else (
+    z := 4
+  )
+end
+

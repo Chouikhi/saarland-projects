@@ -1,0 +1,292 @@
+\documentclass[a4paper]{article}
+\usepackage{ucs}  % unicode
+\usepackage[utf8x]{inputenc}
+% \usepackage[T2A]{fontenc}
+% \usepackage[bulgarian]{babel}
+\usepackage{graphicx}
+% \usepackage{fancyhdr}
+% \usepackage{lastpage}
+\usepackage{listings}
+\usepackage{slashbox}
+\usepackage{multirow}
+% \usepackage{fancyvrb}
+% \usepackage[usenames,dvipsnames]{color}
+% \setlength{\headheight}{12.51453pt}
+
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+
+% \cfoot{\thepage\ от \pageref{LastPage}}
+
+% \addto\captionsbulgarian{%
+%   \def\abstractname{%
+%     Цел на проекта} %\cyr\CYRA\cyrs\cyrt\cyrr\cyra\cyrk\cyrt}}%
+% }
+
+% Custom defines:
+\def\definition{Definition:\ }
+\def\la{\leftarrow}
+\def\vars{\mathrm{Vars}}
+\def\occ{\mathrm{Occ}}
+% \def\dc{bar baz}
+
+% TODO remove colorlinks before printing
+% \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
+% \hypersetup{urlcolor=blue}
+% \hypersetup{citecolor=PineGreen}
+
+\begin{document}
+
+\newcommand{\aee}[1] {[[#1]]^\sharp}
+\newcommand{\cc}[1] {\texttt{#1}}
+\def\A {\mathcal{A}}
+\def\N {\mathcal{N}}
+\def\NonZero {\mathrm{NonZero}}
+\def\Zero {\mathrm{Zero}}
+\def\Occ {\mathrm{Occ}}
+
+\title{Static Program Analysis - Exercise 1}
+\author{Iskren Ivov Chernev \\ tutorial group B}
+
+\maketitle
+
+\section{Solution}
+\begin{itemize}
+  \item $ | \pi | = 0 $ \\
+  In this case there are no edge effects so only the start values matter. So
+  $ \aee{\pi}_\N Expr = Expr $ and $ \aee{\pi}_\A \emptyset = \emptyset $ so
+  $ \aee{\pi}_\N Expr = Expr \setminus \aee{\pi}_\A \emptyset $.
+
+  \item Assume that the equality holds for all $ \pi' $ such that $ |\pi'|
+  < |\pi| $. \\
+  Lets assume $ \pi = \pi' e $, where $ e $ is an edge, and consider all
+  possible values of the label of that edge $ lab_e $. Lets denote
+  $ \aee{\pi'}_\A \emptyset = A $ and $ \aee{\pi'}_\N  Expr = N $, and from the
+  induction hypotesys we conclude, that $ A = Expr \setminus N $.
+  \begin{itemize}
+    \item $ lab_e = \cc{;} $.
+    \begin{eqnarray*}
+      \aee{\pi}_\A \emptyset &=& \aee{\cc{;}}_\A(A) \\
+        &=& A \\
+        &=& Expr \setminus N \\
+        &=& Expr \setminus \aee{\cc{;}}_\N(N) \\
+        &=& Expr \setminus \aee{\pi}_\N Expr \\
+    \end{eqnarray*}
+    \item $ lab_e = \NonZero(e) $ or $ lab_e = \Zero(e) $ (we can examine these
+    2 cases at the same time, because the edge effects for available and non
+    available expressions are the same for both). \\
+    \begin{eqnarray*}
+      \aee{\pi}_\A \emptyset &=& \aee{\NonZero(e)}_\A(A) \\
+        &=& A \cup \{ e \} \\
+        &=& (Expr \setminus N) \cup \{ e \} \\
+        &=& Expr \setminus (N \setminus \{ e \}) \\
+        &=& Expr \setminus (\aee{\NonZero(e)}_\N(N)) \\
+        &=& Expr \setminus \aee{\pi}_\N Expr \\
+    \end{eqnarray*}
+    \item $ lab_e = \cc{x} \leftarrow e $ or $ lab_e = \cc{x} \leftarrow M[e] $.
+    \begin{eqnarray*}
+      \aee{\pi}_\A \emptyset &=& \aee{\cc{x} \leftarrow e}_\A(A) \\
+        &=& (A \cup \{ e \}) \setminus \Occ(x) \\
+        &=& ((Expr \setminus N) \cup \{ e \}) \setminus \Occ(x) \\
+        &=& (Expr \setminus (N \setminus \{ e \})) \setminus \Occ(x) \\
+        &=& Expr \setminus ((N \setminus \{ e \}) \cup \Occ(x)) \\
+        &=& Expr \setminus \aee{\cc{x} \leftarrow e}_\N(N) \\
+        &=& Expr \setminus \aee{\pi}_\N Expr \\
+    \end{eqnarray*}
+    \item $ lab_e = M[e_1] \leftarrow e_2 $
+    \begin{eqnarray*}
+      \aee{\pi}_\A \emptyset &=& \aee{M[e_1] \leftarrow e_2 }_\A(A) \\
+        &=& A \cup \{ e_1, e_2 \} \\
+        &=& (Expr \setminus N) \cup \{ e_1, e_2 \} \\
+        &=& Expr \setminus (N \setminus \{ e_1, e_2 \}) \\
+        &=& Expr \setminus \aee{M[e_1] \leftarrow e_2}_\N(N) \\
+        &=& Expr \setminus \aee{\pi}_\N Expr \\
+    \end{eqnarray*}
+  \end{itemize}
+\end{itemize}
+
+\section{Solution}
+  \subsection{Unavailable expressions}
+  \begin{verbatim}
+PROBLEM Unvailable_Expressions
+
+  direction  : forward
+  carrier    : ExpressionSet
+  init       : {}   /* the bottom element of the lattice */
+  init_start : nonTrivialExpressions()  /* the value with which the program starts */
+  combine    : union
+
+
+TRANSFER
+
+  ASSIGN(variable, exp) =
+    @
+       - nonTrivialSubExpressions(exp)
+       + occ(variable)
+
+  IF(exp) = 
+    @
+       - nonTrivialSubExpressions(exp)
+       + {}
+
+
+  WHILE(exp) = 
+    @  
+       - nonTrivialSubExpressions(exp)
+       + {}
+
+
+  CALL(_, _, exp), call_edge = 
+    @ 
+       - nonTrivialSubExpressions(exp)
+       + {}
+
+
+  CALL(_, _, _), local_edge = nonTrivialExpressions()
+
+
+  END(_, param), return_edge =
+    @
+      + occ(param)
+      - {}
+
+
+SUPPORT
+
+  nonTrivialExpressions :: -> ExpressionSet
+  nonTrivialExpressions() =
+    { exp | exp in expressions;
+            case expType(exp) of
+              "VAR" => false;
+              "CONST" => false;
+              "TRUE" => false;
+              "FALSE" => false;
+              _       => true;
+            endcase }
+
+  occ :: Var -> ExpressionSet
+  occ(var) =
+    { exp | exp in nonTrivialExpressions();
+            var ? variables(exp) }
+ 
+  nonTrivialSubExpressions :: Expression -> ExpressionSet
+  nonTrivialSubExpressions(expression) =
+    { exp | exp in nonConstSubExpressions(expression);
+            expType(exp) != "VAR" }
+
+  nonConstSubExpressions :: Expression ->ExpressionSet
+  nonConstSubExpressions(expression) =
+    case expType(expression) of
+      "ARITH_BINARY" => 
+        let expSet = nonConstSubExpressions(expSubLeft(expression)) +
+                     nonConstSubExpressions(expSubRight(expression)) in
+          if expSet != {} then expSet + expression else {} endif;
+      "BOOL_BINARY"  => 
+        let expSet = nonConstSubExpressions(expSubLeft(expression)) +
+                     nonConstSubExpressions(expSubRight(expression)) in
+            if expSet != {} then expSet + expression else {} endif;
+      "ARITH_UNARY"  => 
+        let expSet = nonConstSubExpressions(expSub(expression)) in
+          if expSet != {} then expSet + expression else {} endif;
+      "BOOL_UNARY"   =>
+        let expSet = nonConstSubExpressions(expSub(expression)) in
+          if expSet != {} then expSet + expression else {} endif;
+      "VAR"          => { expression };
+      _              => {};
+    endcase
+  
+
+
+  subExpressions :: Expression -> ExpressionSet
+  subExpressions(expression) =
+    case expType(expression) of
+      "ARITH_BINARY" => subExpressions(expSubLeft(expression)) lub 
+                        subExpressions(expSubRight(expression));
+      "ARITH_UNARY"  => subExpressions(expSub(expression));
+      "BOOL_BINARY"  => subExpressions(expSubLeft(expression)) lub 
+                        subExpressions(expSubRight(expression));
+      "BOOL_UNARY"   => subExpressions(expSub(expression));
+      _              => {};
+    endcase
+    + expression
+     
+  variables :: Expression -> VarSet
+  variables(expression) = 
+    { expVar(exp) | exp in subExpressions(expression);
+                    expType(exp) = "VAR" }
+
+  \end{verbatim}
+
+  Example program:
+  \begin{verbatim}
+program a2sampleProgram
+begin
+  x := 2
+  y := 36
+  t := x * 21
+
+  while y > 0 do (
+    y := y - 1
+    t := x * 21
+  )
+
+  x := 5
+  foo := 0
+  foo_ := x + t
+end
+  \end{verbatim}
+
+  \subsection{Available assignments}
+  \begin{verbatim}
+TYPE
+  Assignment = Var * Expression
+  AssignmentSet = set(Assignment)
+
+PROBLEM Available_Assignments
+
+  direction  : forward
+  carrier    : AssignmentSet
+  init       : top
+  init_start : bot
+  combine    : intersect
+
+
+TRANSFER
+
+  ASSIGN(variable, expression) =
+    filter_occ(variable, @) + if    variable ? variables(expression)
+                              then  {}
+                              else  {(variable, expression)}
+                              endif
+
+SUPPORT
+  subExpressions :: Expression -> ExpressionSet
+  subExpressions(expression) =
+    case expType(expression) of
+      "ARITH_BINARY" => subExpressions(expSubLeft(expression)) lub
+                        subExpressions(expSubRight(expression));
+      "ARITH_UNARY"  => subExpressions(expSub(expression));
+      "BOOL_BINARY"  => subExpressions(expSubLeft(expression)) lub 
+                        subExpressions(expSubRight(expression));
+      "BOOL_UNARY"   => subExpressions(expSub(expression));
+      _              => {};
+    endcase
+    + expression
+     
+  variables :: Expression -> VarSet
+  variables(expression) = 
+    { expVar(exp) | exp in subExpressions(expression);
+                    expType(exp) = "VAR" }
+
+  filter_occ :: Var * AssignmentSet -> AssignmentSet
+  filter_occ(variable, assignments) =
+    { assign | assign in assignments;
+               case assign of
+                 (variable, _) => false;
+                 _             => true;
+               endcase }
+
+  \end{verbatim}
+
+\end{document}

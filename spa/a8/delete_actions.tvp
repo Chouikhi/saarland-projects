@@ -1,0 +1,22 @@
+%action Is_Value_Delval(var) {
+  %t v + "->val == delval"
+  %f { (E(node) var(node) & delval(node)) }
+  %p (E(node) var(node) & delval(node))
+}
+
+%action Is_Not_Value_Delval(var) {
+  %t v + "->val != delval"
+  %f { (E(node) var(node) & delval(node)) }
+  %p !(E(node) var(node) & delval(node))
+}
+
+%action Assert_Proper_Delete() {
+  %t "assertProperDelete()"
+  %f { (A(v) freed(v) -> delval(v))
+     , (E(v) delval(v))
+     , (E(v) freed(v))
+     }
+  %p !((A(v) freed(v) -> delval(v)) &
+      ((E(v) delval(v)) -> (E(v) freed(v))))
+}
+
