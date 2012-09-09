@@ -1,0 +1,8 @@
+You'll need happy to build this
+    http://haskell.org/happy/
+Also the library HUnit for the unit tests
+    http://hackage.haskell.org/package/HUnit
+
+After build the executable Main is what you'll probably want to use.
+Executable Tests runs some unit tests.
+In the folder test there is a shell script that runs all the end-to-end tests.

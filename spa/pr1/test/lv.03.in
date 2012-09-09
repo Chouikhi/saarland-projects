@@ -1,0 +1,15 @@
+ANALYSIS
+    Truly_Live_Variables
+
+ALGORITHM
+    Round_Robin
+
+OUTPUT
+    Analysis
+
+PROGRAM
+    START   Pos(x > 0)   P1
+    START   Neg(x > 0)   P2
+    P1      t = x + y;   P3
+    P2      z = x + y;   P3
+    P3      v = x + y;   END

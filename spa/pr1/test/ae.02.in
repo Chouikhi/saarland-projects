@@ -1,0 +1,19 @@
+ANALYSIS
+    Available_Expressions 
+
+ALGORITHM
+    Recursive
+
+OUTPUT
+    Analysis
+ 
+PROGRAM 
+    START    x = 42;        P1
+    P1       Pos(x > 42)    P2
+    P2       y = x + b;     P3
+    P1       Neg(x > 42)    P4
+    P4       y = x + c;     P3
+    P3       t = y + 8;     P5
+    P5       t = y + 8;     P6
+    P6       ;              P5
+    P6       ;              END
