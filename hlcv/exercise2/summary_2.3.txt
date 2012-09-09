@@ -1,0 +1,96 @@
+dist chi2, hist grayvalue, bins 20
+number of correct matches: 35 (recognition rate 0.393258)
+dist intersect, hist grayvalue, bins 20
+number of correct matches: 45 (recognition rate 0.505618)
+dist l2, hist grayvalue, bins 20
+number of correct matches: 34 (recognition rate 0.382022)
+dist chi2, hist dxdy, bins 20
+number of correct matches: 36 (recognition rate 0.404494)
+dist intersect, hist dxdy, bins 20
+number of correct matches: 53 (recognition rate 0.595506)
+dist l2, hist dxdy, bins 20
+number of correct matches: 37 (recognition rate 0.415730)
+dist chi2, hist rgb, bins 20
+number of correct matches: 47 (recognition rate 0.528090)
+dist intersect, hist rgb, bins 20
+number of correct matches: 71 (recognition rate 0.797753)
+dist l2, hist rgb, bins 20
+number of correct matches: 43 (recognition rate 0.483146)
+dist chi2, hist rg, bins 20
+number of correct matches: 73 (recognition rate 0.820225)
+dist intersect, hist rg, bins 20
+number of correct matches: 78 (recognition rate 0.876404)
+dist l2, hist rg, bins 20
+number of correct matches: 70 (recognition rate 0.786517)
+dist chi2, hist grayvalue, bins 30
+number of correct matches: 36 (recognition rate 0.404494)
+dist intersect, hist grayvalue, bins 30
+number of correct matches: 45 (recognition rate 0.505618)
+dist l2, hist grayvalue, bins 30
+number of correct matches: 36 (recognition rate 0.404494)
+dist chi2, hist dxdy, bins 30
+number of correct matches: 41 (recognition rate 0.460674)
+dist intersect, hist dxdy, bins 30
+number of correct matches: 59 (recognition rate 0.662921)
+dist l2, hist dxdy, bins 30
+number of correct matches: 40 (recognition rate 0.449438)
+dist chi2, hist rgb, bins 30
+number of correct matches: 36 (recognition rate 0.404494)
+dist intersect, hist rgb, bins 30
+number of correct matches: 73 (recognition rate 0.820225)
+dist l2, hist rgb, bins 30
+number of correct matches: 35 (recognition rate 0.393258)
+dist chi2, hist rg, bins 30
+number of correct matches: 71 (recognition rate 0.797753)
+dist intersect, hist rg, bins 30
+number of correct matches: 79 (recognition rate 0.887640)
+dist l2, hist rg, bins 30
+number of correct matches: 66 (recognition rate 0.741573)
+dist chi2, hist grayvalue, bins 40
+number of correct matches: 33 (recognition rate 0.370787)
+dist intersect, hist grayvalue, bins 40
+number of correct matches: 47 (recognition rate 0.528090)
+dist l2, hist grayvalue, bins 40
+number of correct matches: 32 (recognition rate 0.359551)
+dist chi2, hist dxdy, bins 40
+number of correct matches: 45 (recognition rate 0.505618)
+dist intersect, hist dxdy, bins 40
+number of correct matches: 58 (recognition rate 0.651685)
+dist l2, hist dxdy, bins 40
+number of correct matches: 44 (recognition rate 0.494382)
+dist chi2, hist rgb, bins 40
+number of correct matches: 31 (recognition rate 0.348315)
+dist intersect, hist rgb, bins 40
+number of correct matches: 71 (recognition rate 0.797753)
+dist l2, hist rgb, bins 40
+number of correct matches: 30 (recognition rate 0.337079)
+dist chi2, hist rg, bins 40
+number of correct matches: 64 (recognition rate 0.719101)
+dist intersect, hist rg, bins 40
+number of correct matches: 79 (recognition rate 0.887640)
+dist l2, hist rg, bins 40
+number of correct matches: 59 (recognition rate 0.662921)
+dist chi2, hist grayvalue, bins 60
+number of correct matches: 32 (recognition rate 0.359551)
+dist intersect, hist grayvalue, bins 60
+number of correct matches: 45 (recognition rate 0.505618)
+dist l2, hist grayvalue, bins 60
+number of correct matches: 31 (recognition rate 0.348315)
+dist chi2, hist dxdy, bins 60
+number of correct matches: 44 (recognition rate 0.494382)
+dist intersect, hist dxdy, bins 60
+number of correct matches: 59 (recognition rate 0.662921)
+dist l2, hist dxdy, bins 60
+number of correct matches: 44 (recognition rate 0.494382)
+dist chi2, hist rgb, bins 60
+number of correct matches: 31 (recognition rate 0.348315)
+dist intersect, hist rgb, bins 60
+number of correct matches: 70 (recognition rate 0.786517)
+dist l2, hist rgb, bins 60
+number of correct matches: 29 (recognition rate 0.325843)
+dist chi2, hist rg, bins 60
+number of correct matches: 63 (recognition rate 0.707865)
+dist intersect, hist rg, bins 60
+number of correct matches: 80 (recognition rate 0.898876)
+dist l2, hist rg, bins 60
+number of correct matches: 58 (recognition rate 0.651685)
